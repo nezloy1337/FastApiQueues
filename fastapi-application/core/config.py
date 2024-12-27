@@ -13,11 +13,6 @@ class RunConfig(BaseModel):
 class ApiV1Prefix(BaseModel):
     prefix: str = "/convert"
 
-
-class ApiPrefix(BaseModel):
-    v1: ApiV1Prefix = ApiV1Prefix()
-
-
 class DatabaseConfig(BaseModel):
     url: PostgresDsn
     echo: bool = False
@@ -42,7 +37,6 @@ class Settings(BaseSettings):
         env_prefix="APP_CONFIG__",
     )
     run: RunConfig = RunConfig()
-    api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
 
 
