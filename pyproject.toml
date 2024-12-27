@@ -14,7 +14,7 @@ jinja2 = "^3.1.4"
 aiofiles = "^24.1.0"
 python-multipart = "0.0.17"
 orjson = "^3.10.12"
-fastapi-users = {extras = ["sqlalchemy"], version = "^14.0.0"}
+fastapi-users = {extras = ["redis", "sqlalchemy"], version = "^14.0.0"}
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
