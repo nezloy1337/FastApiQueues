@@ -13,6 +13,11 @@ class RunConfig(BaseModel):
 class ApiV1Prefix(BaseModel):
     prefix: str = "/convert"
 
+class Redis(BaseModel):
+    url: str = "redis://localhost:6379"
+    decode_responses: bool = True
+    lifetime_seconds:int = 60 * 60
+
 class DatabaseConfig(BaseModel):
     url: PostgresDsn
     echo: bool = False
@@ -38,6 +43,7 @@ class Settings(BaseSettings):
     )
     run: RunConfig = RunConfig()
     db: DatabaseConfig
+    redis: Redis()
 
 
 settings = Settings()
