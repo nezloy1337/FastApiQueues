@@ -3,7 +3,7 @@ services:
   pg:
     image: postgres
     environment:
-      POSTGRES_DB: converterapi
+      POSTGRES_DB: Queue_api
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:
