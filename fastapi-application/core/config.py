@@ -1,6 +1,4 @@
-from typing import Dict
-
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -13,14 +11,17 @@ class RunConfig(BaseModel):
 class ApiV1Prefix(BaseModel):
     prefix: str = "/convert"
 
+
 class Redis(BaseModel):
     url: str = "redis://localhost:6379"
     decode_responses: bool = True
-    lifetime_seconds:int = 60 * 60
+    lifetime_seconds: int = 60 * 60
+
 
 class UserManager(BaseModel):
     reset_password_token_secret: str
     verification_token_secret: str
+
 
 class DatabaseConfig(BaseModel):
     url: PostgresDsn
@@ -47,7 +48,7 @@ class Settings(BaseSettings):
     )
     run: RunConfig = RunConfig()
     db: DatabaseConfig
-    redis: Redis()
+    redis: Redis = Redis()
     user_manager: UserManager
 
 

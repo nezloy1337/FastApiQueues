@@ -5,6 +5,7 @@ from typing import Optional, TYPE_CHECKING
 from fastapi import Depends
 from fastapi_users import BaseUserManager, UUIDIDMixin
 
+from api.dependencies.users import get_user_db
 from core.models.user import User
 from core.config import settings
 
@@ -56,6 +57,6 @@ class UserManager(
             token,
         )
 
-#TODO fix that shi
+
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
