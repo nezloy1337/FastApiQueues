@@ -1,31 +1,61 @@
+import logging
 import uuid
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
-from fastapi import Depends, Request
+from fastapi import Depends
 from fastapi_users import BaseUserManager, UUIDIDMixin
 
-from .db import User, get_user_db
+from core.models.user import User
+from core.config import settings
 
-SECRET = "SECRET"
+if TYPE_CHECKING:
+    from fastapi import Request
 
 
-class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
-    reset_password_token_secret = SECRET
-    verification_token_secret = SECRET
+log = logging.getLogger(__name__)
 
-    async def on_after_register(self, user: User, request: Optional[Request] = None):
-        print(f"User {user.id} has registered.")
+
+class UserManager(
+    UUIDIDMixin,
+    BaseUserManager[User, uuid.UUID],
+):
+    reset_password_token_secret = settings.user_manager.reset_password_token_secret
+    verification_token_secret = settings.user_manager.verification_token_secret
+
+    async def on_after_register(
+        self,
+        user: User,
+        request: "Request | None" = None,
+    ):
+        log.warning(
+            "User %r has registered.",
+            user.id,
+        )
 
     async def on_after_forgot_password(
-        self, user: User, token: str, request: Optional[Request] = None
+        self,
+        user: User,
+        token: str,
+        request: "Request | None" = None,
     ):
-        print(f"User {user.id} has forgot their password. Reset token: {token}")
+        log.warning(
+            "User %r has forgot their password. Reset token: %r",
+            user.id,
+            token,
+        )
 
     async def on_after_request_verify(
-        self, user: User, token: str, request: Optional[Request] = None
+        self,
+        user: User,
+        token: str,
+        request: "Request | None" = None,
     ):
-        print(f"Verification requested for user {user.id}. Verification token: {token}")
+        log.warning(
+            "Verification requested for user %r. Verification token: %r",
+            user.id,
+            token,
+        )
 
-
+#TODO fix that shi
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
