@@ -18,6 +18,10 @@ class Redis(BaseModel):
     decode_responses: bool = True
     lifetime_seconds:int = 60 * 60
 
+class UserManager(BaseModel):
+    reset_password_token_secret: str
+    verification_token_secret: str
+
 class DatabaseConfig(BaseModel):
     url: PostgresDsn
     echo: bool = False
@@ -44,6 +48,7 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     db: DatabaseConfig
     redis: Redis()
+    user_manager: UserManager
 
 
 settings = Settings()
