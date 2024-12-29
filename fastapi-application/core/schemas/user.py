@@ -1,15 +1,20 @@
 import uuid
-
+from pydantic import BaseModel
 from fastapi_users import schemas
 
 
-class UserRead(schemas.BaseUser[uuid.UUID]):
+class FirstAndLastNamesMixin(BaseModel):
+    first_name: str
+    last_name: str
+
+
+class UserRead(FirstAndLastNamesMixin, schemas.BaseUser[uuid.UUID]):
     pass
 
 
-class UserCreate(schemas.BaseUserCreate):
+class UserCreate(FirstAndLastNamesMixin, schemas.BaseUserCreate):
     pass
 
 
-class UserUpdate(schemas.BaseUserUpdate):
+class UserUpdate(FirstAndLastNamesMixin, schemas.BaseUserUpdate):
     pass
