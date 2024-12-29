@@ -1,5 +1,6 @@
 import uuid
 
+from alembic.command import current
 from fastapi_users import FastAPIUsers
 
 from core.models import User
@@ -11,3 +12,5 @@ fastapi_users = FastAPIUsers[User, uuid.UUID](
     [auth_backend],
 )
 
+current_user = fastapi_users.current_user(active=True)
+current_super_user = fastapi_users.current_user(active=True,superuser=True)
