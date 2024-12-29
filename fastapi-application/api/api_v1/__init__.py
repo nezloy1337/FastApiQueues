@@ -4,8 +4,8 @@ from .views import router as views_router
 
 router = APIRouter(
     prefix="/api_v1",
-    tags=["auth"],
 )
+
 router.include_router(auth_router)
 router.include_router(views_router)
 
