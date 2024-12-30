@@ -9,12 +9,21 @@ from core.models import User
 from core.schemas.user import UserRead
 
 router = APIRouter(
-    prefix="/api/test",
-    tags=["test"],
+    prefix="",
+    tags=["views"],
 )
 
 
 @router.get("/")
+def get_something(
+    user: Annotated[User,Depends(current_user)],
+    request: Request,
+):
+    print(request)
+    return {"message": "Hello World",
+            "user": UserRead.model_validate(user)}
+
+@router.get("/queues")
 def get_something(
     user: Annotated[User,Depends(current_user)],
     request: Request,
