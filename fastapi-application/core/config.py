@@ -37,6 +37,12 @@ class DatabaseConfig(BaseModel):
         "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
         "pk": "pk_%(table_name)s",
     }
+class CORSConfig(BaseModel):
+    origins: list[str] = [
+    "http://localhost:8080",
+    "http://localhost:3000",
+    "http://localhost:8080",
+]
 
 
 class Settings(BaseSettings):
@@ -50,6 +56,7 @@ class Settings(BaseSettings):
     db: DatabaseConfig
     redis: Redis = Redis()
     user_manager: UserManager
+    cors:CORSConfig = CORSConfig()
 
 
 settings = Settings()

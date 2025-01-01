@@ -7,6 +7,8 @@ from core.config import settings
 from fastapi.responses import ORJSONResponse
 from api.api_v1 import router as api_router
 
+from fastapi.middleware.cors import CORSMiddleware
+
 
 
 @asynccontextmanager
@@ -21,19 +23,16 @@ main_app = FastAPI(
     default_response_class=ORJSONResponse,
     lifespan=lifespan,
 )
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
 
-# Разрешить все запросы, установив allow_origins в "*"
 main_app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors.origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Остальная часть вашего кода
 
