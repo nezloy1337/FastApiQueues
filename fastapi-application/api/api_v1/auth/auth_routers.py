@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.api_v1.fastapi_users_routers import fastapi_users
+from api.api_v1.auth.fastapi_users_routers import fastapi_users
 from core.auth.backend import auth_backend
 from core.schemas.user import UserRead, UserCreate
 
