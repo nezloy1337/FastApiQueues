@@ -32,4 +32,4 @@ async def clear_queues_entry(
         await session.commit()
         return {"status": "ok"}
     except Exception as e:
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

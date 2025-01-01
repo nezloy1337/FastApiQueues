@@ -9,5 +9,5 @@ class QueueEntry(BaseModel):
 
 class CreateQueueEntry(QueueEntry):
     queue_id: int
-    user_id: UUID
+    user_uuid: UUID
     position: int

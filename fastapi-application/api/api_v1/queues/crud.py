@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.api_v1.queues.schemas import CreateQueue
 from core.models.queue import Queue
@@ -11,3 +12,8 @@ async def create_queue(
     session.add(queue)
     await session.commit()
     return queue
+
+async def get_queues(session: AsyncSession):
+    result = await session.execute(select(Queue))
+    queues = result.scalars().all()
+    return queues
