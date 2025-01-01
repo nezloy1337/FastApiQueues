@@ -1,8 +1,8 @@
-"""created table for queues
+""" created table for queues
 
-Revision ID: 6b632fab19e7
+Revision ID: 429bc6b5c8a1
 Revises: 7b8614aefb34
-Create Date: 2024-12-31 00:38:50.938232
+Create Date: 2025-01-01 19:12:17.927147
 
 """
 
@@ -14,7 +14,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "6b632fab19e7"
+revision: str = "429bc6b5c8a1"
 down_revision: Union[str, None] = "7b8614aefb34"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,7 +26,7 @@ def upgrade() -> None:
         "queues",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("name", sa.String(length=10), nullable=False),
-        sa.Column("start_time", sa.DateTime(), nullable=False),
+        sa.Column("start_time", sa.Date(), nullable=False),
         sa.Column("max_slots", sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_queues")),
     )
@@ -60,9 +60,7 @@ def upgrade() -> None:
     )
 
 
-
 def downgrade() -> None:
 
     op.drop_table("queue_entries")
     op.drop_table("queues")
-
