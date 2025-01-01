@@ -1,4 +1,8 @@
+from fastapi import HTTPException,status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+
 from api.api_v1.queues_entries.schemas import QueueEntry
 from core.models import QueueEntries
 
@@ -17,8 +21,15 @@ async def get_queues_entries():
     pass
 
 
-async def delete_queues_entry(
-    queue_entry_id: int,
+async def clear_queues_entry(
     session: AsyncSession,
 ):
-    pass
+    try:
+        result = await session.execute(select(QueueEntries))
+        to_delete = result.scalars().all()
+        for record in to_delete:
+            await session.delete(record)
+        await session.commit()
+        return {"status": "ok"}
+    except Exception as e:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
