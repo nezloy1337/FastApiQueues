@@ -19,10 +19,10 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_queue(
-    queue_in: CreateQueue,
+    queue_to_create: CreateQueue,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ):
-    return await crud.create_queue(session, queue_in)
+    return await crud.create_queue(session, queue_to_create)
 
 
 

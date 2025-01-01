@@ -1,5 +1,4 @@
-from datetime import datetime, date
-
+from datetime import date
 from pydantic import BaseModel
 
 
