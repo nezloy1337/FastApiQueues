@@ -19,5 +19,6 @@ class UserCreate(FirstAndLastNamesMixin, schemas.BaseUserCreate):
 class UserUpdate(FirstAndLastNamesMixin, schemas.BaseUserUpdate):
     pass
 
+
 class UserForEntry(FirstAndLastNamesMixin, BaseModel):
     pass

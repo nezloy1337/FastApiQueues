@@ -5,9 +5,8 @@ from core.schemas.user import UserForEntry
 
 
 class QueueEntry(BaseModel):
-    user_id: UUID
+    user_uuid: UUID
     position: int
-
 
 class CreateQueueEntry(QueueEntry):
     queue_id: int
