@@ -1,7 +1,10 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
 from api.api_v1.queues.schemas import CreateQueue
-from core.models.queue import Queue
+from api.api_v1.queues_entries.schemas import QueueEntry
+from core.models.queue import Queue,QueueEntries
 
 
 async def create_queue(
@@ -17,3 +20,9 @@ async def get_queues(session: AsyncSession):
     result = await session.execute(select(Queue))
     queues = result.scalars().all()
     return queues
+
+async  def get_queue_with_entries(session: AsyncSession, queue_id: int):
+    query = select(Queue).where(Queue.id == queue_id).options(selectinload(Queue.entries))
+    result = await session.execute(query)
+    queue_with_entries = result.scalars().first()
+    return queue_with_entries
