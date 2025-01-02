@@ -37,7 +37,7 @@ async def get_queues(
 
 
 @router.get(
-    "/queues{queue_id}",
+    "/queues/{queue_id}",
     response_model=GetQueueWithEntries,
     status_code=status.HTTP_200_OK,
 )
