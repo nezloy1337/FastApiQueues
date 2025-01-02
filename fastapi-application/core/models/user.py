@@ -1,19 +1,21 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
-from sqlalchemy.orm import Mapped, mapped_column
-
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String
 
-from .base import Base
 
-if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
+
+
+from core.models.base import Base
+
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
 
     first_name: Mapped[str] = mapped_column(String,nullable=False)
     last_name: Mapped[str] = mapped_column(String,nullable=False)
+
+    queue_entries:Mapped[List["QueueEntries"]] = relationship("QueueEntries", back_populates="user")
 
     @classmethod
     def get_db(cls,session:"AsyncSession"):

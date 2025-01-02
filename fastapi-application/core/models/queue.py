@@ -11,9 +11,10 @@ from sqlalchemy import (
     Date,
 )
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from core.models import Base
 from core.models.mixins import IntIdPkMixin
 
+from core.models.user import User
+from core.models.base import Base
 
 class Queue(IntIdPkMixin, Base):
     __tablename__ = "queues"
@@ -34,6 +35,7 @@ class QueueEntries(IntIdPkMixin, Base):
     position: Mapped[int] = mapped_column(Integer, nullable=False)
 
     queue: Mapped[Queue] = relationship("Queue", back_populates="entries")
+    user:Mapped["User"] = relationship("User", back_populates="queue_entries")
 
     __table_args__ = (
         UniqueConstraint("queue_id", "position", name="uq_queue_position"),

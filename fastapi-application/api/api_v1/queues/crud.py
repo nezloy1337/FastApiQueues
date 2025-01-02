@@ -21,8 +21,13 @@ async def get_queues(session: AsyncSession):
     queues = result.scalars().all()
     return queues
 
-async  def get_queue_with_entries(session: AsyncSession, queue_id: int):
-    query = select(Queue).where(Queue.id == queue_id).options(selectinload(Queue.entries))
+async def get_queue_with_entries(session: AsyncSession, queue_id: int):
+    query = (select(Queue)
+            .join(Queue.entries)
+            .join(QueueEntries.user)
+            .where(Queue.id == queue_id)
+            .options(selectinload(Queue.entries)
+            .selectinload(QueueEntries.user)))
     result = await session.execute(query)
     queue_with_entries = result.scalars().first()
     return queue_with_entries
