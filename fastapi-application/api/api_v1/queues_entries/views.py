@@ -5,9 +5,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import status
 
+from api.api_v1.auth.fastapi_users_routers import current_user
 from api.api_v1.queues_entries.crud import create_queues_entry, clear_queues_entry
-from api.api_v1.queues_entries.schemas import CreateQueueEntry, QueueEntry
-from core.models import db_helper
+from api.api_v1.queues_entries.schemas import CreateQueueEntry, QueueEntry, CreateQueueEntryWithAuth
+from core.models import db_helper, User
 
 from core.models import QueueEntries
 
@@ -19,15 +20,17 @@ router = APIRouter(
 
 
 @router.post(
-    "/queue/{queue_id}",
-    response_model=CreateQueueEntry,
+    "/queue/{queue_id}/take",
+    response_model=CreateQueueEntryWithAuth,
     status_code=status.HTTP_200_OK,
 )
 async def create_queue_entry(
-    queue_entry_to_create: CreateQueueEntry,
+    queue_entry_to_create: CreateQueueEntryWithAuth,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[User, Depends(current_user)],
+
 ):
-    return await create_queues_entry(session, queue_entry_to_create)
+    return await create_queues_entry(session, queue_entry_to_create, user)
 
 
 @router.get(
