@@ -4,8 +4,9 @@ from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import status
 from api.api_v1.queues.schemas import CreateQueue, Queue, GetQueue, GetQueueWithEntries
-from core.models import db_helper
+from core.models import db_helper, User
 from . import crud
+from ..auth.fastapi_users_routers import current_user
 
 router = APIRouter(
     prefix="",
@@ -32,7 +33,10 @@ async def create_queue(
 )
 async def get_queues(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    #user:Annotated[User,Depends(current_user)],
+    request: Request,
 ):
+    user = current_user()
     return await crud.get_queues(session)
 
 
