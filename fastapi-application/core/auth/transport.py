@@ -1,8 +1,3 @@
-from fastapi_users.authentication import CookieTransport
+from fastapi_users.authentication import BearerTransport
 
-cookie_transport = CookieTransport(
-
-    cookie_secure=False,  # Отключение Secure
-    cookie_samesite='none',  # Настройка SameSite ("lax", "strict", "none")
-    cookie_max_age=3600,
-)
+bearer_transport = BearerTransport(tokenUrl="/api_v1/auth/login")
