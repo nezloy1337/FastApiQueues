@@ -58,5 +58,7 @@ class Settings(BaseSettings):
     user_manager: UserManager
     cors:CORSConfig = CORSConfig()
 
+    USE_HTTPS: bool = False
+
 
 settings = Settings()

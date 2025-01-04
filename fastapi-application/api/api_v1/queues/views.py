@@ -33,10 +33,10 @@ async def create_queue(
 )
 async def get_queues(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    #user:Annotated[User,Depends(current_user)],
+    user:Annotated[User,Depends(current_user)],
     request: Request,
 ):
-    user = current_user()
+
     return await crud.get_queues(session)
 
 
@@ -50,6 +50,12 @@ async def get_queue_with_entries(
     queue_id: int,
 ):
     return await crud.get_queue_with_entries(session, queue_id)
+
+# @router.delete(
+# "/queues/{queue_id}",
+#     status_code=status.HTTP_200_OK,
+# ):
+# async def delete_queue()
 
 
 
