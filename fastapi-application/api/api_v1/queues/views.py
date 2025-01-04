@@ -34,7 +34,6 @@ async def create_queue(
 async def get_queues(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     user:Annotated[User,Depends(current_user)],
-    request: Request,
 ):
 
     return await crud.get_queues(session)
@@ -48,6 +47,7 @@ async def get_queues(
 async def get_queue_with_entries(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     queue_id: int,
+    user: Annotated[User, Depends(current_user)],
 ):
     return await crud.get_queue_with_entries(session, queue_id)
 
