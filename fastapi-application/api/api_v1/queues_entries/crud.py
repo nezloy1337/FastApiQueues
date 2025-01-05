@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Response
 from sqlalchemy import select, and_, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
@@ -64,7 +64,7 @@ async def delete_queues_entry(session: AsyncSession, user: User, queue_id):
         if queue_to_delete := query.scalars().first():
             await session.delete(queue_to_delete)
             await session.commit()
-            return {"status": "entry deleted"}
+            return Response(status_code=status.HTTP_204_NO_CONTENT)
 
         # ошибка если нет такого объекта
         delete_queue_entry_handle_exception(
