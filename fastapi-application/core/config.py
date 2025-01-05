@@ -7,6 +7,10 @@ class RunConfig(BaseModel):
     host: str = "localhost"
     port: int = 50000
 
+class ErrorDescription(BaseModel):
+    conflict_description: str
+
+
 
 class ApiV1Prefix(BaseModel):
     prefix: str = "/convert"
@@ -57,6 +61,7 @@ class Settings(BaseSettings):
     redis: Redis = Redis()
     user_manager: UserManager
     cors:CORSConfig = CORSConfig()
+    errors_description: ErrorDescription
 
     USE_HTTPS: bool = False
 
