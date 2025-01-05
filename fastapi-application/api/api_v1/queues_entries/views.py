@@ -57,9 +57,14 @@ async def delete_queue_entry(
 
 
 @router.delete(
-    "/queue/clear",
+    "/queue/clear/{secret_code}",
 )
 async def clear_queue_entry(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    secret_code: str
 ):
-    return await clear_queues_entry(session)
+    #заглушка чтобы любой абобус не мог удалить
+    if secret_code == "admin132":
+        return await clear_queues_entry(session)
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="обойдешься")
