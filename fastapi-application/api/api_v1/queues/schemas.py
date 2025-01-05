@@ -1,7 +1,7 @@
 from datetime import date
 from pydantic import BaseModel
 
-from api.api_v1.queues_entries.schemas import QueueEntry, GetQueueEntryAndUser
+from api.api_v1.queues_entries.schemas import GetQueueEntryAndUser
 
 
 class Queue(BaseModel):
