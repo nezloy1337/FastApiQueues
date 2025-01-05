@@ -1,9 +1,9 @@
 from typing import Annotated, List
-from fastapi import APIRouter
-from fastapi import Depends, Request
+
+from fastapi import APIRouter,Depends,status
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import status
-from api.api_v1.queues.schemas import CreateQueue, Queue, GetQueue, GetQueueWithEntries
+
+from api.api_v1.queues.schemas import CreateQueue, GetQueue, GetQueueWithEntries
 from core.models import db_helper, User
 from . import crud
 from ..auth.fastapi_users_routers import current_user
@@ -33,7 +33,7 @@ async def create_queue(
 )
 async def get_queues(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    user:Annotated[User,Depends(current_user)],
+    user: Annotated[User, Depends(current_user)],
 ):
 
     return await crud.get_queues(session)
@@ -50,8 +50,3 @@ async def get_queue_with_entries(
     user: Annotated[User, Depends(current_user)],
 ):
     return await crud.get_queue_with_entries(session, queue_id)
-
-
-
-
-

@@ -1,9 +1,10 @@
-from fastapi import HTTPException, status, Response
-from sqlalchemy import select, and_, delete
-from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 
-from api.api_v1.queues_entries.schemas import CreateQueueEntryWithAuth
+from fastapi import HTTPException, status, Response
+from sqlalchemy import select, and_
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from api.api_v1.queues_entries.schemas import CreateQueueEntry
 from core.config import settings
 from core.models import QueueEntries, User
 from utils.exception_handlers import create_queue_entry_handle_exception, delete_queue_entry_handle_exception
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 async def create_queues_entry(
     session: AsyncSession,
-    queue_entry_to_create: CreateQueueEntryWithAuth,
+    queue_entry_to_create: CreateQueueEntry,
     user: User,
 ) -> QueueEntries:
     try:

@@ -7,11 +7,11 @@ class RunConfig(BaseModel):
     host: str = "localhost"
     port: int = 50000
 
+
 class ErrorDescription(BaseModel):
     conflict_description: str
     no_entry_description: str
     unknown_error_description: str
-
 
 
 class ApiV1Prefix(BaseModel):
@@ -21,7 +21,7 @@ class ApiV1Prefix(BaseModel):
 class Redis(BaseModel):
     url: str = "redis://localhost:6379"
     decode_responses: bool = True
-    lifetime_seconds: int = 60 * 60 * 24 #сутки
+    lifetime_seconds: int = 60 * 60 * 24  # сутки
 
 
 class UserManager(BaseModel):
@@ -43,12 +43,14 @@ class DatabaseConfig(BaseModel):
         "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
         "pk": "pk_%(table_name)s",
     }
+
+
 class CORSConfig(BaseModel):
     origins: list[str] = [
-    "http://localhost:8080",
-    "http://localhost:3000",
-    "http://localhost:8080",
-]
+        "http://localhost:8080",
+        "http://localhost:3000",
+        "http://localhost:8080",
+    ]
 
 
 class Settings(BaseSettings):
@@ -62,9 +64,8 @@ class Settings(BaseSettings):
     db: DatabaseConfig
     redis: Redis = Redis()
     user_manager: UserManager
-    cors:CORSConfig = CORSConfig()
+    cors: CORSConfig = CORSConfig()
     errors_description: ErrorDescription
-
 
 
 settings = Settings()

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from api.api_v1.queues.schemas import CreateQueue
-from core.models.queue import Queue,QueueEntries
+from core.models.queue import Queue, QueueEntries
 from utils.exception_handlers import average_handle_exception
 
 
@@ -12,15 +12,16 @@ async def create_queue(
     queue_to_create: CreateQueue,
 ) -> Queue:
     try:
-        #создаем модель и делаем запрос в базу данных
+        # создаем модель и делаем запрос в базу данных
         queue = Queue(**queue_to_create.model_dump())
         session.add(queue)
         await session.commit()
         return queue
 
-    #обработка ошибки
+    # обработка ошибки
     except Exception as e:
         average_handle_exception(e)
+
 
 async def get_queues(session: AsyncSession):
     try:
@@ -34,24 +35,23 @@ async def get_queues(session: AsyncSession):
     except Exception as e:
         average_handle_exception(e)
 
+
 async def get_queue_with_entries(session: AsyncSession, queue_id: int):
     try:
-        #создание запроса
+        # создание запроса
         query = (
             select(Queue)
             .outerjoin(Queue.entries)  # Используем outerjoin для левого соединения
-            .outerjoin(QueueEntries.user)  # Используем outerjoin для левого соединения
+            .outerjoin(QueueEntries.user)
             .where(Queue.id == queue_id)
-            .options(
-                selectinload(Queue.entries).selectinload(QueueEntries.user)
-            )
+            .options(selectinload(Queue.entries).selectinload(QueueEntries.user))
         )
 
-        #выполнения запроса
+        # выполнения запроса
         result = await session.execute(query)
         queue_with_entries = result.scalars().first()
         return queue_with_entries
 
-    #обработка ошибок
+    # обработка ошибок
     except Exception as e:
         average_handle_exception(e)

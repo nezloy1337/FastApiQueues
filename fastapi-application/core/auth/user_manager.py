@@ -9,8 +9,6 @@ from core.models.user import User
 from core.config import settings
 
 
-
-
 log = logging.getLogger(__name__)
 
 

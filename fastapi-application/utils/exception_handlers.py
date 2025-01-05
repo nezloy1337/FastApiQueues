@@ -1,6 +1,7 @@
+import logging
+
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
-import logging
 
 from core.config import settings
 

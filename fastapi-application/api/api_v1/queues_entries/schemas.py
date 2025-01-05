@@ -1,5 +1,5 @@
-from pydantic import BaseModel
 from uuid import UUID
+from pydantic import BaseModel
 
 from core.schemas.user import UserForEntry
 
@@ -9,16 +9,11 @@ class QueueEntry(BaseModel):
     position: int
 
 
-class CreateQueueEntry(QueueEntry):
-    queue_id: int
-
-
 class GetQueueEntryAndUser(BaseModel):
     position: int
     user: UserForEntry
 
 
-
-class CreateQueueEntryWithAuth(BaseModel):
+class CreateQueueEntry(BaseModel):
     position: int
     queue_id: int

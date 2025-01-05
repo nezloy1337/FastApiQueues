@@ -1,13 +1,13 @@
 from contextlib import asynccontextmanager
-from core.models import db_helper
+
 import uvicorn
 from fastapi import FastAPI
-
-from core.config import settings
 from fastapi.responses import ORJSONResponse
-from api.api_v1 import router as api_router
-
 from fastapi.middleware.cors import CORSMiddleware
+
+from api.api_v1 import router as api_router
+from core.config import settings
+from core.models import db_helper
 
 
 @asynccontextmanager
@@ -22,7 +22,6 @@ main_app = FastAPI(
     default_response_class=ORJSONResponse,
     lifespan=lifespan,
 )
-
 
 main_app.add_middleware(
     CORSMiddleware,

@@ -1,9 +1,8 @@
-from datetime import datetime, date
+from datetime import date
 from typing import List
 
 from sqlalchemy import (
     String,
-    DateTime,
     Integer,
     ForeignKey,
     UniqueConstraint,
@@ -11,10 +10,11 @@ from sqlalchemy import (
     Date,
 )
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from core.models.mixins import IntIdPkMixin
 
+from core.models.mixins import IntIdPkMixin
 from core.models.user import User
 from core.models.base import Base
+
 
 class Queue(IntIdPkMixin, Base):
     __tablename__ = "queues"

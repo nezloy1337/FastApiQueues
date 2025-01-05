@@ -61,6 +61,5 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-
     op.drop_table("queue_entries")
     op.drop_table("queues")

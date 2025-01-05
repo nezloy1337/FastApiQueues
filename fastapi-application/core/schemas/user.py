@@ -1,4 +1,5 @@
 import uuid
+
 from pydantic import BaseModel
 from fastapi_users import schemas
 

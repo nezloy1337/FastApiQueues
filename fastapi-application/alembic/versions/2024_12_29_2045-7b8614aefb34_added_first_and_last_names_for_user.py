@@ -25,7 +25,6 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-
     op.drop_column("user", "last_name")
     op.drop_column("user", "first_name")
 

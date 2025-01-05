@@ -1,4 +1,5 @@
 from datetime import date
+
 from pydantic import BaseModel
 
 from api.api_v1.queues_entries.schemas import GetQueueEntryAndUser
@@ -14,8 +15,6 @@ class GetQueue(Queue):
 
 class GetQueueWithEntries(Queue):
     entries: list[GetQueueEntryAndUser] = []
-
-
 
 class CreateQueue(Queue):
     pass
