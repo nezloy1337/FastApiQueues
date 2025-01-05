@@ -20,7 +20,7 @@ router = APIRouter(
 
 
 @router.post(
-    "/queue/{queue_id}/take",
+    "/queues/{queue_id}/take",
     response_model=CreateQueueEntryWithAuth,
     status_code=status.HTTP_200_OK,
 )
@@ -28,6 +28,7 @@ async def create_queue_entry(
     queue_entry_to_create: CreateQueueEntryWithAuth,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     user: Annotated[User, Depends(current_user)],
+
 
 ):
     return await create_queues_entry(session, queue_entry_to_create, user)
