@@ -22,12 +22,18 @@ async def get_queues(session: AsyncSession):
     return queues
 
 async def get_queue_with_entries(session: AsyncSession, queue_id: int):
-    query = (select(Queue)
-            .join(Queue.entries)
-            .join(QueueEntries.user)
-            .where(Queue.id == queue_id)
-            .options(selectinload(Queue.entries)
-            .selectinload(QueueEntries.user)))
+
+
+    query = (
+        select(Queue)
+        .outerjoin(Queue.entries)  # Используем outerjoin для левого соединения
+        .outerjoin(QueueEntries.user)  # Используем outerjoin для левого соединения
+        .where(Queue.id == queue_id)
+        .options(
+            selectinload(Queue.entries).selectinload(QueueEntries.user)
+        )
+    )
+
     result = await session.execute(query)
     queue_with_entries = result.scalars().first()
     return queue_with_entries

@@ -41,7 +41,7 @@ async def get_queues(
 
 @router.get(
     "/queues/{queue_id}",
-    response_model=GetQueueWithEntries,
+    response_model=GetQueueWithEntries | None,
     status_code=status.HTTP_200_OK,
 )
 async def get_queue_with_entries(
@@ -51,11 +51,7 @@ async def get_queue_with_entries(
 ):
     return await crud.get_queue_with_entries(session, queue_id)
 
-# @router.delete(
-# "/queues/{queue_id}",
-#     status_code=status.HTTP_200_OK,
-# ):
-# async def delete_queue()
+
 
 
 
