@@ -21,7 +21,7 @@ class ApiV1Prefix(BaseModel):
 class Redis(BaseModel):
     url: str = "redis://localhost:6379"
     decode_responses: bool = True
-    lifetime_seconds: int = 60 * 60
+    lifetime_seconds: int = 60 * 60 * 24 #сутки
 
 
 class UserManager(BaseModel):
@@ -65,7 +65,6 @@ class Settings(BaseSettings):
     cors:CORSConfig = CORSConfig()
     errors_description: ErrorDescription
 
-    USE_HTTPS: bool = False
 
 
 settings = Settings()
