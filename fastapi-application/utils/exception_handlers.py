@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.exc import IntegrityError
 import logging
 
 from core.config import settings
@@ -47,4 +47,7 @@ def delete_queue_entry_handle_exception(e: Exception):
     if isinstance(e, HTTPException):
         if e.status_code == status.HTTP_404_NOT_FOUND:
             handle_record_not_found(e)
+    handle_unknown_error(e)
+
+def average_handle_exception(e: Exception):
     handle_unknown_error(e)

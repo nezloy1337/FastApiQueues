@@ -10,7 +10,6 @@ from api.api_v1 import router as api_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startapp
@@ -34,15 +33,7 @@ main_app.add_middleware(
 )
 
 
-# Остальная часть вашего кода
-
 main_app.include_router(api_router)
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
