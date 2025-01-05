@@ -1,15 +1,12 @@
 from fastapi import HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, and_, delete
 from sqlalchemy.ext.asyncio import AsyncSession
-
+import logging
 
 from api.api_v1.queues_entries.schemas import CreateQueueEntryWithAuth
 from core.config import settings
 from core.models import QueueEntries, User
-
-
-import logging
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from utils.exception_handlers import create_queue_entry_handle_exception, delete_queue_entry_handle_exception
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
@@ -21,28 +18,22 @@ async def create_queues_entry(
     user: User,
 ) -> QueueEntries:
     try:
-        # создание записи в бд
+        # создание запроса
         queue_entry = QueueEntries(
-            **queue_entry_to_create.model_dump(), user_id=str(user.id)
+            **queue_entry_to_create.model_dump(),
+            user_id=str(user.id),
         )
+
+        # выполнение запроса
         session.add(queue_entry)
         await session.commit()
         return queue_entry
 
-    except IntegrityError as e:
-        # Логирование ошибки
-        logger.error(f"Ошибка при добавлении записи в очередь: {e.args}")
+    # разбираемся с ошибкой
+    except Exception as e:
+        create_queue_entry_handle_exception(e)
 
-        # Откат транзакции
-        await session.rollback()
-
-        # Возврат HTTPException
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Пользователь уже зарегистрирован в данной очереди.",
-        )
-
-
+#TODO правильный обработчик ошибок
 async def clear_queues_entry(
     session: AsyncSession,
 ):
@@ -55,3 +46,33 @@ async def clear_queues_entry(
         return {"status": "ok"}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+async def delete_queues_entry(session: AsyncSession, user: User, queue_id):
+    try:
+        # запрашиваем запись с занятой очередью
+        query = await session.execute(
+            select(QueueEntries).where(
+                and_(
+                    QueueEntries.user_id == str(user.id),
+                    QueueEntries.queue_id == queue_id,
+                )
+            )
+        )
+
+        # получаем объект занятой очереди
+        if queue_to_delete := query.scalars().first():
+            await session.delete(queue_to_delete)
+            await session.commit()
+            return {"status": "entry deleted"}
+
+        # ошибка если нет такого объекта
+        delete_queue_entry_handle_exception(
+            HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=settings.errors_description.no_entry_description,
+        ))
+
+    # любые другие ошибки
+    except Exception as e:
+        delete_queue_entry_handle_exception(e)
