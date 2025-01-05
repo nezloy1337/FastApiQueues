@@ -9,6 +9,8 @@ class RunConfig(BaseModel):
 
 class ErrorDescription(BaseModel):
     conflict_description: str
+    no_entry_description: str
+    unknown_error_description: str
 
 
 
