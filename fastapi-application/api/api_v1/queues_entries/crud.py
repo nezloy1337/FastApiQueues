@@ -1,5 +1,6 @@
 import logging
 
+from black import datetime
 from fastapi import HTTPException, status, Response
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,6 +9,7 @@ from api.api_v1.queues_entries.schemas import CreateQueueEntry
 from core.config import settings
 from core.models import QueueEntries, User
 from utils.exception_handlers import create_queue_entry_handle_exception, delete_queue_entry_handle_exception
+from utils.logger import log_queue_entry
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
@@ -65,6 +67,15 @@ async def delete_queues_entry(session: AsyncSession, user: User, queue_id):
         if queue_to_delete := query.scalars().first():
             await session.delete(queue_to_delete)
             await session.commit()
+
+            await log_queue_entry(
+                queue_id=queue_id,
+                position=queue_to_delete.position,
+                user_uuid=str(user.id),
+                action="delete",
+                time=datetime.now(),
+            )
+
             return Response(status_code=status.HTTP_204_NO_CONTENT)
 
         # ошибка если нет такого объекта
