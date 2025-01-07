@@ -30,6 +30,16 @@ async def create_queues_entry(
         # выполнение запроса
         session.add(queue_entry)
         await session.commit()
+
+        # создаем лог в mongodb
+        await log_queue_entry(
+            queue_id=queue_entry.queue_id,
+            position=queue_entry.position,
+            user_uuid=str(user.id),
+            action="take",
+            time=datetime.now(),
+        )
+
         return queue_entry
 
     # разбираемся с ошибкой
@@ -68,6 +78,7 @@ async def delete_queues_entry(session: AsyncSession, user: User, queue_id):
             await session.delete(queue_to_delete)
             await session.commit()
 
+            #создаем лог в mongodb
             await log_queue_entry(
                 queue_id=queue_id,
                 position=queue_to_delete.position,
