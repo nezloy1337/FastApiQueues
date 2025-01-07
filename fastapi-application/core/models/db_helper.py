@@ -1,3 +1,4 @@
+from motor.motor_asyncio import AsyncIOMotorClient
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     AsyncEngine,
@@ -46,3 +47,6 @@ db_helper = DatabaseHelper(
     pool_size=settings.db.pool_size,
     max_overflow=settings.db.max_overflow,
 )
+
+client = AsyncIOMotorClient(settings.mongo.url)
+mongodb = client[settings.mongo.db_name]
