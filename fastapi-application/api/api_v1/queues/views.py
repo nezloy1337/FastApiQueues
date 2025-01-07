@@ -1,6 +1,6 @@
 from typing import Annotated, List
 
-from fastapi import APIRouter,Depends,status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.queues.schemas import CreateQueue, GetQueue, GetQueueWithEntries
@@ -23,7 +23,10 @@ async def create_queue(
     queue_to_create: CreateQueue,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ):
-    return await crud.create_queue(session, queue_to_create)
+    return await crud.create_queue(
+        session,
+        queue_to_create,
+    )
 
 
 @router.get(
@@ -35,7 +38,6 @@ async def get_queues(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     user: Annotated[User, Depends(current_user)],
 ):
-
     return await crud.get_queues(session)
 
 
@@ -49,4 +51,7 @@ async def get_queue_with_entries(
     queue_id: int,
     user: Annotated[User, Depends(current_user)],
 ):
-    return await crud.get_queue_with_entries(session, queue_id)
+    return await crud.get_queue_with_entries(
+        session,
+        queue_id,
+    )

@@ -28,8 +28,7 @@ async def get_queues(session: AsyncSession):
         # создаем запрос и делаем запрос в базу данных
         query = select(Queue)
         result = await session.execute(query)
-        queues = result.scalars().all()
-        return queues
+        return result.scalars().all()
 
     # обработка ошибки
     except Exception as e:
@@ -49,8 +48,7 @@ async def get_queue_with_entries(session: AsyncSession, queue_id: int):
 
         # выполнения запроса
         result = await session.execute(query)
-        queue_with_entries = result.scalars().first()
-        return queue_with_entries
+        return result.scalars().first()
 
     # обработка ошибок
     except Exception as e:

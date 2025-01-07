@@ -1,4 +1,5 @@
 from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,7 +25,11 @@ async def create_queue_entry(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     user: Annotated[User, Depends(current_user)],
 ):
-    return await crud.create_queues_entry(session, queue_entry_to_create, user)
+    return await crud.create_queues_entry(
+        session,
+        queue_entry_to_create,
+        user,
+    )
 
 
 @router.delete(
@@ -35,7 +40,11 @@ async def delete_queue_entry(
     user: Annotated[User, Depends(current_user)],
     queue_id: int,
 ):
-    return await crud.delete_queues_entry(session, user, queue_id)
+    return await crud.delete_queues_entry(
+        session,
+        user,
+        queue_id,
+    )
 
 
 @router.delete(
