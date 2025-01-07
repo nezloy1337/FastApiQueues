@@ -14,10 +14,11 @@ class ErrorDescription(BaseModel):
     conflict_description: str
     no_entry_description: str
     unknown_error_description: str
+    validation_error_description: str
 
 
 class ApiV1Prefix(BaseModel):
-    prefi: str = "/convert"
+    prefix: str = "/convert"
 
 
 class Redis(BaseModel):
