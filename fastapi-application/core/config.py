@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, AnyUrl
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -15,7 +17,7 @@ class ErrorDescription(BaseModel):
 
 
 class ApiV1Prefix(BaseModel):
-    prefix: str = "/convert"
+    prefi: str = "/convert"
 
 
 class Redis(BaseModel):
@@ -53,6 +55,11 @@ class CORSConfig(BaseModel):
     ]
 
 
+class MongoConfig(BaseModel):
+    url: str
+    db_name: str
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=(".env.templates", ".env"),  # следующий переопределяет предыдущий
@@ -60,12 +67,15 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         env_prefix="APP_CONFIG__",
     )
-    run: RunConfig = RunConfig()
+
+#в env должны быть эти названия
     db: DatabaseConfig
-    redis: Redis = Redis()
     user_manager: UserManager
-    cors: CORSConfig = CORSConfig()
     errors_description: ErrorDescription
+    mongo: MongoConfig
+    redis: Redis = Redis()
+    cors: CORSConfig = CORSConfig()
+    run: RunConfig = RunConfig()
 
 
 settings = Settings()
