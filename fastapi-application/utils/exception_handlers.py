@@ -4,8 +4,8 @@ from datetime import datetime
 from fastapi import HTTPException, status
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
-from core.models.mongodb import error_collection
 
+from core.models.mongodb import error_collection
 from core.config import settings
 
 # Настройка логирования
@@ -18,6 +18,7 @@ array_to_str = lambda args: ', '.join(map(str, args))
 # обработчики частных ошибок
 def handle_integrity_error(e: IntegrityError | HTTPException):
     logger.info(f"Ошибка целостности данных: { e.args }")
+
     raise HTTPException(
         status_code=status.HTTP_409_CONFLICT,
         detail=settings.errors_description.conflict_description,
@@ -34,6 +35,7 @@ def handle_unknown_error(e: Exception):
             "time":datetime.now(),
         }
     )
+
     raise HTTPException(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail=settings.errors_description.unknown_error_description,
@@ -60,7 +62,8 @@ def handle_validation_error(e: ValidationError):
 # для каждой очереди отдельно для более тонкой настройки
 def create_queue_entry_handle_exception(e: Exception):
     if isinstance(e, IntegrityError):
-        handle_integrity_error(e)
+        #return чтобы не выполнялся дальше код если находится ошибка
+        return handle_integrity_error(e)
     if isinstance(e, Exception):
         handle_unknown_error(e)
 
@@ -68,11 +71,11 @@ def create_queue_entry_handle_exception(e: Exception):
 def delete_queue_entry_handle_exception(e: Exception):
     if isinstance(e, HTTPException):
         if e.status_code == status.HTTP_404_NOT_FOUND:
-            handle_record_not_found(e)
-            return
+            return handle_record_not_found(e)
+
     if isinstance(e, ValidationError):
-        handle_validation_error(e)
-        return
+        return handle_validation_error(e)
+
     handle_unknown_error(e)
 
 
