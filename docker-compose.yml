@@ -1,23 +1,71 @@
 services:
 
   pg:
-    image: postgres
+    image: postgres:latest # Рекомендуется использовать конкретный или последний стабильный тег
+    container_name: postgres_db_queue_api
     environment:
-      POSTGRES_DB: Queue_api
+      POSTGRES_DB: queue_api
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data # Для сохранения данных после перезапуска
+    restart: always # Для автоматического перезапуска в случае сбоев
+    networks:
+      - backend
 
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.org
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
       - "5050:80"
+    depends_on:
+      - pg # Убедиться, что PostgreSQL запускается раньше
+    restart: unless-stopped
+    networks:
+      - backend
+
   redis:
-    image: redis
+    image: redis:latest
+    container_name: redis_queue_api
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data # Для сохранения данных Redis
+    restart: always
+    networks:
+      - backend
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongodb_queue_api
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - mongo-config:/data/configdb
+    restart: always
+    networks:
+      - backend
+
+volumes:
+  pg_data:
+    driver: local
+  redis_data:
+    driver: local
+  mongo-data:
+    driver: local
+  mongo-config:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge
