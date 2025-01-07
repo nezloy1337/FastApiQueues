@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from fastapi import HTTPException, status
 from pydantic import ValidationError
@@ -11,6 +12,7 @@ from core.config import settings
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+#преобразование массива в строку
 array_to_str = lambda args: ', '.join(map(str, args))
 
 # обработчики частных ошибок
@@ -29,6 +31,7 @@ def handle_unknown_error(e: Exception):
         {
             "type": "unknown_error",
             "description": f"{e.args}",
+            "time":datetime.now(),
         }
     )
     raise HTTPException(
