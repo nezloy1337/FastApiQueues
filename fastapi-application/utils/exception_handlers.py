@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from core.models.mongodb import error_collection
 from core.config import settings
+from core.schemas.logging import ExceptionLogTemplate
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
@@ -25,16 +26,11 @@ def handle_integrity_error(e: IntegrityError | HTTPException):
     )
 
 #todo validation for error types
-def handle_unknown_error(e: Exception):
-    error_args = array_to_str(e.args)
-    logger.info(f"неизвестная ошибка: { str(e) }")
-    error_collection.insert_one(
-        {
-            "description":str(e),
-            "args": error_args,
-            "time":datetime.now(),
-        }
-    )
+def handle_unexpected_error(e: Exception):
+    error_info = str(e)
+    logger.info(f"неизвестная ошибка: { error_info }")
+    error_log = ExceptionLogTemplate(description=error_info,timestamp=datetime.now())
+    error_collection.insert_one(error_log.model_dump(exclude_none=True))
 
     raise HTTPException(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -65,7 +61,7 @@ def create_queue_entry_handle_exception(e: Exception):
         #return чтобы не выполнялся дальше код если находится ошибка
         return handle_integrity_error(e)
 
-    handle_unknown_error(e)
+    handle_unexpected_error(e)
 
 
 def delete_queue_entry_handle_exception(e: Exception):
@@ -76,7 +72,7 @@ def delete_queue_entry_handle_exception(e: Exception):
     if isinstance(e, ValidationError):
         return handle_validation_error(e)
 
-    handle_unknown_error(e)
+    handle_unexpected_error(e)
 
 
 def average_handle_exception(e: Exception):
@@ -84,4 +80,4 @@ def average_handle_exception(e: Exception):
         return handle_validation_error(e)
     if isinstance(e, IntegrityError):
         return handle_integrity_error(e)
-    handle_unknown_error(e)
+    handle_unexpected_error(e)

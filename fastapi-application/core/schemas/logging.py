@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 class ObjectIdTimeActionMixin(BaseModel):
     id: Optional[str] = Field(default=None, alias="_id")
     action: str
-    time_of_recording: datetime
+    timestamp: datetime
 
     class Config:
         arbitrary_types_allowed = True
@@ -26,4 +26,9 @@ class QueueEntryLog(ObjectIdTimeActionMixin,BaseModel):
     queue_id: int
     position: int
     details: Optional[Dict] = None
+
+
+class ExceptionLogTemplate(BaseModel):
+    description: Optional[str] = None
+    timestamp: Optional[datetime] = None
 
