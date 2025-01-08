@@ -24,14 +24,14 @@ def handle_integrity_error(e: IntegrityError | HTTPException):
         detail=settings.errors_description.conflict_description,
     )
 
-
+#todo validation for error types
 def handle_unknown_error(e: Exception):
-    error_description = array_to_str(e.args)
-    logger.info(f"неизвестная ошибка: { error_description }")
+    error_args = array_to_str(e.args)
+    logger.info(f"неизвестная ошибка: { str(e) }")
     error_collection.insert_one(
         {
-            "type": "unknown_error",
-            "description": f"{e.args}",
+            "description":str(e),
+            "args": error_args,
             "time":datetime.now(),
         }
     )
@@ -64,8 +64,8 @@ def create_queue_entry_handle_exception(e: Exception):
     if isinstance(e, IntegrityError):
         #return чтобы не выполнялся дальше код если находится ошибка
         return handle_integrity_error(e)
-    if isinstance(e, Exception):
-        handle_unknown_error(e)
+
+    handle_unknown_error(e)
 
 
 def delete_queue_entry_handle_exception(e: Exception):
@@ -80,4 +80,8 @@ def delete_queue_entry_handle_exception(e: Exception):
 
 
 def average_handle_exception(e: Exception):
+    if isinstance(e, ValidationError):
+        return handle_validation_error(e)
+    if isinstance(e, IntegrityError):
+        return handle_integrity_error(e)
     handle_unknown_error(e)
