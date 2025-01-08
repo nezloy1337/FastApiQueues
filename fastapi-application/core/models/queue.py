@@ -19,7 +19,6 @@ from core.models.base import Base
 class Queue(IntIdPkMixin, Base):
     __tablename__ = "queues"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(10), nullable=False)
     start_time: Mapped[date] = mapped_column(Date, nullable=False)
     max_slots: Mapped[int] = mapped_column(Integer, nullable=False, default=30)
