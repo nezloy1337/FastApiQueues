@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from fastapi import HTTPException
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -27,7 +26,7 @@ async def create_queue(
             start_time=datetime.combine(queue_to_create.start_time,datetime.min.time()),
             max_slots = queue_to_create.max_slots,
             action = "create",
-            time_of_recording=datetime.now(),
+            timestamp=datetime.now(),
         )
 
         return queue
