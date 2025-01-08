@@ -13,8 +13,6 @@ from core.schemas.logging import ExceptionLogTemplate
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-#преобразование массива в строку
-array_to_str = lambda args: ', '.join(map(str, args))
 
 # обработчики частных ошибок
 def handle_integrity_error(e: IntegrityError | HTTPException):
@@ -25,11 +23,30 @@ def handle_integrity_error(e: IntegrityError | HTTPException):
         detail=settings.errors_description.conflict_description,
     )
 
-#todo validation for error types
+
 def handle_unexpected_error(e: Exception):
+    """
+    Обрабатывает непредвиденные ошибки, такие как отключение базы данных,
+    и записывает их в MongoDB. Логируется информация об ошибке и время её возникновения.
+
+    Параметры:
+    e (Exception): Исключение, содержащее информацию об ошибке.
+
+    Действия:
+    1. Преобразует информацию об ошибке в строку.
+    2. Записывает сообщение об ошибке в лог. (для удобства разработки)
+    3. Создает экземпляр шаблона журнала ошибок с описанием ошибки и текущей временной меткой.
+    4. Вставляет журнал ошибки в коллекцию MongoDB.
+    5. Выбрасывает HTTP-исключение с кодом 500 и сообщением об неизвестной ошибке.
+    """
     error_info = str(e)
-    logger.info(f"неизвестная ошибка: { error_info }")
-    error_log = ExceptionLogTemplate(description=error_info,timestamp=datetime.now())
+    logger.info(f"Неизвестная ошибка: {error_info}")
+
+    error_log = ExceptionLogTemplate(
+        description=error_info,
+        timestamp=datetime.now()
+    )
+
     error_collection.insert_one(error_log.model_dump(exclude_none=True))
 
     raise HTTPException(
