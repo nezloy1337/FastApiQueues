@@ -1,3 +1,7 @@
+from datetime import datetime
+
+from fastapi import HTTPException
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -5,6 +9,7 @@ from sqlalchemy.orm import selectinload
 from api.api_v1.queues.schemas import CreateQueue
 from core.models.queue import Queue, QueueEntries
 from utils.exception_handlers import average_handle_exception
+from utils.logger import log_queue
 
 
 async def create_queue(
@@ -16,11 +21,21 @@ async def create_queue(
         queue = Queue(**queue_to_create.model_dump())
         session.add(queue)
         await session.commit()
+
+        await log_queue(
+            name=queue_to_create.name,
+            start_time=datetime.combine(queue_to_create.start_time,datetime.min.time()),
+            max_slots = queue_to_create.max_slots,
+            action = "create",
+            time_of_recording=datetime.now(),
+        )
+
         return queue
 
     # обработка ошибки
     except Exception as e:
-        average_handle_exception(e)
+        if not isinstance(e,HTTPException):
+            average_handle_exception(e)
 
 
 async def get_queues(session: AsyncSession):
