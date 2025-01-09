@@ -1,6 +1,3 @@
-from aiofiles.os import access
-
-
 def get_app_options(
         host:str,
         port:int,

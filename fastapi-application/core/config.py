@@ -10,12 +10,12 @@ class RunConfig(BaseModel):
     port: int = 50000
     workers:int = 2
 
+
 class GunicornConfig(BaseModel):
     host: str = "0.0.0.0"
     port: int = 50000
     workers: int = 2
     timeout: int = 900
-
 
 
 class ErrorDescription(BaseModel):

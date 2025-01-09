@@ -24,6 +24,22 @@ class Queue(IntIdPkMixin, Base):
     max_slots: Mapped[int] = mapped_column(Integer, nullable=False, default=30)
 
     entries:Mapped[List["QueueEntries"]] = relationship("QueueEntries", back_populates="queue")
+    queue_tags: Mapped[List["Tags"]] = relationship("Tags",secondary="queue_tags", back_populates="queue")
+
+
+class QueueTags(IntIdPkMixin, Base):
+    __tablename__ = "queue_tags"
+
+    queue_id:Mapped[int] = mapped_column(ForeignKey("queues.id"), nullable=False)
+    tag_id:Mapped[int] = mapped_column(ForeignKey("tags.id"), nullable=False)
+
+
+class Tags(IntIdPkMixin, Base):
+    __tablename__ = "tags"
+
+    name:Mapped[str] = mapped_column(String(15), nullable=False)
+    queues: Mapped[List["Queue"]] = relationship("Queue", secondary="queue_tags", back_populates="tags")
+
 
 
 class QueueEntries(IntIdPkMixin, Base):
