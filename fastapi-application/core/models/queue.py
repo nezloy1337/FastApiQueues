@@ -22,7 +22,7 @@ class Queue(IntIdPkMixin, Base):
     name: Mapped[str] = mapped_column(String(10), nullable=False)
     start_time: Mapped[date] = mapped_column(Date, nullable=False)
     max_slots: Mapped[int] = mapped_column(Integer, nullable=False, default=30)
-
+                                                                                    #по названию связи в связуемой таблице
     entries:Mapped[List["QueueEntries"]] = relationship("QueueEntries", back_populates="queue")
     queue_tags: Mapped[List["Tags"]] = relationship("Tags",secondary="queue_tags", back_populates="queues")
 
@@ -40,6 +40,7 @@ class QueueTags(IntIdPkMixin, Base):
 
     queue_id:Mapped[int] = mapped_column(ForeignKey("queues.id"), nullable=False)
     tag_id:Mapped[int] = mapped_column(ForeignKey("tags.id"), nullable=False)
+
 
 
 
