@@ -27,18 +27,19 @@ class Queue(IntIdPkMixin, Base):
     queue_tags: Mapped[List["Tags"]] = relationship("Tags",secondary="queue_tags", back_populates="queues")
 
 
+class Tags(IntIdPkMixin, Base):
+    __tablename__ = "tags"
+
+    name: Mapped[str] = mapped_column(String(15), nullable=False)
+
+    queues: Mapped[List["Queue"]] = relationship("Queue", secondary="queue_tags", back_populates="queue_tags")
+
+
 class QueueTags(IntIdPkMixin, Base):
     __tablename__ = "queue_tags"
 
     queue_id:Mapped[int] = mapped_column(ForeignKey("queues.id"), nullable=False)
     tag_id:Mapped[int] = mapped_column(ForeignKey("tags.id"), nullable=False)
-
-
-class Tags(IntIdPkMixin, Base):
-    __tablename__ = "tags"
-
-    name:Mapped[str] = mapped_column(String(15), nullable=False)
-    queues: Mapped[List["Queue"]] = relationship("Queue", secondary="queue_tags", back_populates="tags")
 
 
 

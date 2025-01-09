@@ -8,7 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.api_v1.queues_entries.schemas import CreateQueueEntry
 from core.config import settings
 from core.models import QueueEntries, User
-from utils.exception_handlers import create_queue_entry_handle_exception, delete_queue_entry_handle_exception
+from utils.exception_handlers import (
+    create_queue_entry_handle_exception,
+    delete_queue_entry_handle_exception,
+)
 from utils.logger import log_queue_entry
 
 logging.basicConfig(level=logging.ERROR)
@@ -46,7 +49,8 @@ async def create_queues_entry(
     except Exception as e:
         create_queue_entry_handle_exception(e)
 
-#TODO правильный обработчик ошибок
+
+# TODO правильный обработчик ошибок
 async def clear_queues_entry(
     session: AsyncSession,
 ):
@@ -61,7 +65,11 @@ async def clear_queues_entry(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-async def delete_queues_entry(session: AsyncSession, user: User, queue_id):
+async def delete_queues_entry(
+    session: AsyncSession,
+    user: User,
+    queue_id,
+):
     try:
         # запрашиваем запись с занятой очередью
         query = await session.execute(
@@ -78,7 +86,7 @@ async def delete_queues_entry(session: AsyncSession, user: User, queue_id):
             await session.delete(queue_to_delete)
             await session.commit()
 
-            #создаем лог в mongodb
+            # создаем лог в mongodb
             await log_queue_entry(
                 queue_id=queue_id,
                 position=queue_to_delete.position,
@@ -94,7 +102,8 @@ async def delete_queues_entry(session: AsyncSession, user: User, queue_id):
             HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=settings.errors_description.no_entry_description,
-        ))
+            )
+        )
 
     # любые другие ошибки
     except Exception as e:
