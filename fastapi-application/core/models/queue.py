@@ -24,7 +24,7 @@ class Queue(IntIdPkMixin, Base):
     max_slots: Mapped[int] = mapped_column(Integer, nullable=False, default=30)
 
     entries:Mapped[List["QueueEntries"]] = relationship("QueueEntries", back_populates="queue")
-    queue_tags: Mapped[List["Tags"]] = relationship("Tags",secondary="queue_tags", back_populates="queue")
+    queue_tags: Mapped[List["Tags"]] = relationship("Tags",secondary="queue_tags", back_populates="queues")
 
 
 class QueueTags(IntIdPkMixin, Base):
