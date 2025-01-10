@@ -57,8 +57,8 @@ async def get_queue_with_entries(session: AsyncSession, queue_id: int):
         # создание запроса
         query = (
             select(Queue)
-            .join(Queue.entries)
-            .join(QueueEntries.user)
+            .outerjoin(Queue.entries)
+            .outerjoin(QueueEntries.user)
             .join(QueueTags, QueueTags.queue_id == Queue.id)
             .join(Tags, Tags.id == QueueTags.tag_id)
             .where(Queue.id == queue_id)

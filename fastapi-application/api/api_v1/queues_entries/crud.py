@@ -40,7 +40,7 @@ async def create_queues_entry(
             position=queue_entry.position,
             user_uuid=str(user.id),
             action="take",
-            time=datetime.now(),
+            timestamp=datetime.now(),
         )
 
         return queue_entry
@@ -92,7 +92,7 @@ async def delete_queues_entry(
                 position=queue_to_delete.position,
                 user_uuid=str(user.id),
                 action="delete",
-                time=datetime.now(),
+                timestamp=datetime.now(),
             )
 
             return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -107,4 +107,5 @@ async def delete_queues_entry(
 
     # любые другие ошибки
     except Exception as e:
-        delete_queue_entry_handle_exception(e)
+        if not isinstance(e, HTTPException):
+            delete_queue_entry_handle_exception(e)
