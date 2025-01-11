@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from api.api_v1.queues.schemas import CreateQueue
-from core.models.queue import Queue, QueueEntries, QueueTags, Tags
+from core.models.queue import Queue, QueueEntries
 from utils.exception_handlers import average_handle_exception
 from utils.logger import log_queue
 

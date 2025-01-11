@@ -1,8 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.tags.schemas import CreateTag, CreateTagQueue
-from core.models import User
-from core.models.queue import Tags, QueueTags
+from core.models import User, Tags, QueueTags
 
 
 async def create_tag(tag_to_create: CreateTag, user: User, session: AsyncSession):
