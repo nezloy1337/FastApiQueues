@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 
 from fastapi import APIRouter, status, Depends
 from pygments.lexers import q
@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.auth.fastapi_users_routers import current_user
 from api.api_v1.tags import crud
-from api.api_v1.tags.schemas import CreateTag, CreateTagQueue
+from api.api_v1.tags.schemas import CreateTag, CreateTagQueue, GetTag
 from core.models import User, db_helper
 
 router = APIRouter(
@@ -39,3 +39,13 @@ async def create_tag_queue(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ):
     return await crud.create_tag_queue(tag_queue_to_create, user, session)
+
+@router.get(
+    "/tags",
+    response_model=List[GetTag],
+)
+async def get_tags(
+        session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+        #user: Annotated[User, Depends(current_user)],
+):
+    return await crud.get_tags(session)

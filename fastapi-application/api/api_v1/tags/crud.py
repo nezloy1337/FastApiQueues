@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.tags.schemas import CreateTag, CreateTagQueue
@@ -20,4 +21,9 @@ async def create_tag_queue(
     session.add(queue_tag)
     await session.commit()
     return queue_tag
+
+async def get_tags(session: AsyncSession):
+    query = select(Tags)
+    result = await session.execute(query)
+    return result.scalars().all()
 
