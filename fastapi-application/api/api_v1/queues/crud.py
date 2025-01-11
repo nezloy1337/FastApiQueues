@@ -42,7 +42,13 @@ async def create_queue(
 async def get_queues(session: AsyncSession):
     try:
         # создаем запрос и делаем запрос в базу данных
-        query = select(Queue)
+        query = (
+            select(Queue)
+            .options(
+                selectinload(Queue.queue_tags),
+            )
+
+        )
 
         result = await session.execute(query)
         return result.scalars().all()
@@ -57,16 +63,10 @@ async def get_queue_with_entries(session: AsyncSession, queue_id: int):
         # создание запроса
         query = (
             select(Queue)
-            .outerjoin(Queue.entries)
-            .outerjoin(QueueEntries.user)
-            .join(QueueTags, QueueTags.queue_id == Queue.id)
-            .join(Tags, Tags.id == QueueTags.tag_id)
             .where(Queue.id == queue_id)
             .options(
                 selectinload(Queue.entries).selectinload(QueueEntries.user),
                 selectinload(Queue.queue_tags),  # Загружаем связанные теги
-
-
             )
         )
 

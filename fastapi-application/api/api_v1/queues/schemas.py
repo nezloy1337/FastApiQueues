@@ -14,6 +14,7 @@ class Queue(BaseModel):
 
 class GetQueue(Queue):
     id: int
+    tags: list[TagSchema] = Field(default_factory=list, alias="queue_tags")
 
 
 class GetQueueWithEntries(Queue):
