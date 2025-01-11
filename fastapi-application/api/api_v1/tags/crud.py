@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.tags.schemas import CreateTag, CreateTagQueue
+from api.api_v1.tags.schemas import CreateTag, CreateTagQueue, PatchTag
 from core.models import User, Tags, QueueTags
 
 
@@ -22,8 +22,23 @@ async def create_tag_queue(
     await session.commit()
     return queue_tag
 
+
 async def get_tags(session: AsyncSession):
     query = select(Tags)
     result = await session.execute(query)
     return result.scalars().all()
+
+
+async def delete_tag(tag_id: int, session: AsyncSession):
+    tag_to_delete = await session.get(Tags, tag_id)
+    await session.delete(tag_to_delete)
+    await session.commit()
+    return
+
+async def patch_tag(tag_id: int, tag_to_patch: PatchTag, session: AsyncSession):
+    tag = await session.get(Tags, tag_id)
+    tag.name = tag_to_patch.name
+    session.add(tag)
+    await session.commit()
+    return tag
 
