@@ -3,9 +3,9 @@ from typing import Annotated, List
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.auth.fastapi_users_routers import current_user
-from api.api_v1.tags import crud
-from api.api_v1.tags.schemas import CreateTag, CreateTagQueue, GetTag, PatchTag
+from api.routers.auth.fastapi_users_routers import current_user
+from api.routers.tags import crud
+from api.routers.tags.schemas import CreateTag, CreateTagQueue, GetTag, PatchTag
 from core.models import User, db_helper
 
 router = APIRouter(

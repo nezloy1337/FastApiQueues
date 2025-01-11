@@ -5,7 +5,7 @@ from fastapi import HTTPException, status, Response
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.queues_entries.schemas import CreateQueueEntry
+from api.routers.queues_entries.schemas import CreateQueueEntry
 from core.config import settings
 from core.models import QueueEntries, User
 from utils.exception_handlers import (

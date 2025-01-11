@@ -3,8 +3,8 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from api.api_v1.queues_entries.schemas import GetQueueEntryAndUser
-from api.api_v1.tags.schemas import TagBase
+from api.routers.queues_entries.schemas import GetQueueEntryAndUser
+from api.routers.tags.schemas import TagBase
 
 
 class QueueBase(BaseModel):

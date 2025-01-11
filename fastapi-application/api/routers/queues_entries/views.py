@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.auth.fastapi_users_routers import current_user
+from api.routers.auth.fastapi_users_routers import current_user
 from . import crud
-from api.api_v1.queues_entries.schemas import CreateQueueEntry
+from api.routers.queues_entries.schemas import CreateQueueEntry
 from core.models import db_helper, User
 
 

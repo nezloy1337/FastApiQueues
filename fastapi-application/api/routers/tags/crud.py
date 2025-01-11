@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.tags.schemas import CreateTag, CreateTagQueue, PatchTag
+from api.routers.tags.schemas import CreateTag, CreateTagQueue, PatchTag
 from core.models import User, Tags, QueueTags
 from utils.exception_handlers import average_handle_exception
 

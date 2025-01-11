@@ -3,7 +3,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.queues.schemas import CreateQueue, GetQueue, GetQueueWithEntries
+from api.routers.queues.schemas import CreateQueue, GetQueue, GetQueueWithEntries
 from core.models import db_helper, User
 from . import crud
 from ..auth.fastapi_users_routers import current_user
