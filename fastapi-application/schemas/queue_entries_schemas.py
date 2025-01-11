@@ -1,7 +1,7 @@
 from uuid import UUID
 from pydantic import BaseModel
 
-from core.schemas.user import UserForEntry
+from schemas.user_schemas import UserForEntry
 
 
 class QueueEntry(BaseModel):

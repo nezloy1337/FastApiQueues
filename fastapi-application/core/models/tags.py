@@ -42,6 +42,7 @@ class QueueTags(IntIdPkMixin, Base):
         ),
         nullable=False,
     )
+
     tag_id: Mapped[int] = mapped_column(
         ForeignKey(
             "tags.id",

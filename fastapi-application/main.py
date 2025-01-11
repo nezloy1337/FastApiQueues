@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import router as api_router
+from api.v1.routers import router as api_router
 from core.config import settings
 from core.models import db_helper
 

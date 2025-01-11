@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from core.models.mongodb import error_collection
 from core.config import settings
-from core.schemas.logging import ExceptionLogTemplate
+from schemas.logging_schemas import ExceptionLogTemplate
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)

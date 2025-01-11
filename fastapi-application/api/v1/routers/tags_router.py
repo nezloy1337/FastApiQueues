@@ -3,8 +3,8 @@ from typing import Annotated, List
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.routers.auth.fastapi_users_routers import current_user
-from api.routers.tags import crud
+from api.v1.routers.auth.fastapi_users_routers import current_user
+from api.v1.routers.tags import crud
 from schemas.tag_schemas import CreateTag, CreateTagQueue, GetTag, PatchTag
 from core.models import User, db_helper
 
@@ -75,7 +75,7 @@ async def patch_tag(
         session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
         #user: Annotated[User, Depends(current_user)],
 ):
-    return await crud.patch_tag(tag_id,tag_patch, session)
+    return await crud.patch_tag(tag_id, tag_patch, session)
 
 
 

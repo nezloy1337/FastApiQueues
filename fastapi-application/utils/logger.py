@@ -1,7 +1,7 @@
-from core.schemas.logging import QueueEntryLog, QueueLog
+from schemas.logging_schemas import QueueEntryLog, QueueLog
 from core.models.mongodb import queue_logs_collection,queue_entries_logs_collection
 
-from utils.exception_handlers import average_handle_exception, handle_unexpected_error
+from utils.exception_handlers import handle_unexpected_error
 
 
 async def log_queue_entry(**queue_entry_data):
