@@ -71,6 +71,8 @@ def handle_validation_error(e: ValidationError):
     )
 
 
+
+
 # обработчики ошибок функций
 # для каждой очереди отдельно для более тонкой настройки
 def create_queue_entry_handle_exception(e: Exception):
@@ -93,7 +95,10 @@ def delete_queue_entry_handle_exception(e: Exception):
 
 
 def average_handle_exception(e: Exception):
+
     if isinstance(e, ValidationError):
+        return handle_validation_error(e)
+    if isinstance(e, AttributeError):
         return handle_validation_error(e)
     if isinstance(e, IntegrityError):
         return handle_integrity_error(e)

@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.tags.schemas import CreateTag, CreateTagQueue, PatchTag
 from core.models import User, Tags, QueueTags
+from utils.exception_handlers import average_handle_exception
 
 
 async def create_tag(tag_to_create: CreateTag, user: User, session: AsyncSession):
@@ -30,15 +31,23 @@ async def get_tags(session: AsyncSession):
 
 
 async def delete_tag(tag_id: int, session: AsyncSession):
-    tag_to_delete = await session.get(Tags, tag_id)
-    await session.delete(tag_to_delete)
-    await session.commit()
-    return
+    try:
+        tag_to_delete = await session.get(Tags, tag_id)
+        await session.delete(tag_to_delete)
+        await session.commit()
+    except Exception as e:
+        average_handle_exception(e)
+
 
 async def patch_tag(tag_id: int, tag_to_patch: PatchTag, session: AsyncSession):
-    tag = await session.get(Tags, tag_id)
-    tag.name = tag_to_patch.name
-    session.add(tag)
-    await session.commit()
-    return tag
+    try:
+        if tag := await session.get(Tags, tag_id):
+            tag.name = tag_to_patch.name
+            session.add(tag)
+            await session.commit()
+            return tag
+
+    except Exception as e:
+        average_handle_exception(e)
+
 
