@@ -29,7 +29,7 @@ async def create_tag(
 
 
 @router.post(
-    "tags/queue",
+    "/tags/queue",
     response_model=CreateTagQueue,
     status_code=status.HTTP_201_CREATED,
 )
