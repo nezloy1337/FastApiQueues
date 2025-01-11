@@ -42,7 +42,7 @@ class UserManager(BaseModel):
 
 class DatabaseConfig(BaseModel):
     url: PostgresDsn
-    echo: bool = False
+    echo: bool = True
     echo_pool: bool = False
     max_overflow: int = 50
     pool_size: int = 10

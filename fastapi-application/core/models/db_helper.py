@@ -12,8 +12,8 @@ class DatabaseHelper:
     def __init__(
         self,
         url: str,
-        echo: bool = False,
-        echo_pool: bool = False,
+        echo: bool = True,
+        echo_pool: bool = True,
         max_overflow: int = 10,
         pool_size: int = 10,
     ):
