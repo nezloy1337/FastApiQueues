@@ -1,14 +1,17 @@
 from pydantic import BaseModel
 
 
-class TagSchema(BaseModel):
+class TagBase(BaseModel):
     name: str
 
-class CreateTag(TagSchema):
+class CreateTag(TagBase):
     pass
 
-class DeleteTag(TagSchema):
+class DeleteTag(TagBase):
     pass
+
+class GetTag(TagBase):
+    id: int
 
 class CreateTagQueue(BaseModel):
     queue_id: int

@@ -4,7 +4,7 @@ from typing import List
 from pydantic import BaseModel, Field
 
 from api.api_v1.queues_entries.schemas import GetQueueEntryAndUser
-from api.api_v1.tags.schemas import TagSchema
+from api.api_v1.tags.schemas import TagBase
 
 
 class Queue(BaseModel):
@@ -14,12 +14,12 @@ class Queue(BaseModel):
 
 class GetQueue(Queue):
     id: int
-    tags: list[TagSchema] = Field(default_factory=list, alias="queue_tags")
+    tags: list[TagBase] = Field(default_factory=list, alias="queue_tags")
 
 
 class GetQueueWithEntries(Queue):
     entries: list[GetQueueEntryAndUser] = []
-    tags: list[TagSchema] = Field(default_factory=list, alias="queue_tags") #разобратся как работает alias
+    tags: list[TagBase] = Field(default_factory=list, alias="queue_tags") #разобратся как работает alias
 
 class CreateQueue(Queue):
     pass
