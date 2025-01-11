@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.routers.auth.fastapi_users_routers import current_user
 from api.routers.tags import crud
-from api.routers.tags.schemas import CreateTag, CreateTagQueue, GetTag, PatchTag
+from schemas.tag_schemas import CreateTag, CreateTagQueue, GetTag, PatchTag
 from core.models import User, db_helper
 
 router = APIRouter(

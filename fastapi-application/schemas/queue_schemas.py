@@ -1,10 +1,9 @@
 from datetime import date
-from typing import List
 
 from pydantic import BaseModel, Field
 
-from api.routers.queues_entries.schemas import GetQueueEntryAndUser
-from api.routers.tags.schemas import TagBase
+from .queue_entries_schemas import GetQueueEntryAndUser
+from .tag_schemas import TagBase
 
 
 class QueueBase(BaseModel):
