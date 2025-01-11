@@ -16,7 +16,7 @@ router = APIRouter(
 
 
 @router.post(
-    "/queues/{queue_id}/take",
+    "/queues/{queue_id}",
     response_model=CreateQueueEntry,
     status_code=status.HTTP_200_OK,
 )
@@ -33,7 +33,7 @@ async def create_queue_entry(
 
 
 @router.delete(
-    "/queue/{queue_id}/delete",
+    "/queue/{queue_id}",
 )
 async def delete_queue_entry(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
