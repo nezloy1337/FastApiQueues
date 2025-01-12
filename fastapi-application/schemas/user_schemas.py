@@ -1,6 +1,7 @@
 import uuid
+from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from fastapi_users import schemas
 
 
@@ -23,3 +24,11 @@ class UserUpdate(FirstAndLastNamesMixin, schemas.BaseUserUpdate):
 
 class UserForEntry(FirstAndLastNamesMixin, BaseModel):
     pass
+
+class ManageUserPermissions(BaseModel):
+    email: Optional[EmailStr] = None
+    is_active: Optional[bool] = None
+    is_superuser: Optional[bool] = None
+    is_staff: Optional[bool] = None
+
+

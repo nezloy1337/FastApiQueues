@@ -5,8 +5,8 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 
 from core.models import User, db_helper
 
-if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
+
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def get_user_db(
@@ -16,3 +16,5 @@ async def get_user_db(
     ],
 ):
     yield SQLAlchemyUserDatabase(session, User)
+
+

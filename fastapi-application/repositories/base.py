@@ -1,5 +1,4 @@
 from typing import Generic, TypeVar, Type, List, Optional
-
 from typing import Union
 
 from fastapi import HTTPException, status
@@ -7,10 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import update, delete
 
-from core.models import Queue, QueueEntries, QueueTags
+from core.models import Queue, QueueEntries, QueueTags, User
 
 # Определяем параметр типа T, который может быть любым из указанных типов
-T = TypeVar("T", bound=Union[Queue, QueueTags, QueueEntries])
+T = TypeVar("T", bound=Union[Queue, QueueTags, QueueEntries, User])
 
 
 class BaseRepository(Generic[T]):
