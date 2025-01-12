@@ -3,10 +3,12 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.v1.dependencies.queues import get_queue_service
 from schemas.queue_schemas import CreateQueue, GetQueue, GetQueueWithEntries
 from core.models import db_helper, User
 from api.v1.routers.queues import crud
 from api.v1.routers.auth.fastapi_users_routers import current_user
+from services.queue import QueueService
 
 router = APIRouter(
     prefix="",
@@ -21,12 +23,9 @@ router = APIRouter(
 )
 async def create_queue(
     queue_to_create: CreateQueue,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    service: QueueService = Depends(get_queue_service)
 ):
-    return await crud.create_queue(
-        session,
-        queue_to_create,
-    )
+    return await service.create(queue_to_create.model_dump())
 
 
 @router.get(
