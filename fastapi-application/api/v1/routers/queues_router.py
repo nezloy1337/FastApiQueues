@@ -34,10 +34,10 @@ async def create_queue(
     status_code=status.HTTP_200_OK,
 )
 async def get_queues(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    service:Annotated[QueueService,Depends(get_queue_service)],
     #user: Annotated[User, Depends(current_user)],
 ):
-    return await crud.get_queues(session)
+    return await service.get_all()
 
 
 @router.get(

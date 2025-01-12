@@ -25,3 +25,16 @@ class QueueRepository(BaseRepository[Queue]):
 
         result = await self.session.execute(query)
         return result.scalars().first()
+
+    async def get_all(self):
+        query = (
+            select(Queue)
+            .options(
+                selectinload(Queue.queue_tags),
+            )
+        )
+
+        result = await self.session.execute(query)
+        return result.scalars().all()
+
+
