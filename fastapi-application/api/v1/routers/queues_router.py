@@ -39,7 +39,7 @@ async def create_queue(
     return await service.create(queue_to_create.model_dump())
 
 @router.get(
-    "{queue_id}",
+    "/{queue_id}",
     response_model=GetQueueWithEntries | None,
     status_code=status.HTTP_200_OK,
 )

@@ -18,7 +18,7 @@ router = APIRouter(
 @router.post(
     "/queues/{queue_id}",
     response_model=CreateQueueEntry,
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_201_CREATED,
 )
 async def create_queue_entry(
     queue_entry_to_create: CreateQueueEntry,
