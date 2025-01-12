@@ -1,9 +1,17 @@
-# repositories/base_repository.py
 from typing import Generic, TypeVar, Type, List, Optional
+
+from typing import Union
+
+from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import update
 
-T = TypeVar("T")  # Тип объекта (модель SQLAlchemy)
+from core.models import Queue, QueueEntries, QueueTags
+
+# Определяем параметр типа T, который может быть любым из указанных типов
+T = TypeVar("T", bound=Union[Queue, QueueTags, QueueEntries])
+
 
 class BaseRepository(Generic[T]):
     def __init__(self, model: Type[T], session: AsyncSession):
@@ -31,12 +39,13 @@ class BaseRepository(Generic[T]):
             return True
         return False
 
-    async def update(self, obj_id: int, obj_data: dict) -> Optional[T]:
-        obj = await self.get_by_id(obj_id)
-        if not obj:
-            return None
-        for key, value in obj_data.items():
-            setattr(obj, key, value)
+    async def update(self, obj_id: int, obj_data: dict) -> dict:
+        query = update(self.model).where(self.model.id == obj_id).values(**obj_data)
+        result = await self.session.execute(query)
+        if result.rowcount == 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Update failed:now data is changed",
+            )
         await self.session.commit()
-        await self.session.refresh(obj)
-        return obj
+        return obj_data
