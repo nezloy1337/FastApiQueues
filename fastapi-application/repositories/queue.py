@@ -1,6 +1,8 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
-from core.models import Queue
+from core.models import Queue, QueueEntries
 from repositories.base import BaseRepository
 
 
@@ -10,3 +12,16 @@ class QueueRepository(BaseRepository[Queue]):
             Queue,
             session,
         )
+
+    async def get_by_id(self, queue_id: int) -> Queue:
+        query = (
+            select(Queue)
+            .where(Queue.id == queue_id)
+            .options(
+                selectinload(Queue.entries).selectinload(QueueEntries.user),
+                selectinload(Queue.queue_tags),  # Загружаем связанные теги
+            )
+        )
+
+        result = await self.session.execute(query)
+        return result.scalars().first()

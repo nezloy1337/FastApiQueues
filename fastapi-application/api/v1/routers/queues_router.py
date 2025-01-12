@@ -23,11 +23,11 @@ router = APIRouter(
 )
 async def create_queue(
     queue_to_create: CreateQueue,
-    service: QueueService = Depends(get_queue_service)
+    service: Annotated[QueueService, Depends(get_queue_service)],
 ):
     return await service.create(queue_to_create.model_dump())
 
-
+######
 @router.get(
     "/queues",
     response_model=List[GetQueue],
@@ -35,7 +35,7 @@ async def create_queue(
 )
 async def get_queues(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    user: Annotated[User, Depends(current_user)],
+    #user: Annotated[User, Depends(current_user)],
 ):
     return await crud.get_queues(session)
 
@@ -46,11 +46,8 @@ async def get_queues(
     status_code=status.HTTP_200_OK,
 )
 async def get_queue_with_entries(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     queue_id: int,
-    user: Annotated[User, Depends(current_user)],
+    #user: Annotated[User, Depends(current_user)],
+    service: Annotated[QueueService,Depends(get_queue_service)],
 ):
-    return await crud.get_queue_with_entries(
-        session,
-        queue_id,
-    )
+    return await service.get_by_id(queue_id)
