@@ -26,6 +26,7 @@ class QueueRepository(BaseRepository[Queue]):
         result = await self.session.execute(query)
         return result.scalars().first()
 
+
     async def get_all(self):
         query = (
             select(Queue)
