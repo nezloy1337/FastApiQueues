@@ -66,11 +66,11 @@ async def put_queue(
 
 @router.delete(
     "/{queue_id}",
-    response_model=PutQueue,
+    response_model=bool,
 )
-async def put_queue(
+async def delete_queue(
     queue_id: int,
     service: Annotated[QueueService, Depends(get_queue_service)],
     #user: Annotated[User, Depends(current_user)],
 ):
-    return await service.update(queue_id)
+    return await service.delete(queue_id)
