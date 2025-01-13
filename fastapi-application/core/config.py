@@ -1,6 +1,4 @@
-from typing import Optional
-
-from pydantic import BaseModel, AnyUrl
+from pydantic import BaseModel
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -42,7 +40,7 @@ class UserManager(BaseModel):
 
 class DatabaseConfig(BaseModel):
     url: PostgresDsn
-    echo: bool = True
+    echo: bool = False
     echo_pool: bool = False
     max_overflow: int = 50
     pool_size: int = 10
