@@ -4,7 +4,7 @@ from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.v1.routers.auth.fastapi_users_routers import current_user
-from api.v1.routers.tags import crud
+from api.v1.routers.tags2 import crud
 from core.models import User, db_helper
 from schemas.tags import CreateTag, CreateTagQueue, GetTag, PatchTag
 
@@ -53,7 +53,7 @@ async def get_tags(
 
 
 @router.delete(
-    "tags/{tag_id}",
+    "tags2/{tag_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_tag(
@@ -65,7 +65,7 @@ async def delete_tag(
 
 
 @router.patch(
-    "tags/{tag_id}",
+    "tags2/{tag_id}",
     status_code=status.HTTP_200_OK,
     response_model=PatchTag,
 )
