@@ -29,6 +29,6 @@ class ManageUserPermissions(BaseModel):
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = None
     is_superuser: Optional[bool] = None
-    is_staff: Optional[bool] = None
+    is_verified: Optional[bool] = None
 
 
