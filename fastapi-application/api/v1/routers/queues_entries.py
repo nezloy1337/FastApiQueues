@@ -3,36 +3,41 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.v1.dependencies.queue_entry import get_queue_entries_service
 from api.v1.routers.auth.fastapi_users_routers import current_user
 from api.v1.routers.queues_ent2ies import crud
 from core.models import db_helper, User
 from schemas.queue_entries import CreateQueueEntry
+from services.queue_entry import QueueEntryService
+from utils.api_v1 import combine_dict_with_user_uuid
 
 router = APIRouter(
-    prefix="",
+    prefix="/queue",
     tags=["queues_entries"],
 )
 
 
+# todo fix user_id problem
 @router.post(
-    "/queues/{queue_id}",
+    "/{queue_id}",
     response_model=CreateQueueEntry,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_queue_entry(
     queue_entry_to_create: CreateQueueEntry,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
     user: Annotated[User, Depends(current_user)],
 ):
-    return await crud.create_queues_entry(
-        session,
-        queue_entry_to_create,
-        user,
+    return await service.create(
+        combine_dict_with_user_uuid(
+            queue_entry_to_create.model_dump(),
+            user.id,
+        )
     )
 
 
 @router.delete(
-    "/queue/{queue_id}",
+    "/{queue_id}",
 )
 async def delete_queue_entry(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],

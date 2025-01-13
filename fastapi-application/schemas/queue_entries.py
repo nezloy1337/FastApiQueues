@@ -1,4 +1,6 @@
+from typing import Optional
 from uuid import UUID
+
 from pydantic import BaseModel
 
 from schemas.users import UserForEntry
@@ -15,5 +17,6 @@ class GetQueueEntryAndUser(BaseModel):
 
 
 class CreateQueueEntry(BaseModel):
+    user_id: Optional[UUID] = None
     position: int
     queue_id: int
