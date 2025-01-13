@@ -6,10 +6,10 @@ from sqlalchemy import update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from core.models import Queue, QueueEntries, User, Tags
+from core.models import Queue, QueueEntries, User, Tags, QueueTags
 
 # Определяем параметр типа T, который может быть любым из указанных типов
-T = TypeVar("T", bound=Union[Queue, Tags, QueueEntries, User])
+T = TypeVar("T", bound=Union[Queue, Tags, QueueEntries, User , QueueTags])
 
 
 class BaseRepository(Generic[T]):
