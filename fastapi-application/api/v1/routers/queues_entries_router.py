@@ -5,9 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.v1.routers.auth.fastapi_users_routers import current_user
 from api.v1.routers.queues_entries import crud
-from schemas.queue_entries_schemas import CreateQueueEntry
 from core.models import db_helper, User
-
+from schemas.queue_entries import CreateQueueEntry
 
 router = APIRouter(
     prefix="",

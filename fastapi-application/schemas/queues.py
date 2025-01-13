@@ -3,8 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from .queue_entries_schemas import GetQueueEntryAndUser
-from .tag_schemas import TagBase
+from .queue_entries import GetQueueEntryAndUser
+from .tags import TagBase
 
 
 class QueueBase(BaseModel):

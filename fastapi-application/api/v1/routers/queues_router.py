@@ -1,12 +1,9 @@
 from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.v1.dependencies.queues import get_queue_service
-from schemas.queue_schemas import CreateQueue, GetQueue, GetQueueWithEntries, PutQueue
-from core.models import db_helper, User
-from api.v1.routers.auth.fastapi_users_routers import current_user
+from schemas.queues import CreateQueue, GetQueue, GetQueueWithEntries, PutQueue
 from services.queue import QueueService
 
 router = APIRouter(

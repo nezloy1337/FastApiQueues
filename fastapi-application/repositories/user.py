@@ -1,10 +1,9 @@
-from fastapi import HTTPException,status
+from fastapi import HTTPException, status
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import User
 from repositories.base import BaseRepository
-from schemas.user_schemas import UserUpdate
 
 
 class UserRepository(BaseRepository[User]):
