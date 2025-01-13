@@ -37,12 +37,14 @@ class BaseRepository(Generic[T]):
     async def delete(self, obj_id: int) -> bool:
         query = delete(self.model).where(self.model.id == obj_id)
         result = await self.session.execute(query)
+
         if result.rowcount == 0:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Delete failed:now data is changed",
             )
-        return True
+        await self.session.commit()
+
 
     async def update(self, obj_id: int, obj_data: dict) -> dict:
         query = update(self.model).where(self.model.id == obj_id).values(**obj_data)

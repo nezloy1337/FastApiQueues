@@ -42,15 +42,15 @@ async def get_tags(
 
 
 @router.delete(
-    "tags2/{tag_id}",
+    "/{tag_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_tag(
     tag_id: int,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    service: Annotated[TagsService, Depends(get_tags_service)]
     # user: Annotated[User, Depends(current_user)],
 ):
-    return await crud.delete_tag(tag_id, session)
+    return await service.delete(tag_id)
 
 
 @router.patch(
