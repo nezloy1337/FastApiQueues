@@ -161,3 +161,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 /fastapi-application/.env
+/fastapi-application/api/api_v1/
+/fastapi-application/core/schemas/
+/fastapi-application/api/dependencies/
