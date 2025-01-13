@@ -3,28 +3,30 @@ from typing import Annotated, List
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.v1.dependencies.tags import get_tags_service
 from api.v1.routers.auth.fastapi_users_routers import current_user
 from api.v1.routers.tags2 import crud
 from core.models import User, db_helper
 from schemas.tags import CreateTag, CreateTagQueue, GetTag, PatchTag
+from services.tags import TagsService
 
 router = APIRouter(
     tags=["tags"],
-    prefix="",
+    prefix="/tags",
 )
 
 
 @router.post(
-    "/tags",
+    "",
     response_model=CreateTag,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_tag(
     tag_to_create: CreateTag,
-    user: Annotated[User, Depends(current_user)],
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    #user: Annotated[User, Depends(current_user)],
+    service: Annotated[TagsService, Depends(get_tags_service)]
 ):
-    return await crud.create_tag(tag_to_create, user, session)
+    return await service.create(tag_to_create.model_dump())
 
 
 @router.post(
