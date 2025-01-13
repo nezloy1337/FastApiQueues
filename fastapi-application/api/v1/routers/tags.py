@@ -30,15 +30,15 @@ async def create_tag(
 
 
 @router.get(
-    "/tags",
+    "",
     response_model=List[GetTag],
     status_code=status.HTTP_200_OK,
 )
 async def get_tags(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    service: Annotated[TagsService, Depends(get_tags_service)]
     # user: Annotated[User, Depends(current_user)],
 ):
-    return await crud.get_tags(session)
+    return await service.get_all()
 
 
 @router.delete(
