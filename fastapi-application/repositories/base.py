@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Type, List, Optional, Dict
+from typing import Generic, TypeVar, Type, List, Optional
 from typing import Union
 
 from fastapi import HTTPException, status
@@ -53,26 +53,21 @@ class BaseRepository(Generic[T]):
         return obj_data
 
 
-class BaseRepositoryWithExtraParams(BaseRepository[T]):
+class ExtendedBaseRepository(BaseRepository[T]):
     def __init__(self, model: Type[T], session: AsyncSession):
         super().__init__(model, session)
 
-    async def delete_with_extra_param(self, **kwargs: Dict[str, Union[str, int]]):
-        iterator = iter(kwargs.items())
-        base_condition, base_value = next(iterator)
-        extra_condition, extra_value = next(iterator)
-        query = delete(self.model).where(
-            and_(
-                getattr(self.model,base_condition) == base_value,
-                getattr(self.model,extra_condition) == str(extra_value),
-            )
-        )
+    async def delete_with_extra_param(self, **conditions) -> bool:
+        if not conditions:
+            # можно вернуть False или выбросить исключение
+            return False
 
+        filters = []
+        for field_name, field_value in conditions.items():
+            filters.append(getattr(self.model, field_name) == field_value)
+
+        query = delete(self.model).where(and_(*filters))
         result = await self.session.execute(query)
-
-        if result.rowcount == 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Delete failed:now data is changed",
-            )
         await self.session.commit()
+        # noinspection PydanticTypeChecker
+        return result.rowcount > 0
