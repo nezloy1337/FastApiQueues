@@ -24,7 +24,7 @@ class ErrorDescription(BaseModel):
 
 
 class ApiV1Prefix(BaseModel):
-    prefix: str = "/convert"
+    prefix: str = "/api_v1"
 
 
 class Redis(BaseModel):
@@ -84,6 +84,7 @@ class Settings(BaseSettings):
     cors: CORSConfig = CORSConfig()
     run: RunConfig = RunConfig()
     gunicorn: GunicornConfig = GunicornConfig()
+    api_v1: ApiV1Prefix = ApiV1Prefix()
 
 
 settings = Settings()
