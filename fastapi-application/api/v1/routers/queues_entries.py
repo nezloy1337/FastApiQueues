@@ -7,7 +7,7 @@ from api.v1.dependencies.queue_entry import get_queue_entries_service
 from api.v1.routers.auth.fastapi_users_routers import current_user
 from core.models import db_helper, User
 from schemas.queue_entries import CreateQueueEntry
-from services.queue_entry import QueueEntryService
+from services.queue_entry import QueueEntryServiceExtended
 from utils.api_v1 import combine_dict_with_user_uuid
 
 router = APIRouter(
@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-# todo fix user_id problem
+
 @router.post(
     "/{queue_id}",
     response_model=CreateQueueEntry,
@@ -24,7 +24,7 @@ router = APIRouter(
 )
 async def create_queue_entry(
     queue_entry_to_create: CreateQueueEntry,
-    service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
+    service: Annotated[QueueEntryServiceExtended, Depends(get_queue_entries_service)],
     user: Annotated[User, Depends(current_user)],
 ):
     return await service.create(
@@ -39,7 +39,7 @@ async def create_queue_entry(
     "/{queue_id}",
 )
 async def delete_queue_entry(
-    service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
+    service: Annotated[QueueEntryServiceExtended, Depends(get_queue_entries_service)],
     user: Annotated[User, Depends(current_user)],
     queue_id: int,
 ):

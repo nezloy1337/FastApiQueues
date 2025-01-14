@@ -1,8 +1,8 @@
 
-from repositories.queue_entry import QueueEntriesRepository
-from services.base import BaseServiceWithExtraParams
+from repositories.queue_entry import QueueEntriesRepositoryExtended
+from services.base import ExtendedBaseService
 
 
-class QueueEntryService(BaseServiceWithExtraParams):
-    def __init__(self,repository: QueueEntriesRepository):
+class QueueEntryServiceExtended(ExtendedBaseService):
+    def __init__(self, repository: QueueEntriesRepositoryExtended):
         super().__init__(repository)
