@@ -1,8 +1,11 @@
-# services/base_service.py
-from typing import Generic, TypeVar, List, Optional
-from repositories.base import BaseRepository
+
+from typing import Generic, TypeVar, List, Optional, Union, Dict
+from uuid import UUID
+
+from repositories.base import BaseRepository, BaseRepositoryWithExtraParams
 
 T = TypeVar("T")  # Тип объекта (модель SQLAlchemy)
+
 
 class BaseService(Generic[T]):
     def __init__(self, repository: BaseRepository[T]):
@@ -22,3 +25,15 @@ class BaseService(Generic[T]):
 
     async def update(self, obj_id: int, obj_data: dict) -> Optional[T]:
         return await self.repository.update(obj_id, obj_data)
+
+
+class BaseServiceWithExtraParams(BaseService[T]):
+    def __init__(self, repository: BaseRepositoryWithExtraParams[T]):
+        self.repository = repository
+
+    async def delete_with_extra_param(
+        self,
+        **kwargs: Dict[str, Union[str, int, UUID]]
+    ):
+
+        return await self.repository.delete_with_extra_param(**kwargs)
