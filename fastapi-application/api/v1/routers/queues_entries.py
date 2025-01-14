@@ -7,7 +7,7 @@ from api.v1.routers.auth.fastapi_users_routers import current_user, current_supe
 from core.models import User
 from schemas.queue_entries import CreateQueueEntry
 from services.queue_entry import QueueEntryServiceExtended
-from utils.api_v1 import combine_dict_with_user_uuid
+from utils.dict_utils import combine_dict_with_named_params
 
 router = APIRouter(
     prefix="/queue",
@@ -27,15 +27,16 @@ async def create_queue_entry(
     user: Annotated[User, Depends(current_user)],
 ):
     return await service.create(
-        combine_dict_with_user_uuid(
+        combine_dict_with_named_params(
             queue_entry_to_create.model_dump(),
-            user.id,
+            user_id=user.id,
         )
     )
 
 
 @router.delete(
     "/{queue_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_queue_entry(
     service: Annotated[QueueEntryServiceExtended, Depends(get_queue_entries_service)],
@@ -47,6 +48,7 @@ async def delete_queue_entry(
 
 @router.delete(
     "/{queue_id}/all",
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 async def clear_queue_entry(
         service: Annotated[QueueEntryServiceExtended, Depends(get_queue_entries_service)],
