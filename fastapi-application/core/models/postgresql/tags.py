@@ -1,18 +1,14 @@
-from datetime import date
 from typing import List
 
 from sqlalchemy import (
     String,
-    Integer,
     ForeignKey,
     UniqueConstraint,
-    CheckConstraint,
-    Date,
 )
-
 from sqlalchemy.orm import mapped_column, Mapped, relationship
+
 from core.models.mixins import IntIdPkMixin
-from core.models.base import Base
+from core.models.postgresql.base import Base
 
 
 class Tags(IntIdPkMixin, Base):

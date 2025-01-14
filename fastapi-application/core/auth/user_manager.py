@@ -5,9 +5,8 @@ from fastapi import Depends
 from fastapi_users import BaseUserManager, UUIDIDMixin
 
 from api.v1.dependencies.users import get_user_db
-from core.models.user import User
 from core.config import settings
-
+from core.models.postgresql.user import User
 
 log = logging.getLogger(__name__)
 

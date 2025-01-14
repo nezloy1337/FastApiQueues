@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, List
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
-from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.models.base import Base
+from core.models.postgresql.base import Base
 
 if TYPE_CHECKING:
     from core.models import QueueEntries
