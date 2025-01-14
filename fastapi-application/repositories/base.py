@@ -1,7 +1,6 @@
 from typing import Generic, TypeVar, Type, List, Optional
 from typing import Union
 
-from fastapi import HTTPException, status
 from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -42,15 +41,12 @@ class BaseRepository(Generic[T]):
             return True
 
 
-    async def update(self, obj_id: int, obj_data: dict) -> dict:
-        query = update(self.model).where(self.model.id == obj_id).values(**obj_data)
+    async def update(self,obj_id, **values) -> dict:
+        query = update(self.model).where(self.model.id == obj_id).values(**values)
         result = await self.session.execute(query)
-        if result.rowcount == 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Update failed: no data is changed",
-            )
-        await self.session.commit()
-        return obj_data
+        if result.rowcount:
+            await self.session.commit()
+            return values
+
 
 

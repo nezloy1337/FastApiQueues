@@ -22,12 +22,14 @@ class BaseService(Generic[T]):
     async def get_all(self) -> List[T]:
         return await self.repository.get_all()
 
-    async def delete(self, **conditions) -> bool:
+    async def delete(self,**conditions)  -> bool:
         if await self.repository.delete(**conditions):
             return True
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not Found")
 
-    async def update(self, obj_id: int, obj_data: dict) -> Optional[T]:
-        return await self.repository.update(obj_id, obj_data)
+    async def update(self,obj_id, **values) -> Optional[T]:
+        if await self.repository.update(obj_id,**values):
+            return True
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not Found")
 
 

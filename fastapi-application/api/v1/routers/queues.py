@@ -58,7 +58,7 @@ async def put_queue(
     service: Annotated[QueueService, Depends(get_queue_service)],
     #user: Annotated[User, Depends(current_user)],
 ):
-    return await service.update(queue_id, queue_to_patch.model_dump(exclude_none=True))
+    return await service.update(queue_id, **queue_to_patch.model_dump(exclude_none=True))
 
 
 @router.delete(
