@@ -1,10 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import QueueEntries
-from repositories.base import ExtendedBaseRepository
+from repositories.base import BaseRepository
 
 
-class QueueEntriesRepositoryExtended(ExtendedBaseRepository[QueueEntries]):
+class QueueEntriesRepository(BaseRepository[QueueEntries]):
     def __init__(self,session: AsyncSession):
         super().__init__(QueueEntries,session,)
 
