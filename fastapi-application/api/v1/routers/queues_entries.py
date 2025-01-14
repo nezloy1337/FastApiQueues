@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.v1.dependencies.queue_entry import get_queue_entries_service
 from api.v1.routers.auth.fastapi_users_routers import current_user
-from api.v1.routers.queues_ent2ies import crud
 from core.models import db_helper, User
 from schemas.queue_entries import CreateQueueEntry
 from services.queue_entry import QueueEntryService
@@ -40,15 +39,11 @@ async def create_queue_entry(
     "/{queue_id}",
 )
 async def delete_queue_entry(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
     user: Annotated[User, Depends(current_user)],
     queue_id: int,
 ):
-    return await crud.delete_queues_entry(
-        session,
-        user,
-        queue_id,
-    )
+    return await service.delete_with_extra_param(queue_id=queue_id,user_id=user.id)
 
 
 @router.delete(
