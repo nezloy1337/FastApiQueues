@@ -70,4 +70,4 @@ async def delete_queue(
     service: Annotated[QueueService, Depends(get_queue_service)],
     #user: Annotated[User, Depends(current_user)],
 ):
-    return await service.delete(queue_id)
+    return await service.delete(id = queue_id)
