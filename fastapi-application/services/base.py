@@ -30,7 +30,12 @@ class BaseService(Generic[T]):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not Found")
 
 
-    async def update(self, obj_id, **values) -> bool:
-        if await self.repository.update(obj_id, **values):
+    async def patch(self, obj_id, **values) -> bool:
+        if await self.repository.patch(obj_id, **values):
             return True
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not Found")
+
+
+
+
+

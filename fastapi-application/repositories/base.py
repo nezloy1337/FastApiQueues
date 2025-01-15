@@ -40,7 +40,7 @@ class BaseRepository(Generic[T]):
             await self.session.commit()
             return True
 
-    async def update(self, obj_id, **values) -> dict:
+    async def patch(self, obj_id, **values) -> dict:
         query = update(self.model).where(self.model.id == obj_id).values(**values)
         result = await self.session.execute(query)
         if result.rowcount:

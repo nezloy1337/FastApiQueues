@@ -14,7 +14,7 @@ class UserRepository(BaseRepository[User]):
             session,
         )
 
-    async def update(self, email: str, obj_data: dict) -> dict:
+    async def patch(self, email: str, obj_data: dict) -> dict:
         query = update(self.model).where(self.model.email == email).values(**obj_data)
         result = await self.session.execute(query)
         if result.rowcount == 0:

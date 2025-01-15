@@ -22,6 +22,6 @@ async def manage_users(
     service: Annotated[UserService, Depends(get_user_service)],
     user_to_mange: ManageUserPermissions,
 ):
-    return await service.update(
+    return await service.patch(
         user_to_mange.email, user_to_mange.model_dump(exclude_none=True)
     )
