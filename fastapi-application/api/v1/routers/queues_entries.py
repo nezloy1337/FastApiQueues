@@ -6,7 +6,7 @@ from api.v1.dependencies.services import get_queue_entries_service
 from api.v1.routers.auth.fastapi_users_routers import current_user, current_super_user
 from core.models import User
 from schemas.queue_entries import CreateQueueEntry
-from services.queue_entry import QueueEntryServiceExtended
+from services.queue_entry import QueueEntryService
 from utils.dict_utils import combine_dict_with_named_params
 
 router = APIRouter(
@@ -23,7 +23,7 @@ router = APIRouter(
 )
 async def create_queue_entry(
     queue_entry_to_create: CreateQueueEntry,
-    service: Annotated[QueueEntryServiceExtended, Depends(get_queue_entries_service)],
+    service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
     user: Annotated[User, Depends(current_user)],
 ):
     return await service.create(
@@ -39,7 +39,7 @@ async def create_queue_entry(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_queue_entry(
-    service: Annotated[QueueEntryServiceExtended, Depends(get_queue_entries_service)],
+    service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
     user: Annotated[User, Depends(current_user)],
     queue_id: int,
 ):
@@ -51,7 +51,7 @@ async def delete_queue_entry(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def clear_queue_entry(
-        service: Annotated[QueueEntryServiceExtended, Depends(get_queue_entries_service)],
+        service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
         user: Annotated[User, Depends(current_super_user)],
         queue_id: int,
 ):

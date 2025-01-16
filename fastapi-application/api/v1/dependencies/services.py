@@ -10,7 +10,7 @@ from repositories.queue_tags import QueueTagsRepository
 from repositories.tags import TagsRepository
 from repositories.user import UserRepository
 from services.queue import QueueService
-from services.queue_entry import QueueEntryServiceExtended
+from services.queue_entry import QueueEntryService
 from services.queue_tag import QueueTagService
 from services.tags import TagsService
 from services.user import UserService
@@ -27,7 +27,7 @@ def get_queue_entries_service(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
 ):
     repository = QueueEntriesRepository(session)
-    return QueueEntryServiceExtended(repository)
+    return QueueEntryService(repository)
 
 
 async def get_tags_service(
