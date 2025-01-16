@@ -49,3 +49,4 @@ class BaseRepository(Generic[TModels]):
             return values
 
 TRepository = TypeVar("TRepository")
+ #todo вынести тип и сделать еще наследника с получением айди со связяными моделями
