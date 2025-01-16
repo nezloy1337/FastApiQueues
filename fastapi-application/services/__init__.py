@@ -4,4 +4,6 @@ from .services import (
     QueueService,
     TagsService,
     UserService,
+    BaseService,
 )
+from .types import TService

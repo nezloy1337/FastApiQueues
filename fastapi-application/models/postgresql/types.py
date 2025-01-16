@@ -1,9 +1,16 @@
-from typing import TypeVar
+from typing import TypeVar, Union
 
-from .base import Base as BaseModel
+from .queue import Queue, QueueEntries
+from .tags import Tags, QueueTags
+from .user import User
 
 TModels = TypeVar(
     "TModels",
-    bound=BaseModel,
+    bound=Union[
+        Queue,
+        QueueEntries,
+        Tags,
+        User,
+        QueueTags,
+    ],
 )
-

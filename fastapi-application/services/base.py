@@ -1,9 +1,9 @@
-from typing import List, Optional, Generic, TypeVar
+from typing import List, Optional, Generic
 
 from fastapi import HTTPException, status
 
 from models import TModels
-from repositories.base import BaseRepository
+from repositories import BaseRepository
 
 
 class BaseService(Generic[TModels]):
@@ -31,4 +31,4 @@ class BaseService(Generic[TModels]):
 
 
 # TODO перенести типы
-TService = TypeVar("TService", bound=BaseService)
+

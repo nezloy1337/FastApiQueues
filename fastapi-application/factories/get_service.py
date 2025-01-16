@@ -4,8 +4,8 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db_helper import db_helper
-from repositories.base import TRepository
-from services.base import TService
+from repositories import TRepositories
+from services import TService
 
 
 # нужен ли async
@@ -15,7 +15,7 @@ class ServiceFactory:
     @staticmethod
     def create(
         service_cls: Type[TService],
-        repository_cls: Type[TRepository],
+        repository_cls: Type[TRepositories],
     ) -> Callable[[AsyncSession], TService]:
         """
         Создаёт фабрику для сервиса с указанным репозиторием.

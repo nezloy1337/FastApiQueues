@@ -1,14 +1,13 @@
-from typing import Generic, Optional, List, TypeVar
+from typing import Generic, Optional, List
 from typing import Type
 
 from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from models.postgresql.types import TModels
+from models import TModels
 from utils.condition_builder import ConditionBuilder
 
-TRepository = TypeVar("TRepository")
 
 class BaseRepository(Generic[TModels]):
     def __init__(self, model: Type[TModels], session: AsyncSession):
@@ -50,4 +49,3 @@ class BaseRepository(Generic[TModels]):
             return values
 
 
- #todo вынести тип и сделать еще наследника с получением айди со связяными моделями
