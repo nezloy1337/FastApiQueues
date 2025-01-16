@@ -3,13 +3,13 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from starlette import status
 
-from api.v1.dependencies.users import get_user_service
+from api.v1.dependencies.services import get_user_service
 from schemas.users import ManageUserPermissions
 from services.user import UserService
 
 router = APIRouter(
     prefix="/manage",
-    tags=[""],
+    tags=["custom"],
 )
 
 

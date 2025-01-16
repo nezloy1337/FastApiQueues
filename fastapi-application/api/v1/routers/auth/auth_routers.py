@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from api.v1.routers.auth.fastapi_users_routers import fastapi_users
 from core.auth.backend import auth_backend
 from schemas.users import UserRead, UserCreate
-from .router import router as custom_router
 
 router = APIRouter(
     prefix="/auth",
@@ -26,6 +25,3 @@ router.include_router(
     )
 )
 
-router.include_router(
-    custom_router,
-)

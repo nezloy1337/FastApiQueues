@@ -5,6 +5,9 @@ from sqlalchemy.orm import selectinload
 from core.models import Queue, QueueEntries
 from repositories.base import BaseRepository
 
+"""
+отдельный файл для каждого репозитория для дальнейшего маштабирования и развития проекта
+"""
 
 class QueueRepository(BaseRepository[Queue]):
     def __init__(self, session: AsyncSession):

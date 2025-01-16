@@ -2,7 +2,7 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, status
 
-from api.v1.dependencies.queues import get_queue_service
+from api.v1.dependencies.services import get_queue_service
 from schemas.queues import CreateQueue, GetQueue, GetQueueWithEntries, PutQueue
 from services.queue import QueueService
 

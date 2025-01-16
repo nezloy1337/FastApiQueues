@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from starlette import status
 
-from api.v1.dependencies.queue_tags import get_queue_tags_service
+from api.v1.dependencies.services import get_queue_tags_service
 from schemas.tags import CreateTagQueue
 from services.tags import TagsService
 
