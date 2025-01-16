@@ -4,10 +4,10 @@ from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.models.postgresql.base import Base
+from models.postgresql.base import Base
 
 if TYPE_CHECKING:
-    from core.models import QueueEntries
+    from models import QueueEntries
     from sqlalchemy.ext.asyncio import AsyncSession
 
 

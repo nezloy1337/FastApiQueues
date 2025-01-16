@@ -2,7 +2,7 @@ from typing import List, Optional, Generic, TypeVar
 
 from fastapi import HTTPException, status
 
-from core.models import TModels
+from models import TModels
 from repositories.base import BaseRepository
 
 

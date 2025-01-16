@@ -5,7 +5,7 @@ from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from core.models.postgresql.types import TModels
+from models.postgresql.types import TModels
 from utils.condition_builder import ConditionBuilder
 
 TRepository = TypeVar("TRepository")

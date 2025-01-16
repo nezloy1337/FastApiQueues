@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from core.models import Queue, QueueEntries
+from models import Queue, QueueEntries
 from repositories.base import BaseRepository
 
 """

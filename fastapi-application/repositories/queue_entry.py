@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import QueueEntries
+from models import QueueEntries
 from repositories.base import BaseRepository
 
 

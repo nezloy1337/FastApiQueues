@@ -3,7 +3,7 @@ from typing import Type, Callable
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import db_helper
+from core.db_helper import db_helper
 from repositories.base import TRepository
 from services.base import TService
 

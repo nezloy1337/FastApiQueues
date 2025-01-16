@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from fastapi_users import FastAPIUsers
 
 from core.auth import auth_backend, get_user_manager
-from core.models import User
+from models import User
 from schemas.users import UserRead, UserCreate
 
 fastapi_users = FastAPIUsers[User, uuid.UUID](

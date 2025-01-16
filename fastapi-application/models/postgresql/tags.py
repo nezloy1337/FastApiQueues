@@ -7,8 +7,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
-from core.models.mixins import IntIdPkMixin
-from core.models.postgresql.base import Base
+from models.mixins import IntIdPkMixin
+from models.postgresql.base import Base
 
 
 class Tags(IntIdPkMixin, Base):

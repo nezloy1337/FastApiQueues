@@ -5,8 +5,8 @@ from fastapi import HTTPException, status
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 
-from core.models.mongodb import error_collection
 from core.config import settings
+from models.mongodb import error_collection
 from schemas.logging import ExceptionLogTemplate
 
 # Настройка логирования

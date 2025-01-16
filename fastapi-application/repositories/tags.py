@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import Tags
+from models import Tags
 from repositories.base import BaseRepository
 
 
