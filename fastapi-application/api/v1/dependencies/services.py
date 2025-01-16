@@ -1,9 +1,5 @@
-from typing import Annotated
 
-from fastapi.params import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from core.models import db_helper
+from factories.service import ServiceFactory
 from repositories.queue import QueueRepository
 from repositories.queue_entry import QueueEntriesRepository
 from repositories.queue_tags import QueueTagsRepository
@@ -12,36 +8,8 @@ from repositories.user import UserRepository
 from services.services import UserService, QueueEntryService, TagsService, QueueService, QueueTagService
 
 
-async def get_user_service(
-    session: "AsyncSession" = Depends(db_helper.session_getter),
-) -> UserService:
-    user_repository = UserRepository(session)
-    return UserService(user_repository)
-
-
-def get_queue_entries_service(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
-):
-    repository = QueueEntriesRepository(session)
-    return QueueEntryService(repository)
-
-
-async def get_tags_service(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-):
-    tags_repository = TagsRepository(session)
-    return TagsService(tags_repository)
-
-
-async def get_queue_service(
-    session: AsyncSession = Depends(db_helper.session_getter),
-) -> QueueService:
-    queue_repository = QueueRepository(session)
-    return QueueService(queue_repository)
-
-
-def get_queue_tags_service(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
-):
-    repository = QueueTagsRepository(session)
-    return QueueTagService(repository)
+get_user_service = ServiceFactory.create(UserService, UserRepository)
+get_queue_entries_service = ServiceFactory.create(QueueEntryService, QueueEntriesRepository)
+get_tags_service = ServiceFactory.create(TagsService, TagsRepository)
+get_queue_tags_service = ServiceFactory.create(QueueTagService, QueueTagsRepository)
+get_queue_service = ServiceFactory.create(QueueService, QueueRepository)
