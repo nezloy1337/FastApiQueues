@@ -4,7 +4,7 @@ from fastapi import APIRouter, status, Depends
 
 from api.v1.dependencies.services import get_tags_service
 from schemas.tags import CreateTag, GetTag, PatchTag
-from services.tags import TagsService
+from services.services import TagsService
 
 router = APIRouter(
     tags=["tags"],

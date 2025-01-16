@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 
 from api.v1.dependencies.services import get_queue_service
 from schemas.queues import CreateQueue, GetQueue, GetQueueWithEntries, PutQueue
-from services.queue import QueueService
+from services.services import QueueService
 
 router = APIRouter(
     prefix="/queues",

@@ -5,7 +5,7 @@ from starlette import status
 
 from api.v1.dependencies.services import get_user_service
 from schemas.users import ManageUserPermissions
-from services.user import UserService
+from services.services import UserService
 
 router = APIRouter(
     prefix="/manage",

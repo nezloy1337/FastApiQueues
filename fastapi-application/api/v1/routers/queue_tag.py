@@ -5,7 +5,7 @@ from starlette import status
 
 from api.v1.dependencies.services import get_queue_tags_service
 from schemas.tags import CreateTagQueue
-from services.tags import TagsService
+from services.services import TagsService
 
 router = APIRouter(
     tags=["queue_tag"],

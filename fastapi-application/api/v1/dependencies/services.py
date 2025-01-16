@@ -9,11 +9,7 @@ from repositories.queue_entry import QueueEntriesRepository
 from repositories.queue_tags import QueueTagsRepository
 from repositories.tags import TagsRepository
 from repositories.user import UserRepository
-from services.queue import QueueService
-from services.queue_entry import QueueEntryService
-from services.queue_tag import QueueTagService
-from services.tags import TagsService
-from services.user import UserService
+from services.services import UserService, QueueEntryService, TagsService, QueueService, QueueTagService
 
 
 async def get_user_service(
