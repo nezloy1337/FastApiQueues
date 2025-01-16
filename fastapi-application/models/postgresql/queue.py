@@ -12,8 +12,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from models.mixins import IntIdPkMixin
-from models.postgresql.base import Base
-from models.postgresql.user import User
+from .base import Base
+from .user import User
 
 
 class Queue(IntIdPkMixin, Base):

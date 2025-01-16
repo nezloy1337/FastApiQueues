@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from models import Queue, QueueEntries
-from repositories.base import BaseRepository
+from repositories import BaseRepository
 
 """
 отдельный файл для каждого репозитория для дальнейшего маштабирования и развития проекта

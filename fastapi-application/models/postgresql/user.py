@@ -4,7 +4,7 @@ from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from models.postgresql.base import Base
+from .base import Base
 
 if TYPE_CHECKING:
     from models import QueueEntries
