@@ -1,4 +1,3 @@
-from core.models import User
 from repositories.queue import QueueRepository
 from repositories.queue_entry import QueueEntriesRepository
 from repositories.queue_tags import QueueTagsRepository
@@ -17,13 +16,13 @@ class QueueTagService(BaseService):
         super().__init__(repository)
 
 
-class TagsService(BaseService[User]):
+class TagsService(BaseService):
 
     def __init__(self, repository: TagsRepository):
         super().__init__(repository)
 
 
-class UserService(BaseService[User]):
+class UserService(BaseService):
 
     def __init__(self,repository: UserRepository):
         super().__init__(repository)

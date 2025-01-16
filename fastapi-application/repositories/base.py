@@ -1,32 +1,33 @@
-from typing import Generic, Type, List, Optional
+from typing import Generic, Optional, List, TypeVar
+from typing import Type
 
 from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from core.models.types import T
+from core.models.postgresql.types import TModels
 from utils.condition_builder import ConditionBuilder
 
 
-class BaseRepository(Generic[T]):
-    def __init__(self, model: Type[T], session: AsyncSession):
+class BaseRepository(Generic[TModels]):
+    def __init__(self, model: Type[TModels], session: AsyncSession):
         self.model = model
         self.session = session
         self.condition_builder = ConditionBuilder(model)
 
 
-    async def create(self, obj_data: dict) -> T:
+    async def create(self, obj_data: dict) -> TModels:
         obj = self.model(**obj_data)
         self.session.add(obj)
         await self.session.commit()
         return obj
 
 
-    async def get_by_id(self, obj_id: int) -> Optional[T]:
+    async def get_by_id(self, obj_id: int) -> Optional[TModels]:
         return await self.session.get(self.model, obj_id)
 
 
-    async def get_all(self) -> List[T]:
+    async def get_all(self) -> List[TModels]:
         result = await self.session.execute(select(self.model))
         return result.scalars().all()
 
@@ -46,3 +47,5 @@ class BaseRepository(Generic[T]):
         if result.rowcount:
             await self.session.commit()
             return values
+
+TRepository = TypeVar("TRepository")

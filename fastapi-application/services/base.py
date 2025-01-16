@@ -1,26 +1,25 @@
-from typing import Generic, List, Optional, Union
+from typing import List, Optional, Generic, TypeVar
 
 from fastapi import HTTPException, status
 
-from core.models.types import T
+from core.models.postgresql.types import TModels
 from repositories.base import BaseRepository
 
 
-class BaseService(Generic[T]):
-
-    def __init__(self, repository: Union[BaseRepository[T]]):
+class BaseService(Generic[TModels]):
+    def __init__(self, repository: BaseRepository[TModels]):
         self.repository = repository
 
 
-    async def create(self, obj_data: dict) -> T:
+    async def create(self, obj_data: dict) -> TModels:
         return await self.repository.create(obj_data)
 
 
-    async def get_by_id(self, obj_id: int) -> Optional[T]:
+    async def get_by_id(self, obj_id: int) -> Optional[TModels]:
         return await self.repository.get_by_id(obj_id)
 
 
-    async def get_all(self) -> List[T]:
+    async def get_all(self) -> List[TModels]:
         return await self.repository.get_all()
 
 
@@ -36,6 +35,6 @@ class BaseService(Generic[T]):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not Found")
 
 
-
+TService = TypeVar("TService", bound=BaseService)
 
 
