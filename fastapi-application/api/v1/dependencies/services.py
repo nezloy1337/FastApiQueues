@@ -1,5 +1,5 @@
 
-from factories.service import ServiceFactory
+from factories.get_service import ServiceFactory
 from repositories.queue import QueueRepository
 from repositories.queue_entry import QueueEntriesRepository
 from repositories.queue_tags import QueueTagsRepository
