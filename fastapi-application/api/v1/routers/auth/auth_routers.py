@@ -1,8 +1,17 @@
-from fastapi import APIRouter
+import uuid
 
-from api.v1.routers.auth.fastapi_users_routers import fastapi_users
-from core.auth.backend import auth_backend
+from fastapi import APIRouter
+from fastapi_users import FastAPIUsers
+
+from core.auth import auth_backend, get_user_manager
+from core.models import User
 from schemas.users import UserRead, UserCreate
+
+fastapi_users = FastAPIUsers[User, uuid.UUID](
+    get_user_manager,
+    [auth_backend],
+)
+
 
 router = APIRouter(
     prefix="/auth",
@@ -24,4 +33,3 @@ router.include_router(
         UserCreate,
     )
 )
-

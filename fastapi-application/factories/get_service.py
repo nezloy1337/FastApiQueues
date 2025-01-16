@@ -31,8 +31,3 @@ class ServiceFactory:
             return service_cls(repository)
 
         return _get_service
-
-
-
-
-

@@ -8,6 +8,7 @@ from sqlalchemy.future import select
 from core.models.postgresql.types import TModels
 from utils.condition_builder import ConditionBuilder
 
+TRepository = TypeVar("TRepository")
 
 class BaseRepository(Generic[TModels]):
     def __init__(self, model: Type[TModels], session: AsyncSession):
@@ -48,5 +49,5 @@ class BaseRepository(Generic[TModels]):
             await self.session.commit()
             return values
 
-TRepository = TypeVar("TRepository")
+
  #todo вынести тип и сделать еще наследника с получением айди со связяными моделями

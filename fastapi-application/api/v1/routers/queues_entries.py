@@ -2,11 +2,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from api.v1.dependencies.services import get_queue_entries_service
-from api.v1.routers.auth.fastapi_users_routers import current_user, current_super_user
+from api.v1.dependencies import get_queue_entries_service
+from api.v1.routers.auth import current_user, current_super_user
 from core.models import User
 from schemas.queue_entries import CreateQueueEntry
-from services.services import QueueEntryService
+from services import QueueEntryService
 from utils.dict_utils import combine_dict_with_named_params
 
 router = APIRouter(

@@ -2,9 +2,9 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, status, Depends
 
-from api.v1.dependencies.services import get_tags_service
+from api.v1.dependencies import get_tags_service
 from schemas.tags import CreateTag, GetTag, PatchTag
-from services.services import TagsService
+from services import TagsService
 
 router = APIRouter(
     tags=["tags"],
@@ -51,7 +51,7 @@ async def delete_tag(
 
 
 @router.patch(
-    "{tag_id}",
+    "/{tag_id}",
     status_code=status.HTTP_200_OK,
     response_model=PatchTag,
 )
