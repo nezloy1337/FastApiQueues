@@ -2,18 +2,19 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from api.v1.dependencies import get_queue_entries_service
-from api.v1.routers.auth import current_user, current_super_user
 from models import User
 from schemas.queue_entries import CreateQueueEntry
 from services import QueueEntryService
-from utils.dict_utils import combine_dict_with_named_params
+from ..dependencies import (
+    current_user,
+    current_super_user,
+    get_queue_entries_service,
+)
 
 router = APIRouter(
     prefix="/queue",
     tags=["queues_entries"],
 )
-
 
 
 @router.post(
@@ -27,10 +28,10 @@ async def create_queue_entry(
     user: Annotated[User, Depends(current_user)],
 ):
     return await service.create(
-        combine_dict_with_named_params(
-            queue_entry_to_create.model_dump(),
-            user_id=user.id,
-        )
+        {
+            **queue_entry_to_create.model_dump(),
+            "user_id": user.id,
+        }
     )
 
 
@@ -43,7 +44,7 @@ async def delete_queue_entry(
     user: Annotated[User, Depends(current_user)],
     queue_id: int,
 ):
-    return await service.delete(queue_id=queue_id,user_id=user.id)
+    return await service.delete(queue_id=queue_id, user_id=user.id)
 
 
 @router.delete(
@@ -51,8 +52,8 @@ async def delete_queue_entry(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def clear_queue_entry(
-        service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
-        user: Annotated[User, Depends(current_super_user)],
-        queue_id: int,
+    service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
+    user: Annotated[User, Depends(current_super_user)],
+    queue_id: int,
 ):
     return await service.delete(queue_id=queue_id)

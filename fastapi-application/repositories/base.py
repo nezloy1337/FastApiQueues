@@ -1,4 +1,4 @@
-from typing import Generic, Optional, List
+from typing import Generic, Optional, List, Dict, Any
 from typing import Type
 
 from sqlalchemy import update, delete, and_
@@ -14,6 +14,7 @@ class BaseRepository(Generic[TModels]):
         self.model = model
         self.session = session
         self.condition_builder = ConditionBuilder(model)
+        self.column_names = model.__table__.columns
 
 
     async def create(self, obj_data: dict) -> TModels:
@@ -33,19 +34,41 @@ class BaseRepository(Generic[TModels]):
 
 
     async def delete(self, **conditions: dict) -> bool:
-        query_conditions = self.condition_builder.create_condition(**conditions)
-        query = delete(self.model).where(and_(*query_conditions))
+        query_conditions = self.condition_builder.create_conditions(**conditions)
+        query = delete(self.model).filter(and_(*query_conditions))
         result = await self.session.execute(query)
 
         if result.rowcount:
             await self.session.commit()
             return True
 
-    async def patch(self, obj_id, **values) -> dict:
-        query = update(self.model).where(self.model.id == obj_id).values(**values)
-        result = await self.session.execute(query)
-        if result.rowcount:
-            await self.session.commit()
-            return values
+
+    async def patch(self, obj_unique_key: Dict[str, Any], **values: Any) -> Optional[Dict[str, Any]]:
+        """Обновляет объект с указанным уникальным ключом."""
+        try:
+            # Создаём условия для фильтрации
+            if filters := self.condition_builder.create_conditions(**obj_unique_key):
+                # Формируем запрос на обновление
+                query = (
+                    update(self.model)
+                    .where(*filters)  # Применяем фильтры
+                    .values(**values)  # Обновляем значения
+                )
+
+                result = await self.session.execute(query)
+
+                if result.rowcount == 0:
+                    # Подтверждаем транзакцию
+                    await self.session.commit()
+                    return values
+
+        except Exception as e:
+            raise e
+
+
+
+
+
+
 
 

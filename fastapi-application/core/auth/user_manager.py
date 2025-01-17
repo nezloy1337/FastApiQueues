@@ -4,11 +4,14 @@ import uuid
 from fastapi import Depends
 from fastapi_users import BaseUserManager, UUIDIDMixin
 
-from api.v1.dependencies.users import get_user_db
+from core.auth.get_db import get_user_db
 from core.config import settings
 from models import User
 
 log = logging.getLogger(__name__)
+
+
+
 
 
 class UserManager(

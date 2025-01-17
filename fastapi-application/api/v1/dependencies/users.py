@@ -1,21 +1,17 @@
-from typing import Annotated
+from uuid import UUID
 
-from fastapi import Depends
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi_users import FastAPIUsers
 
-from core.db_helper import db_helper
+from core.auth import auth_backend, get_user_manager
 from models import User
 
+fastapi_users = FastAPIUsers[User, UUID](
+    get_user_manager,
+    [auth_backend],
+)
 
-async def get_user_db(
-    session: Annotated[
-        "AsyncSession",
-        Depends(db_helper.session_getter),
-    ],
-):
-    yield SQLAlchemyUserDatabase(session, User)
-
+current_user = fastapi_users.current_user(active=True)
+current_super_user = fastapi_users.current_user(active=True, superuser=True)
 
 
 

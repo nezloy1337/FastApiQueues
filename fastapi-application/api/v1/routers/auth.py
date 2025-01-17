@@ -1,17 +1,8 @@
-import uuid
-
 from fastapi import APIRouter
-from fastapi_users import FastAPIUsers
 
-from core.auth import auth_backend, get_user_manager
-from models import User
+from core.auth import auth_backend
 from schemas.users import UserRead, UserCreate
-
-fastapi_users = FastAPIUsers[User, uuid.UUID](
-    get_user_manager,
-    [auth_backend],
-)
-
+from ..dependencies.users import fastapi_users
 
 router = APIRouter(
     prefix="/auth",
