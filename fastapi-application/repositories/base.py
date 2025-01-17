@@ -10,12 +10,15 @@ from utils.condition_builder import ConditionBuilder
 
 
 class BaseRepository(Generic[TModels]):
-    def __init__(self, model: Type[TModels], session: AsyncSession):
+    def __init__(
+        self,
+        model: Type[TModels],
+        session: AsyncSession,
+        condition_builder: ConditionBuilder,
+    ):
         self.model = model
         self.session = session
-        self.condition_builder = ConditionBuilder(model)
-        self.column_names = model.__table__.columns
-
+        self.condition_builder = condition_builder
 
     async def create(self, obj_data: dict) -> TModels:
         obj = self.model(**obj_data)
@@ -23,15 +26,12 @@ class BaseRepository(Generic[TModels]):
         await self.session.commit()
         return obj
 
-
     async def get_by_id(self, obj_id: int) -> Optional[TModels]:
         return await self.session.get(self.model, obj_id)
-
 
     async def get_all(self) -> List[TModels]:
         result = await self.session.execute(select(self.model))
         return result.scalars().all()
-
 
     async def delete(self, **conditions: dict) -> bool:
         query_conditions = self.condition_builder.create_conditions(**conditions)
@@ -42,8 +42,9 @@ class BaseRepository(Generic[TModels]):
             await self.session.commit()
             return True
 
-
-    async def patch(self, obj_unique_key: Dict[str, Any], **values: Any) -> Optional[Dict[str, Any]]:
+    async def patch(
+        self, obj_unique_key: Dict[str, Any], **values: Any
+    ) -> Optional[Dict[str, Any]]:
         """Обновляет объект с указанным уникальным ключом."""
         try:
             # Создаём условия для фильтрации
@@ -64,11 +65,3 @@ class BaseRepository(Generic[TModels]):
 
         except Exception as e:
             raise e
-
-
-
-
-
-
-
-
