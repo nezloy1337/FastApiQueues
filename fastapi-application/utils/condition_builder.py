@@ -33,6 +33,7 @@ class ConditionBuilder:
 
 
 def get_condition_builder(repository_type):
+
     def create_condition_builder() -> ConditionBuilder:
         return ConditionBuilder(repository_type)
     return create_condition_builder

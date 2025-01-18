@@ -4,9 +4,9 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db_helper import db_helper
+from factories.condition_builder import ConditionBuilderFactory, get_condition_builder_factory
 from repositories import TRepositories, BaseRepository
 from services import TService
-from utils.condition_builder import ConditionBuilder, get_condition_builder
 
 
 def get_repository(
@@ -14,9 +14,9 @@ def get_repository(
 ) -> Callable[[AsyncSession], BaseRepository]:
     def create_repository(
         session: AsyncSession = Depends(db_helper.session_getter),
-        condition_builder: ConditionBuilder = Depends(get_condition_builder(repository_type)),
+        builder_factory: ConditionBuilderFactory = Depends(get_condition_builder_factory),
     ) -> Type[TRepositories]:
-        return repository_type(session, condition_builder,)
+        return repository_type(session, builder_factory,)
 
     return create_repository
 
