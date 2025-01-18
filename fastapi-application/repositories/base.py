@@ -1,15 +1,16 @@
-from typing import Generic, Optional, List, Dict, Any
+from typing import List, Optional, Dict, Any, Generic
 from typing import Type
 
 from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from interfaces import AbstractRepository
 from models import TModels
 from utils.condition_builder import ConditionBuilder
 
 
-class BaseRepository(Generic[TModels]):
+class BaseRepository(AbstractRepository,Generic[TModels]):
     def __init__(
         self,
         model: Type[TModels],

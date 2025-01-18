@@ -1,4 +1,5 @@
-from factories import ServiceFactory
+
+from factories.get_service import get_service
 from repositories import (
     UserRepository,
     QueueRepository,
@@ -15,27 +16,27 @@ from services import (
 )
 
 
-get_user_service = ServiceFactory.create(
+get_user_service = get_service(
     UserService,
     UserRepository,
 )
 
-get_queue_entries_service = ServiceFactory.create(
+get_queue_entries_service = get_service(
     QueueEntryService,
     QueueEntriesRepository,
 )
 
-get_tags_service = ServiceFactory.create(
+get_tags_service = get_service(
     TagsService,
     TagsRepository,
 )
 
-get_queue_tags_service = ServiceFactory.create(
+get_queue_tags_service = get_service(
     QueueTagService,
     QueueTagsRepository,
 )
 
-get_queue_service = ServiceFactory.create(
+get_queue_service = get_service(
     QueueService,
     QueueRepository,
 )

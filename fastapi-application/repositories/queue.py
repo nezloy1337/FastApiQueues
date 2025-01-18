@@ -10,10 +10,11 @@ from repositories import BaseRepository
 """
 
 class QueueRepository(BaseRepository[Queue]):
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession, condition_builder):
         super().__init__(
             Queue,
             session,
+            condition_builder
         )
 
     async def get_by_id(self, queue_id: int) -> Queue:

@@ -1,38 +1,35 @@
-from typing import Type, Callable, Annotated
+from typing import Type, Callable
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db_helper import db_helper
-from repositories import TRepositories
+from repositories import TRepositories, BaseRepository
 from services import TService
-from utils.exception_handlers import get_exception_handler, ExceptionHandler
+from utils.condition_builder import ConditionBuilder, get_condition_builder
 
 
-# нужен ли async
+def get_repository(
+    repository_type: Type[TRepositories],
+) -> Callable[[AsyncSession], BaseRepository]:
+    def create_repository(
+        session: AsyncSession = Depends(db_helper.session_getter),
+        condition_builder: ConditionBuilder = Depends(get_condition_builder(repository_type)),
+    ) -> Type[TRepositories]:
+        return repository_type(session, condition_builder,)
+
+    return create_repository
 
 
-class ServiceFactory:
-    @staticmethod
-    def create(
-        service_cls: Type[TService],
-        repository_cls: Type[TRepositories],
 
+def get_service(
+    service_cls: Type[TService],
+    repository_cls: Type[TRepositories],
+) -> Callable[[], TService]:
+    def create_service(
+        repository: TRepositories = Depends(get_repository(repository_cls)),
+    ) -> TService:
+        return service_cls(repository)
 
-    ) -> Callable[[AsyncSession], TService]:
-        """
-        Создаёт фабрику для сервиса с указанным репозиторием.
-        :param exception_handler:
-        :param service_cls: Класс сервиса.
-        :param repository_cls: Класс репозитория.
-        :return: Callable, создающий сервис.
-        """
+    return create_service
 
-        def _get_service(
-            session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-            exception_handler = Annotated[ExceptionHandler, Depends(get_exception_handler)],
-        ) -> TService:
-            repository = repository_cls(session)
-            return service_cls(repository,exception_handler)
-
-        return _get_service

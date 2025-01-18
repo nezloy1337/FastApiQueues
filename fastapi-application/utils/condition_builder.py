@@ -30,3 +30,9 @@ class ConditionBuilder:
                 raise AttributeError(f"Model '{self.model.__name__}' has no relation '{name}'")
             self.options.append(selectinload(relation))
         return self.options
+
+
+def get_condition_builder(repository_type):
+    def create_condition_builder() -> ConditionBuilder:
+        return ConditionBuilder(repository_type)
+    return create_condition_builder
