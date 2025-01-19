@@ -5,12 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db_helper import db_helper
 from factories.condition_builder import ConditionBuilderFactory, get_condition_builder_factory
+from models import TModels
 from repositories import TRepositories, BaseRepository
-from services import TService
+from services import TService, BaseService
 
 
 def get_repository(
-    repository_type: Type[TRepositories],
+    repository_type: Type[BaseRepository[TModels]],
 ) -> Callable[[AsyncSession], BaseRepository]:
     def create_repository(
         session: AsyncSession = Depends(db_helper.session_getter),
@@ -23,8 +24,8 @@ def get_repository(
 
 
 def get_service(
-    service_cls: Type[TService],
-    repository_cls: Type[TRepositories],
+    service_cls: Type[BaseService[TModels]],
+    repository_cls: Type[BaseRepository[TModels]],
 ) -> Callable[[], TService]:
     def create_service(
         repository: TRepositories = Depends(get_repository(repository_cls)),
