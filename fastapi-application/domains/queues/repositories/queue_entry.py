@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import QueueEntries
+from domains.queues import QueueEntries
 from repositories import BaseRepository
 from utils.condition_builder import ConditionBuilder
 

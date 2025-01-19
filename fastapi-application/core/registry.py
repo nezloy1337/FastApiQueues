@@ -1,22 +1,12 @@
 from typing import Dict, Tuple, Type
 
-from models import TModels, Queue, User, QueueEntries, QueueTags, Tags
-from repositories import (
-    BaseRepository,
-    QueueRepository,
-    UserRepository,
-    QueueEntriesRepository,
-    QueueTagsRepository,
-    TagsRepository,
-)
-from services import (
-    BaseService,
-    QueueService,
-    UserService,
-    QueueEntryService,
-    QueueTagService,
-    TagsService,
-)
+from domains.queues import QueueService, QueueEntries, QueueEntriesRepository, QueueEntryService, QueueRepository, \
+    Queue, QueueTags, QueueTagService, QueueTagsRepository
+from domains.tags import Tags, TagsService, TagsRepository
+from domains.users import User, UserService, UserRepository
+from models import TModels
+from repositories import BaseRepository
+from services import BaseService
 
 MODEL_REGISTRY: Dict[
     Type[TModels],

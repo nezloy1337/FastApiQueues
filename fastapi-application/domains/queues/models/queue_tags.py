@@ -1,30 +1,11 @@
-from typing import List
-
 from sqlalchemy import (
-    String,
     ForeignKey,
     UniqueConstraint,
 )
-from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy.orm import mapped_column, Mapped
 
+from models.base import Base
 from models.mixins import IntIdPkMixin
-from .base import Base
-
-
-class Tags(IntIdPkMixin, Base):
-    __tablename__ = "tags"
-
-    name: Mapped[str] = mapped_column(
-        String(15),
-        nullable=False,
-        unique=True,
-    )
-
-    queues: Mapped[List["Queue"]] = relationship(
-        "Queue",
-        secondary="queue_tags",
-        back_populates="queue_tags",
-    )
 
 
 class QueueTags(IntIdPkMixin, Base):

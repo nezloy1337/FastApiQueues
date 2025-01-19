@@ -3,8 +3,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, status, Depends
 
 from api.v1.dependencies import get_tags_service
-from schemas.tags import CreateTag, GetTag, PatchTag
-from services import TagsService
+from domains.tags import CreateTag, TagsService, GetTag, PatchTag
 
 router = APIRouter(
     tags=["tags"],

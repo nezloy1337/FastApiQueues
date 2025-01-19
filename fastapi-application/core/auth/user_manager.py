@@ -6,7 +6,7 @@ from fastapi_users import BaseUserManager, UUIDIDMixin
 
 from core.auth.get_db import get_user_db
 from core.config import settings
-from models import User
+from domains.users import User
 
 log = logging.getLogger(__name__)
 

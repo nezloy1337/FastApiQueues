@@ -7,7 +7,7 @@ from models import TModels
 from .repository import get_repository_by_model
 
 
-def get_service_by_model(model_cls: Type[TModels]):
+def get_service_by_model(model_cls: Type[TModels]) -> object:
     """
     Принимает модель, находит в реестре (RepoClass, ServiceClass).
     Возвращает функцию (для Depends), которая создаст экземпляр сервиса.

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, List, Optional, Dict, Any
 
-from models import TModels
+from models.types import TModels
 
 
 class AbstractRepository(ABC, Generic[TModels]):

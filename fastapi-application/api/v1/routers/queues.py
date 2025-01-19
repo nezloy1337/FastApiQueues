@@ -3,8 +3,8 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, status
 
 from api.v1.dependencies import get_queue_service
-from schemas.queues import CreateQueue, GetQueue, GetQueueWithEntries, PutQueue
-from services import QueueService
+from domains.queues import QueueService
+from domains.queues.schemas.queues import CreateQueue, GetQueue, GetQueueWithEntries, PutQueue
 
 router = APIRouter(
     prefix="/queues",

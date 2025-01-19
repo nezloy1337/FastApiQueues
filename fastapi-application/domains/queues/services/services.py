@@ -9,13 +9,5 @@ class QueueTagService(BaseService):
     pass
 
 
-class TagsService(BaseService):
-    pass
-
-
-class UserService(BaseService):
-    pass
-
-
 class QueueService(BaseService):
     pass

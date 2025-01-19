@@ -4,8 +4,7 @@ from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.v1.dependencies import get_user_service
-from schemas.users import ManageUserPermissions
-from services import UserService
+from domains.users import ManageUserPermissions, UserService
 
 router = APIRouter(
     prefix="/manage",

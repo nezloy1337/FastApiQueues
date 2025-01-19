@@ -4,8 +4,7 @@ from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.v1.dependencies import get_queue_tags_service
-from schemas.tags import CreateTagQueue
-from services import TagsService
+from domains.tags import TagsService, CreateTagQueue
 
 router = APIRouter(
     tags=["queue_tag"],

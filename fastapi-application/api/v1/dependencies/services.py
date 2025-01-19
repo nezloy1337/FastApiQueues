@@ -1,5 +1,8 @@
+from domains.queues import QueueEntries, QueueTags, Queue
+from domains.tags import Tags
+from domains.users import User
 from factories.service import get_service_by_model
-from models import User, QueueEntries, Tags, Queue, QueueTags
+
 
 get_user_service = get_service_by_model(User)
 

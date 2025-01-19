@@ -1,15 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import Tags
+from domains.queues import QueueTags
 from repositories import BaseRepository
 from utils.condition_builder import ConditionBuilder
 
 
-class TagsRepository(BaseRepository[Tags]):
-
-    def __init__(self, session: AsyncSession,condition_builder: ConditionBuilder):
+class QueueTagsRepository(BaseRepository):
+    def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
         super().__init__(
-            Tags,
+            QueueTags,
             session,
             condition_builder,
         )

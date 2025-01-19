@@ -2,9 +2,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from models import User
-from schemas.queue_entries import CreateQueueEntry
-from services import QueueEntryService
+from domains.queues import CreateQueueEntry, QueueEntryService
+from domains.users import User
 from ..dependencies import (
     current_user,
     current_super_user,

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from core.auth import auth_backend
-from schemas.users import UserRead, UserCreate
+from domains.users import UserRead, UserCreate
 from ..dependencies.users import fastapi_users
 
 router = APIRouter(
