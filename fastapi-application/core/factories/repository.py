@@ -3,13 +3,13 @@ from typing import Type
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.base import TModels
 from core.db_helper import db_helper
 from core.factories.condition_builder import (
     ConditionBuilderFactory,
     get_condition_builder_factory,
 )
 from core.registry import MODEL_REGISTRY
-from models import TModels
 
 
 def get_repository_by_model(model_cls: Type[TModels]):

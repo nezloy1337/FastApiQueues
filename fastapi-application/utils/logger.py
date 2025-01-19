@@ -1,5 +1,5 @@
-from models.mongodb import queue_logs_collection, queue_entries_logs_collection
-from schemas.logging import QueueEntryLog, QueueLog
+from core.mongodb.connection import queue_logs_collection, queue_entries_logs_collection
+from core.mongodb.schemas import QueueEntryLog, QueueLog
 from utils.exception_handlers import handle_unexpected_error
 
 

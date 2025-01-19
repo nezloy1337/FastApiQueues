@@ -1,9 +1,9 @@
-from typing import List, Optional, Generic
+from typing import List, Optional, Generic, TypeVar
 
 from fastapi import HTTPException, status
 
+from core.base import TModels
 from core.base.repository import BaseRepository
-from models import TModels
 
 
 class BaseService(Generic[TModels]):
@@ -37,3 +37,8 @@ class BaseService(Generic[TModels]):
             )
         except Exception as e:
             raise
+
+TService = TypeVar(
+    "TService",
+    bound=BaseService,
+)

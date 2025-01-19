@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Generic, List, Optional, Dict, Any
+from typing import Generic, List, Optional, Dict, Any, TypeVar
 from typing import Type
 
 from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from models.types import TModels
+from core.base import TModels
 from utils.condition_builder import ConditionBuilder
 
 
@@ -97,3 +97,8 @@ class BaseRepository(AbstractRepository,Generic[TModels]):
 
         except Exception as e:
             raise e
+
+TRepositories = TypeVar(
+    "TRepositories",
+    bound=BaseRepository,
+)

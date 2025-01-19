@@ -3,8 +3,8 @@ from typing import Type
 from fastapi import Depends
 
 from core.registry import MODEL_REGISTRY
-from models import TModels
 from .repository import get_repository_by_model
+from ..base import TModels
 
 
 def get_service_by_model(model_cls: Type[TModels]) -> object:

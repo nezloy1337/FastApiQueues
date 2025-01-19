@@ -2,7 +2,7 @@ from typing import Type, List, Any
 
 from sqlalchemy.orm import selectinload
 
-from models import TModels
+from core.base import TModels
 
 
 class ConditionBuilder:
