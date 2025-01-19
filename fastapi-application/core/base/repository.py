@@ -1,13 +1,44 @@
-from typing import List, Optional, Dict, Any, Generic
+from abc import ABC, abstractmethod
+from typing import Generic, List, Optional, Dict, Any
 from typing import Type
 
 from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from interfaces import AbstractRepository
-from models import TModels
+from models.types import TModels
 from utils.condition_builder import ConditionBuilder
+
+
+class AbstractRepository(ABC, Generic[TModels]):
+    """Абстрактный класс репозитория, задающий интерфейс."""
+
+    @abstractmethod
+    async def create(self, obj_data: dict) -> TModels:
+        """Создаёт новый объект."""
+        pass
+
+    @abstractmethod
+    async def get_by_id(self, obj_id: int) -> Optional[TModels]:
+        """Получает объект по ID."""
+        pass
+
+    @abstractmethod
+    async def get_all(self) -> List[TModels]:
+        """Получает все объекты."""
+        pass
+
+    @abstractmethod
+    async def delete(self, **conditions: dict) -> bool:
+        """Удаляет объекты, соответствующие условиям."""
+        pass
+
+    @abstractmethod
+    async def patch(
+        self, obj_unique_key: Dict[str, Any], **values: Any
+    ) -> Optional[Dict[str, Any]]:
+        """Обновляет объект с указанным уникальным ключом."""
+        pass
 
 
 class BaseRepository(AbstractRepository,Generic[TModels]):

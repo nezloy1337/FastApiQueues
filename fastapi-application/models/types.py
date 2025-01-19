@@ -1,6 +1,6 @@
 from typing import TypeVar, Union
 
-from .base import Base
+from core.base.model import Base
 
 TModels = TypeVar(
     "TModels",

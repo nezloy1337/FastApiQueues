@@ -2,8 +2,8 @@ from fastapi import HTTPException, status
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.base.repository import BaseRepository
 from domains.users import User
-from repositories import BaseRepository
 
 
 class UserRepository(BaseRepository[User]):

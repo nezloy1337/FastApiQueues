@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.base.repository import BaseRepository
 from domains.tags import Tags
-from repositories import BaseRepository
 from utils.condition_builder import ConditionBuilder
 
 

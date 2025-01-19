@@ -2,8 +2,8 @@ from typing import List, Optional, Generic
 
 from fastapi import HTTPException, status
 
+from core.base.repository import BaseRepository
 from models import TModels
-from repositories import BaseRepository
 
 
 class BaseService(Generic[TModels]):

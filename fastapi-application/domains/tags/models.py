@@ -5,7 +5,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
-from models.base import Base
+from core.base.model import Base
 from models.mixins import IntIdPkMixin
 
 

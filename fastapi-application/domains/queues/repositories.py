@@ -2,8 +2,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from core.base.repository import BaseRepository
 from domains.queues import Queue, QueueEntries
-from repositories import BaseRepository
 from utils.condition_builder import ConditionBuilder
 
 """
