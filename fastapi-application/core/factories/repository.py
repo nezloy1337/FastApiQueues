@@ -4,11 +4,11 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db_helper import db_helper
-from core.registry import MODEL_REGISTRY
-from factories.condition_builder import (
+from core.factories.condition_builder import (
     ConditionBuilderFactory,
     get_condition_builder_factory,
 )
+from core.registry import MODEL_REGISTRY
 from models import TModels
 
 

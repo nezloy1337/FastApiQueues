@@ -4,13 +4,14 @@ from sqlalchemy.orm import selectinload
 
 from domains.queues import Queue, QueueEntries
 from repositories import BaseRepository
+from utils.condition_builder import ConditionBuilder
 
 """
 отдельный файл для каждого репозитория для дальнейшего маштабирования и развития проекта
 """
 
 class QueueRepository(BaseRepository[Queue]):
-    def __init__(self, session: AsyncSession, condition_builder):
+    def __init__(self, session: AsyncSession, condition_builder:ConditionBuilder):
         super().__init__(
             Queue,
             session,
@@ -42,4 +43,15 @@ class QueueRepository(BaseRepository[Queue]):
         result = await self.session.execute(query)
         return result.scalars().all()
 
+class QueueEntriesRepository(BaseRepository[QueueEntries]):
+    def __init__(self,session: AsyncSession, condition_builder: ConditionBuilder):
+        super().__init__(QueueEntries,session,condition_builder)
 
+
+class QueueTagsRepository(BaseRepository):
+    def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
+        super().__init__(
+            QueueTags,
+            session,
+            condition_builder,
+        )
