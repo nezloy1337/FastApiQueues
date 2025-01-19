@@ -5,9 +5,9 @@ from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from factories.condition_builder import ConditionBuilderFactory
 from interfaces import AbstractRepository
 from models import TModels
+from utils.condition_builder import ConditionBuilder
 
 
 class BaseRepository(AbstractRepository,Generic[TModels]):
@@ -15,11 +15,11 @@ class BaseRepository(AbstractRepository,Generic[TModels]):
         self,
         model: Type[TModels],
         session: AsyncSession,
-        builder_factory: ConditionBuilderFactory,
+        condition_builder: ConditionBuilder,
     ):
         self.model = model
         self.session = session
-        self.condition_builder = builder_factory.create_for_model(model)
+        self.condition_builder = condition_builder
 
     async def create(self, obj_data: dict) -> TModels:
         obj = self.model(**obj_data)
