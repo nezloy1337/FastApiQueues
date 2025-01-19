@@ -52,6 +52,7 @@ class BaseRepository(AbstractRepository,Generic[TModels]):
         self.session = session
         self.condition_builder = condition_builder
 
+
     async def create(self, obj_data: dict) -> TModels:
         obj = self.model(**obj_data)
         self.session.add(obj)
@@ -75,12 +76,12 @@ class BaseRepository(AbstractRepository,Generic[TModels]):
             return True
 
     async def patch(
-        self, obj_unique_key: Dict[str, Any], **values: Any
+        self, filters: Dict[str, Any], **values: Any
     ) -> Optional[Dict[str, Any]]:
         """Обновляет объект с указанным уникальным ключом."""
         try:
             # Создаём условия для фильтрации
-            if filters := self.condition_builder.create_conditions(**obj_unique_key):
+            if filters := self.condition_builder.create_conditions(**filters):
                 # Формируем запрос на обновление
                 query = (
                     update(self.model)
@@ -90,7 +91,7 @@ class BaseRepository(AbstractRepository,Generic[TModels]):
 
                 result = await self.session.execute(query)
 
-                if result.rowcount == 0:
+                if result.rowcount != 0:
                     # Подтверждаем транзакцию
                     await self.session.commit()
                     return values

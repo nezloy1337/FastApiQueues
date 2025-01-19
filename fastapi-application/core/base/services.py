@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 
 from core.base import TModels
 from core.base.repository import BaseRepository
+from utils.exception_handlers import handle_exception
 
 
 class BaseService(Generic[TModels]):
@@ -13,7 +14,7 @@ class BaseService(Generic[TModels]):
     ):
         self.repository = repository
 
-
+    @handle_exception
     async def create(self, obj_data: dict) -> TModels:
         return await self.repository.create(obj_data)
 
@@ -28,9 +29,9 @@ class BaseService(Generic[TModels]):
             return True
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Not Found")
 
-    async def patch(self, obj_unique_ley, **values) -> dict:
+    async def patch(self, filters, **values) -> dict:
         try:
-            if data := await self.repository.patch({**obj_unique_ley}, **values):
+            if data := await self.repository.patch({**filters}, **values):
                 return data
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="Not Found"
