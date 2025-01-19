@@ -60,4 +60,4 @@ async def patch_tag(
     service: Annotated[TagsService, Depends(get_tags_service)]
     # user: Annotated[User, Depends(current_user)],
 ):
-    return await service.patch(id=tag_id, **tag_patch.model_dump())
+    return await service.patch({"id":tag_id}, **tag_patch.model_dump())
