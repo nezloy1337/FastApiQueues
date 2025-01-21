@@ -18,7 +18,7 @@ CONNECTION_REGISTRY: Dict[
     Type[mongodb]
 ] = {
     "queues" : queue_logs_collection,
-    "queueEntries": queue_entries_logs_collection,
+    "queue_entries": queue_entries_logs_collection,
     "users": users_logs_collection,
     "errors": error_collection
 }
