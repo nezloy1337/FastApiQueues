@@ -29,6 +29,7 @@ def log_action(
         async def wrapper(*args, **kwargs):
             status = "success"
             try:
+
                 return await func(*args, **kwargs)
 
             except Exception as e:
@@ -42,12 +43,20 @@ def log_action(
 
                 logged_args = {}
 
-                for name,value in bound.arguments.items():
-                    if name in log_params:
+                if log_params:
+                    for name,value in bound.arguments.items():
+                        if name in log_params:
+                            if isinstance(value, BaseModel):
+                                logged_args[name] = value.model_dump()
+                            else:
+                                logged_args[name] = value
+                else:
+                    for name,value in bound.arguments.items():
                         if isinstance(value, BaseModel):
                             logged_args[name] = value.model_dump()
                         else:
                             logged_args[name] = value
+
 
                 log_entry = ActionLog(
                     action=action,
@@ -55,12 +64,6 @@ def log_action(
                     status=status,
                     timestamp=timestamp
                 )
-                # log_entry = {
-                #     "action": action,
-                #     "parameters": logged_args,  # Только отфильтрованные параметры
-                #     "status": status,
-                #     "timestamp": str(timestamp),
-                # }
 
                 logs_collection = CONNECTION_REGISTRY.get(collection_name)
                 await logs_collection.insert_one(log_entry.model_dump())
