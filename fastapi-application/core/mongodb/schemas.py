@@ -1,24 +1,24 @@
-from typing import Optional, Dict
-from datetime import datetime, date
-from bson import ObjectId
+from datetime import datetime
+from typing import Optional, Dict, Any
 
+from bson import ObjectId
 from pydantic import BaseModel, Field
 
 
 class ObjectIdTimeActionMixin(BaseModel):
     id: Optional[str] = Field(default=None, alias="_id")
     action: str
-    timestamp: datetime
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
 
-class QueueLog(ObjectIdTimeActionMixin,BaseModel):
-    name: str
-    start_time: datetime
-    max_slots: int
+class ActionLog(ObjectIdTimeActionMixin,BaseModel):
+    status: str
+    parameters: Dict[str, Any]
+
 
 
 class QueueEntryLog(ObjectIdTimeActionMixin,BaseModel):
