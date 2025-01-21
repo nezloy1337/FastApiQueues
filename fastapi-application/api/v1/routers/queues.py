@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, status
 from api.v1.dependencies import get_queue_service
 from domains.queues import QueueService
 from domains.queues.schemas.queues import CreateQueue, GetQueue, GetQueueWithEntries, PutQueue
+from utils.logger import log_action
 
 router = APIRouter(
     prefix="/queues",
@@ -24,10 +25,16 @@ async def get_queues(
     return await service.get_all()
 
 
+
 @router.post(
     "",
     response_model=CreateQueue,
     status_code=status.HTTP_201_CREATED,
+)
+@log_action(
+    action="POST",
+    collection_name="queues",
+    log_params=["queue_to_create","user"]
 )
 async def create_queue(
     queue_to_create: CreateQueue,
