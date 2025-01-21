@@ -20,4 +20,5 @@ CONNECTION_REGISTRY: Dict[
     "queues" : queue_logs_collection,
     "queueEntries": queue_entries_logs_collection,
     "users": users_logs_collection,
+    "errors": error_collection
 }
