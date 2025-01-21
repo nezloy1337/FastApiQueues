@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -9,7 +9,7 @@ from domains.tags.schemas import TagBase
 
 class QueueBase(BaseModel):
     name: str
-    start_time: date
+    start_time: datetime
     max_slots: int | None = None
 
 class GetQueue(QueueBase):
@@ -28,7 +28,7 @@ class CreateQueue(QueueBase):
 
 class PutQueue(QueueBase):
     name: Optional[str] = None
-    start_time: Optional[date] = None
+    start_time: Optional[datetime] = None
     max_slots: Optional[int] = None
 
 
