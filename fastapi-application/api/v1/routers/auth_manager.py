@@ -22,5 +22,5 @@ async def manage_users(
     user_to_mange: ManageUserPermissions,
 ):
     return await service.patch(
-        ermail=user_to_mange.email, **user_to_mange.model_dump(exclude_none=True)
+        {"email":user_to_mange.email}, **user_to_mange.model_dump(exclude_none=True)
     )

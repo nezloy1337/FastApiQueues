@@ -1,5 +1,3 @@
-from fastapi import HTTPException, status
-from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.base.repository import BaseRepository
@@ -8,19 +6,11 @@ from domains.users import User
 
 class UserRepository(BaseRepository[User]):
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession,condition_builder):
         super().__init__(
             User,
             session,
+            condition_builder
         )
 
-    async def patch(self, email: str, obj_data: dict) -> dict:
-        query = update(self.model).where(self.model.email == email).values(**obj_data)
-        result = await self.session.execute(query)
-        if result.rowcount == 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Update failed:now data is changed",
-            )
-        await self.session.commit()
-        return obj_data
+
