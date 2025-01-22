@@ -1,4 +1,5 @@
-from typing import List, Optional, Generic, TypeVar
+from abc import ABC, abstractmethod
+from typing import Generic, List, Optional, TypeVar
 
 from fastapi import HTTPException, status
 
@@ -7,7 +8,58 @@ from core.base.repository import AbstractRepository
 from utils.exception_handlers import handle_exception
 
 
-class BaseService(Generic[TModels]):
+class AbstractService(ABC, Generic[TModels]):
+    """
+    Абстрактный базовый класс для всех сервисов.
+    """
+
+    @abstractmethod
+    async def create(self, obj_data: dict) -> TModels:
+        """
+        Создает новый объект.
+        :param obj_data: данные для создания объекта.
+        :return: созданный объект.
+        """
+        pass
+
+    @abstractmethod
+    async def get_by_id(self, obj_id: int) -> Optional[TModels]:
+        """
+        Получает объект по идентификатору.
+        :param obj_id: идентификатор объекта.
+        :return: объект или None, если не найден.
+        """
+        pass
+
+    @abstractmethod
+    async def get_all(self) -> List[TModels]:
+        """
+        Получает список всех объектов.
+        :return: список объектов.
+        """
+        pass
+
+    @abstractmethod
+    async def delete(self, **conditions) -> bool:
+        """
+        Удаляет объект, соответствующий условиям.
+        :param conditions: условия удаления.
+        :return: True, если удаление успешно.
+        """
+        pass
+
+    @abstractmethod
+    async def patch(self, filters: dict, **values) -> dict:
+        """
+        Обновляет объект(ы) по фильтрам.
+        :param filters: фильтры для поиска объектов.
+        :param values: значения для обновления.
+        :return: обновленные данные.
+        """
+        pass
+
+
+class BaseService(AbstractService,Generic[TModels]):
     def __init__(
         self,
         repository: AbstractRepository[TModels],
@@ -39,7 +91,8 @@ class BaseService(Generic[TModels]):
         except Exception as e:
             raise
 
+
 TService = TypeVar(
     "TService",
-    bound=BaseService,
+    bound=AbstractService,
 )

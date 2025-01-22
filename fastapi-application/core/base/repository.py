@@ -101,5 +101,5 @@ class BaseRepository(AbstractRepository,Generic[TModels]):
 
 TRepositories = TypeVar(
     "TRepositories",
-    bound=BaseRepository,
+    bound=AbstractRepository,
 )
