@@ -1,4 +1,5 @@
 from sqlalchemy import select, delete, and_
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -6,17 +7,19 @@ from core.base import TModels
 from core.base.repository import BaseRepository
 from domains.queues import Queue, QueueEntries, QueueTags
 from utils.condition_builder import ConditionBuilder
+from utils.exception_handlers import handle_exception
 
 """
 отдельный файл для каждого репозитория для дальнейшего маштабирования и развития проекта
 """
 
+
 class QueueRepository(BaseRepository[Queue]):
-    def __init__(self, session: AsyncSession, condition_builder:ConditionBuilder):
+    def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
         super().__init__(
             Queue,
             session,
-            condition_builder
+            condition_builder,
         )
 
     async def get_by_id(self, queue_id: int) -> Queue:
@@ -32,22 +35,20 @@ class QueueRepository(BaseRepository[Queue]):
         result = await self.session.execute(query)
         return result.scalars().first()
 
-
     async def get_all(self):
-        query = (
-            select(Queue)
-            .options(
-                selectinload(Queue.queue_tags),
-            )
+        query = select(Queue).options(
+            selectinload(Queue.queue_tags),
         )
 
         result = await self.session.execute(query)
         return result.scalars().all()
 
-class QueueEntriesRepository(BaseRepository[QueueEntries]):
-    def __init__(self,session: AsyncSession, condition_builder: ConditionBuilder):
-        super().__init__(QueueEntries,session,condition_builder)
 
+class QueueEntriesRepository(BaseRepository[QueueEntries]):
+    def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
+        super().__init__(QueueEntries, session, condition_builder)
+
+    @handle_exception
     async def delete_all(self, filters: dict) -> TModels | None:
         """
         Удаляет объекты, соответствующие указанным условиям, возвращает все
@@ -66,6 +67,26 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
         if deleted_obj:
             await self.session.commit()
         return deleted_obj
+
+    async def create(self, obj_data: dict) -> TModels:
+        """
+        Создаёт новый объект на основе переданных данных и сохраняет его в базе данных.
+
+        :param obj_data: Словарь с данными для создания записи.
+        :return: Созданный экземпляр модели.
+        """
+        filters = self.condition_builder.create_conditions(
+            user_id=obj_data.get("user_id"),
+            queue_id=obj_data.get("queue_id"),
+        )
+        queue_entry = await self.session.execute(select(self.model).filter(*filters))
+        if not queue_entry.scalar_one_or_none():
+            obj = self.model(**obj_data)
+            self.session.add(obj)
+            await self.session.commit()
+            return obj
+        else:
+            raise IntegrityError(None, params=None, orig=BaseException())
 
 
 class QueueTagsRepository(BaseRepository):
