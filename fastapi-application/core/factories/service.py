@@ -4,10 +4,10 @@ from fastapi import Depends
 
 from core.registry import MODEL_REGISTRY
 from .repository import get_repository_by_model
-from ..base import TModels
+from ..base import TModels, TService
 
 
-def get_service_by_model(model_cls: Type[TModels]) -> object:
+def get_service_by_model(model_cls: Type[TModels]):
     """
     Принимает модель, находит в реестре (RepoClass, ServiceClass).
     Возвращает функцию (для Depends), которая создаст экземпляр сервиса.
@@ -17,7 +17,7 @@ def get_service_by_model(model_cls: Type[TModels]) -> object:
     def _create_service(
         # Берём репозиторий через Depends, используя фабрику выше
         repository=Depends(get_repository_by_model(model_cls)),
-    ):
+    ) -> TService:
         return service_cls(repository)
 
     return _create_service
