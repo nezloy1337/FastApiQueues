@@ -2,9 +2,14 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, status
 
-from api.v1.dependencies import get_queue_service, current_super_user
+from api.v1.dependencies import get_queue_service, current_super_user, current_user
 from domains.queues import QueueService
-from domains.queues.schemas.queues import CreateQueue, GetQueue, GetQueueWithEntries, PutQueue
+from domains.queues.schemas.queues import (
+    CreateQueue,
+    GetQueue,
+    GetQueueWithEntries,
+    PutQueue,
+)
 from domains.users import User
 from utils.logger import log_action
 
@@ -21,10 +26,9 @@ router = APIRouter(
 )
 async def get_queues(
     service: Annotated[QueueService, Depends(get_queue_service)],
-    # user: Annotated[User, Depends(current_user)],
+    user: Annotated[User, Depends(current_user)],
 ):
     return await service.get_all()
-
 
 
 @router.post(
@@ -35,13 +39,15 @@ async def get_queues(
 @log_action(
     action="POST",
     collection_name="queues",
-    log_params=["queue_to_create","user"]
+    log_params=["queue_to_create", "user"],
 )
 async def create_queue(
     queue_to_create: CreateQueue,
     service: Annotated[QueueService, Depends(get_queue_service)],
+    user: Annotated[User, Depends(current_user)],
 ):
     return await service.create(queue_to_create.model_dump())
+
 
 @router.get(
     "/{queue_id}",
@@ -50,7 +56,7 @@ async def create_queue(
 )
 async def get_queue_with_entries(
     queue_id: int,
-    # user: Annotated[User, Depends(current_user)],
+    user: Annotated[User, Depends(current_user)],
     service: Annotated[QueueService, Depends(get_queue_service)],
 ):
     return await service.get_by_id(queue_id)
@@ -63,7 +69,7 @@ async def get_queue_with_entries(
 @log_action(
     action="PUT",
     collection_name="queues",
-    log_params=["queue_to_patch","user","queue_id"]
+    log_params=["queue_to_patch", "user", "queue_id"],
 )
 async def put_queue(
     queue_to_patch: PutQueue,
@@ -71,7 +77,10 @@ async def put_queue(
     service: Annotated[QueueService, Depends(get_queue_service)],
     user: Annotated[User, Depends(current_super_user)],
 ):
-    return await service.patch(queue_id, **queue_to_patch.model_dump(exclude_none=True))
+    return await service.patch(
+        {"id": queue_id},
+        **queue_to_patch.model_dump(exclude_none=True),
+    )
 
 
 @router.delete(
@@ -79,13 +88,13 @@ async def put_queue(
     response_model=bool,
 )
 @log_action(
-    action="POST",
+    action="DELETE",
     collection_name="queues",
-    log_params=["queue_id","user"]
+    log_params=["queue_id", "user"],
 )
 async def delete_queue(
     queue_id: int,
     service: Annotated[QueueService, Depends(get_queue_service)],
     user: Annotated[User, Depends(current_super_user)],
 ):
-    return await service.delete(id = queue_id)
+    return await service.delete({"id": queue_id})
