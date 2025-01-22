@@ -28,13 +28,14 @@ def handle_exception(func):
 
 def find_error_type(exception):
     match exception:
-        case AttributeError():
-            raise
+
         case IntegrityError():
             return handle_integrity_error(exception)
         case ValidationError():
             return handle_validation_error(exception)
         case HTTPException():
+            raise
+        case AttributeError():
             raise
 
     return handle_unexpected_error(exception)
@@ -44,7 +45,7 @@ def handle_validation_error(e: ValidationError):
     logger.error(f"ошибка валидации данных:{ e.args }")
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
-        detail=settings.errors_description.validation_error_description,
+        detail="ошибка валидации данных",
     )
 
 
@@ -53,7 +54,7 @@ def handle_integrity_error(e: IntegrityError):
 
     raise HTTPException(
         status_code=status.HTTP_409_CONFLICT,
-        detail=settings.errors_description.conflict_description,
+        detail="ошибка целостности данных",
     )
 
 def handle_attr_error(e: AttributeError):
@@ -61,7 +62,7 @@ def handle_attr_error(e: AttributeError):
 
     raise HTTPException(
         status_code=status.HTTP_409_CONFLICT,
-        detail=settings.errors_description.conflict_description,
+        detail="ошибка получения атрибута",
     )
 
 
