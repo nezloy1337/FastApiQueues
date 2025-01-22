@@ -44,21 +44,31 @@ async def create_queue_entry(
     "/{queue_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
+@log_action(
+    action="DELETE",
+    collection_name="queue_entries",
+    log_params=["queue_entry_to_create","user"],
+)
 async def delete_queue_entry(
     service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
     user: Annotated[User, Depends(current_user)],
     queue_id: int,
 ):
-    return await service.delete(queue_id=queue_id, user_id=user.id)
+    return await service.delete({"queue_id":queue_id, "user_id": user.id})
 
 
 @router.delete(
     "/{queue_id}/all",
     status_code=status.HTTP_204_NO_CONTENT,
 )
+@log_action(
+    action="DELETE (all)",
+    collection_name="queue_entries",
+    log_params=["queue_id","user"],
+)
 async def clear_queue_entry(
     service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
     user: Annotated[User, Depends(current_super_user)],
     queue_id: int,
 ):
-    return await service.delete(queue_id=queue_id)
+    return await service.delete({"queue_id": queue_id})
