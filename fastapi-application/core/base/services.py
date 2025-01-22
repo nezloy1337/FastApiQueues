@@ -3,14 +3,14 @@ from typing import List, Optional, Generic, TypeVar
 from fastapi import HTTPException, status
 
 from core.base import TModels
-from core.base.repository import BaseRepository
+from core.base.repository import AbstractRepository
 from utils.exception_handlers import handle_exception
 
 
 class BaseService(Generic[TModels]):
     def __init__(
         self,
-        repository: BaseRepository[TModels],
+        repository: AbstractRepository[TModels],
     ):
         self.repository = repository
 
