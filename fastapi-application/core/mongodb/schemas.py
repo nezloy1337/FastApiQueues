@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 
 
 class ObjectIdTimeActionMixin(BaseModel):
-    id: Optional[str] = Field(default=None, alias="_id")
     action: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
