@@ -11,7 +11,7 @@ from core.mongodb import error_collection
 from core.mongodb.schemas import ExceptionLogTemplate
 
 # Настройка логирования
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 
@@ -28,6 +28,8 @@ def handle_exception(func):
 
 def find_error_type(exception):
     match exception:
+        case AttributeError():
+            raise
         case IntegrityError():
             return handle_integrity_error(exception)
         case ValidationError():
@@ -35,12 +37,11 @@ def find_error_type(exception):
         case HTTPException():
             raise
 
-
     return handle_unexpected_error(exception)
 
 # обработчики частных ошибок
 def handle_validation_error(e: ValidationError):
-    logger.info(f"ошибка валидации данных:{ e.args }")
+    logger.error(f"ошибка валидации данных:{ e.args }")
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail=settings.errors_description.validation_error_description,
@@ -48,12 +49,21 @@ def handle_validation_error(e: ValidationError):
 
 
 def handle_integrity_error(e: IntegrityError):
-    logger.info(f"Ошибка целостности данных: { str(e) }")
+    logger.error(f"Ошибка целостности данных: { str(e) }")
 
     raise HTTPException(
         status_code=status.HTTP_409_CONFLICT,
         detail=settings.errors_description.conflict_description,
     )
+
+def handle_attr_error(e: AttributeError):
+    logger.error(f"ошибка получения атрибута: {str(e)}")
+
+    raise HTTPException(
+        status_code=status.HTTP_409_CONFLICT,
+        detail=settings.errors_description.conflict_description,
+    )
+
 
 
 def handle_unexpected_error(e: Exception):
