@@ -2,8 +2,9 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, status, Depends
 
-from api.v1.dependencies import get_tags_service
+from api.v1.dependencies import get_tags_service, current_super_user, current_user
 from domains.tags import CreateTag, TagsService, GetTag, PatchTag
+from domains.users import User
 
 router = APIRouter(
     tags=["tags"],
@@ -18,7 +19,7 @@ router = APIRouter(
 )
 async def create_tag(
     tag_to_create: CreateTag,
-    #user: Annotated[User, Depends(current_user)],
+    user: Annotated[User, Depends(current_super_user)],
     service: Annotated[TagsService, Depends(get_tags_service)]
 ):
     return await service.create(tag_to_create.model_dump())
@@ -31,8 +32,8 @@ async def create_tag(
     status_code=status.HTTP_200_OK,
 )
 async def get_tags(
-    service: Annotated[TagsService, Depends(get_tags_service)]
-    # user: Annotated[User, Depends(current_user)],
+    service: Annotated[TagsService, Depends(get_tags_service)],
+    user: Annotated[User, Depends(current_user)],
 ):
     return await service.get_all()
 
@@ -43,10 +44,10 @@ async def get_tags(
 )
 async def delete_tag(
     tag_id: int,
-    service: Annotated[TagsService, Depends(get_tags_service)]
-    # user: Annotated[User, Depends(current_user)],
+    service: Annotated[TagsService, Depends(get_tags_service)],
+    user: Annotated[User, Depends(current_super_user)],
 ):
-    return await service.delete(id=tag_id)
+    return await service.delete({"id":tag_id})
 
 
 @router.patch(
@@ -57,7 +58,8 @@ async def delete_tag(
 async def patch_tag(
     tag_id: int,
     tag_patch: PatchTag,
-    service: Annotated[TagsService, Depends(get_tags_service)]
-    # user: Annotated[User, Depends(current_user)],
+    service: Annotated[TagsService, Depends(get_tags_service)],
+    user: Annotated[User, Depends(current_super_user)],
+
 ):
     return await service.patch({"id":tag_id}, **tag_patch.model_dump())
