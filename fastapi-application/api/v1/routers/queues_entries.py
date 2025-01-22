@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, status
 
 from domains.queues import CreateQueueEntry, QueueEntryService
 from domains.users import User
+from utils.logger import log_action
 from ..dependencies import (
     current_user,
     current_super_user,
@@ -20,6 +21,11 @@ router = APIRouter(
     "/{queue_id}",
     response_model=CreateQueueEntry,
     status_code=status.HTTP_201_CREATED,
+)
+@log_action(
+    action="POST",
+    collection_name="queue_entries",
+    log_params=["queue_entry_to_create","user"],
 )
 async def create_queue_entry(
     queue_entry_to_create: CreateQueueEntry,
