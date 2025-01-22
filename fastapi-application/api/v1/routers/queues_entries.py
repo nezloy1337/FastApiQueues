@@ -47,7 +47,7 @@ async def create_queue_entry(
 @log_action(
     action="DELETE",
     collection_name="queue_entries",
-    log_params=["queue_entry_to_create","user"],
+    log_params=["queue_id","user"],
 )
 async def delete_queue_entry(
     service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
