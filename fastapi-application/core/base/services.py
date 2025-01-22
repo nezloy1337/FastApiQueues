@@ -116,15 +116,15 @@ class BaseService(AbstractService):
         return await self.repository.get_all()
 
     @handle_exception
-    async def delete(self, **conditions) -> bool:
+    async def delete(self,filters: dict[str, Any]) -> bool:
         """
         Удаляет объект, соответствующий условиям.
 
-        :param conditions: Условия удаления (например, id=1).
+        :param filters: Фильтры поиска объектов (например, {"id": 1}).
         :return: True, если объект успешно удалён.
         :raises HTTPException: Если объект не найден.
         """
-        deleted_obj = await self.repository.delete(**conditions)
+        deleted_obj = await self.repository.delete(**filters)
         if deleted_obj:
             return True
 
