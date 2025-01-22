@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, List
 
+import bson
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -7,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.base.model import Base
 
 if TYPE_CHECKING:
-    from models import QueueEntries
+    from domains.queues import QueueEntries
     from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -23,3 +24,11 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     @classmethod
     def get_db(cls, session: "AsyncSession"):
         return SQLAlchemyUserDatabase(session, User)
+
+
+    def model_dump(self):
+        return {
+            "id":bson.Binary.from_uuid(self.id), 
+            "first_name":self.first_name,
+            "last_name":self.last_name,
+        }
