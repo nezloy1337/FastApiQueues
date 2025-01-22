@@ -32,6 +32,9 @@ def find_error_type(exception):
             return handle_integrity_error(exception)
         case ValidationError():
             return handle_validation_error(exception)
+        case HTTPException():
+            raise
+
 
     return handle_unexpected_error(exception)
 
