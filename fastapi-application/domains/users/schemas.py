@@ -23,7 +23,7 @@ class UserUpdate(FirstAndLastNamesMixin, schemas.BaseUserUpdate):
 
 
 class UserForEntry(FirstAndLastNamesMixin, BaseModel):
-    pass
+    pass                                                                                                                                                                                                                                                               
 
 
 class ManageUserPermissions(BaseModel):
