@@ -38,12 +38,12 @@ async def create_tag_queue(
 
 
 @router.delete(
-    "/{ tag_id }",
+    "/{ queue_tag_id }",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_tag_queue(
-    tag_id: int,
+    queue_tag_id: int,
     user: Annotated[User, Depends(current_super_user)],
     service: Annotated[TagsService, Depends(get_queue_tags_service)],
 ):
-    return await service.delete({"id": tag_id})
+    return await service.delete({"id": queue_tag_id})
