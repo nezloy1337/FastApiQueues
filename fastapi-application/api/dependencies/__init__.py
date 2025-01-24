@@ -8,4 +8,5 @@ from .services import (
 from .users import (
     current_user,
     current_super_user,
+    fastapi_users,
 )

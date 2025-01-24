@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
+from api.dependencies import fastapi_users
 from core.auth import auth_backend
 from domains.users import UserRead, UserCreate
-from ..dependencies.users import fastapi_users
 
 router = APIRouter(
     prefix="/auth",

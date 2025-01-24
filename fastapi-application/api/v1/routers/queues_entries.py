@@ -2,14 +2,14 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from domains.queues import CreateQueueEntry, QueueEntryService
-from domains.users import User
-from utils.logger import log_action
-from ..dependencies import (
+from api.dependencies import (
     current_user,
     current_super_user,
     get_queue_entries_service,
 )
+from domains.queues import CreateQueueEntry, QueueEntryService
+from domains.users import User
+from utils.logger import log_action
 
 router = APIRouter(
     prefix="/queue",

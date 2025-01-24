@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from starlette import status
 
-from api.v1.dependencies import get_user_service
+from api.dependencies import get_user_service
 from domains.users import ManageUserPermissions, UserService
 
 router = APIRouter(

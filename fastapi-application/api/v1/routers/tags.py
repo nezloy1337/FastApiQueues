@@ -2,7 +2,7 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, status, Depends
 
-from api.v1.dependencies import get_tags_service, current_super_user, current_user
+from api.dependencies import get_tags_service, current_super_user, current_user
 from domains.tags import CreateTag, TagsService, GetTag, PatchTag
 from domains.users import User
 
