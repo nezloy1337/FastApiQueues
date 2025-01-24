@@ -1,8 +1,9 @@
-from typing import Type, List, Any
+from typing import Type, List, Any, TYPE_CHECKING
 
 from sqlalchemy.orm import selectinload
 
-from core.base import TModels
+if TYPE_CHECKING:
+    from core.base import TModels
 
 
 class ConditionBuilder:
@@ -10,7 +11,7 @@ class ConditionBuilder:
     A class for constructing query conditions and options.
     """
 
-    def __init__(self, model: Type[TModels]):
+    def __init__(self, model: Type["TModels"]):
         self.model = model
         self.filters: List[Any] = []
         self.options: List[Any] = []
