@@ -1,10 +1,6 @@
-from abc import ABC, abstractmethod
 from typing import (
     Any,
-    Dict,
     Generic,
-    List,
-    Optional,
     Type,
     TypeVar, Union,
 )
@@ -17,77 +13,13 @@ from core.base import TModels
 from utils.condition_builder import ConditionBuilder
 
 
-class AbstractRepository(ABC, Generic[TModels]):
+class BaseRepository(Generic[TModels]):
     """
-    Абстрактный класс репозитория, задающий интерфейс для работы с моделью SQLAlchemy.
+    Base repository implementing common CRUD operations for SQLAlchemy models.
 
-    :param TModels: Тип SQLAlchemy-модели, с которой работает репозиторий.
-    """
-
-    @abstractmethod
-    async def create(self, obj_data: dict) -> TModels:
-        """
-        Создаёт новую запись в базе данных на основе переданных данных.
-
-        :param obj_data: Словарь с данными для создания записи.
-        :return: Созданный экземпляр SQLAlchemy-модели.
-        """
-        pass
-
-    @abstractmethod
-    async def get_by_id(self, obj_id: int) -> Optional[TModels]:
-        """
-        Получает запись по её уникальному идентификатору (ID).
-
-        :param obj_id: Идентификатор записи.
-        :return: Найденный экземпляр модели или None, если запись не найдена.
-        """
-        pass
-
-    @abstractmethod
-    async def get_all(self) -> List[TModels]:
-        """
-        Получает все записи из базы данных для указанной модели.
-
-        :return: Список экземпляров модели.
-        """
-        pass
-
-    @abstractmethod
-    async def delete(self, **conditions: dict) -> bool:
-        """
-        Удаляет объекты, соответствующие указанным условиям.
-
-        :param conditions: Произвольные условия для удаления (например, id=1, name="test").
-        :return: True, если хотя бы одна запись была удалена, иначе False.
-        """
-        pass
-
-    @abstractmethod
-    async def patch(
-        self,
-        filters: Dict[str, Any],
-        **values: Any,
-    ) -> dict[str, Any] | None:
-        """
-        Обновляет объект с указанным уникальным ключом, возвращая словарь обновлённых
-        полей или None, если запись не найдена.
-
-        :param filters Словарь (уникальный ключ), по которому ищется запись
-        (например, {"id": 1}).
-        :param values: Произвольные ключи и значения для обновления полей.
-        :return: Словарь обновлённых полей или None, если запись не найдена.
-        """
-        pass
-
-
-class BaseRepository(AbstractRepository[TModels]):
-    """
-    Базовый репозиторий, реализующий основные CRUD-операции для SQLAlchemy-моделей.
-
-    :param model: Класс SQLAlchemy-модели, с которой работает репозиторий.
-    :param session: Асинхронная сессия SQLAlchemy.
-    :param condition_builder: Объект, создающий условия для фильтрации (WHERE) на основе словаря.
+    :param model: The SQLAlchemy model class managed by the repository.
+    :param session: The asynchronous SQLAlchemy session.
+    :param condition_builder: An object that generates filter (WHERE) conditions from dictionaries.
     """
 
     def __init__(
@@ -102,10 +34,10 @@ class BaseRepository(AbstractRepository[TModels]):
 
     async def create(self, obj_data: dict) -> TModels:
         """
-        Создаёт новый объект на основе переданных данных и сохраняет его в базе данных.
+        Creates a new object based on the provided data and saves it to the database.
 
-        :param obj_data: Словарь с данными для создания записи.
-        :return: Созданный экземпляр модели.
+        :param obj_data: A dictionary containing the data for the new record.
+        :return: The created model instance.
         """
         obj = self.model(**obj_data)
         self.session.add(obj)
@@ -114,29 +46,29 @@ class BaseRepository(AbstractRepository[TModels]):
 
     async def get_by_id(self, obj_id: int) -> TModels | None:
         """
-        Ищет объект по его уникальному идентификатору (ID).
+        Retrieves an object by its unique identifier (ID).
 
-        :param obj_id: Идентификатор записи.
-        :return: Объект модели или None, если запись не найдена.
+        :param obj_id: The unique identifier of the record.
+        :return: The model instance or None if not found.
         """
         return await self.session.get(self.model, obj_id)
 
-    async def get_all(self) -> List[TModels]:
+    async def get_all(self) -> list[TModels]:
         """
-        Возвращает список всех объектов модели из базы данных.
+        Retrieves all objects of the model from the database.
 
-        :return: Список экземпляров модели.
+        :return: A list of model instances.
         """
         result = await self.session.execute(select(self.model))
         return list(result.scalars().all())
 
     async def delete(self, **conditions: dict) -> TModels | None:
         """
-        Удаляет объект, соответствующий указанным условиям, и удалённый объект.
-        Если объект не найдены, возвращается None.
+        Deletes an object matching the specified conditions and returns the deleted object.
+        Returns None if no matching object is found.
 
-        :param conditions: Произвольные условия для фильтрации объектов.
-        :return: Удалённый объект или None, если ничего не удалено.
+        :param conditions: Arbitrary conditions for filtering objects.
+        :return: The deleted object or None if no matching object is found.
         """
         query_conditions = self.condition_builder.create_conditions(**conditions)
 
@@ -154,14 +86,14 @@ class BaseRepository(AbstractRepository[TModels]):
         **values: Any,
     ) -> TModels | None:
         """
-        Обновляет объект на основе словаря фильтров, и возвращает обновлённый объект
-        Если объекты не найдены, возвращается None.
+        Updates an object based on the specified filters and returns the updated object.
+        Returns None if no object is found.
 
-        :param filters: Словарь фильтров для поиска записи
-        (например, {"id": 1,} или {"email":"EMAIL"}).
-        :param values: Произвольные ключи и значения для обновления полей
-        (например, name="New Name").
-        :return: Обновлённый объект или None, если ничего не обновлено.
+        :param filters: A dictionary of filters for identifying the record
+        (e.g., {"id": 1} or {"email": "EMAIL"}).
+        :param values: Arbitrary key-value pairs for updating the record fields
+        (e.g., name="New Name").
+        :return: The updated object or None if no matching record is found.
         """
         # Формируем условия для фильтрации
         conditions = self.condition_builder.create_conditions(**filters)
@@ -185,5 +117,5 @@ class BaseRepository(AbstractRepository[TModels]):
 
 TRepositories = TypeVar(
     "TRepositories",
-    bound=Union["QueueRepository"],
+    bound=Union["QueueRepository "],
 )

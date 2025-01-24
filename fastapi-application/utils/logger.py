@@ -1,7 +1,7 @@
 import inspect
 from datetime import datetime, timezone
 from functools import wraps, lru_cache
-from typing import Optional, List, Callable
+from typing import Optional, Callable
 
 from pydantic import BaseModel
 
@@ -12,11 +12,16 @@ from core.mongodb.schemas import ActionLog
 
 @lru_cache
 def get_signature(function):
+    """
+    Retrieves and caches the signature of the given function.
+    """
     return inspect.signature(function)
 
 
 def get_log_params(func, log_params, *args, **kwargs):
-
+    """
+    Extracts parameters for logging based on the function's signature and specified log parameters.
+    """
     log_params = log_params or []
     sig = get_signature(func)
     bound = sig.bind(*args, **kwargs)
@@ -40,15 +45,22 @@ def get_log_params(func, log_params, *args, **kwargs):
 def log_action(
     action: str,
     collection_name: str,
-    log_params: Optional[List[str]] = None,
+    log_params: Optional[list[str]] = None,
 ) -> Callable:
     """
-    Декоратор для логирования в MongoDB.
+     A decorator for logging actions to MongoDB.
 
-    :param action: Описание или тип действия (логически, что мы логируем).
-    :param log_params: Список имён параметров функции, которые нужно залогировать.
-                       Если None, логируются все параметры.
-    :param collection_name: Имя коллекции в MongoDB, куда писать логи.
+    :param action: A description or type of the action being logged.
+    :param collection_name: The name of the MongoDB collection where logs are stored.
+    :param log_params: A list of parameter names to include in the log. If None, all parameters are logged.
+    :return: A decorator that wraps the target function with logging functionality.
+    :rtype: Callable
+
+    :raises ValueError: If the specified collection is not found in the `CONNECTION_REGISTRY`.
+    Example:
+        >>> @log_action("create_user", "user_logs", ["username", "email"])
+        >>> async def create_user(username, email, password):
+        >>>
     """
 
     def decorator(func):

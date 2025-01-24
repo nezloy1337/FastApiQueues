@@ -1,5 +1,4 @@
-from abc import ABC, abstractmethod
-from typing import Dict, Any, List, Optional, TypeVar
+from typing import Any, List, Optional, TypeVar
 
 from fastapi import HTTPException, status
 
@@ -7,69 +6,11 @@ from core.base import TModels, TRepositories
 from utils.exception_handlers import handle_exception
 
 
-class AbstractService(ABC):
+class BaseService:
     """
-    Абстрактный базовый класс для всех сервисов.
+    Base service implementing business logic using an abstract repository.
 
-    :param TModels: Тип модели, с которой работает сервис.
-    """
-
-    @abstractmethod
-    async def create(self, obj_data: dict) -> TModels:
-        """
-        Создаёт новый объект.
-
-        :param obj_data: Данные для создания объекта.
-        :return: Созданный объект модели.
-        """
-        pass
-
-    @abstractmethod
-    async def get_by_id(self, obj_id: int) -> Optional[TModels]:
-        """
-        Получает объект по идентификатору.
-
-        :param obj_id: Идентификатор объекта.
-        :return: Объект модели или None, если не найден.
-        """
-        pass
-
-    @abstractmethod
-    async def get_all(self) -> List[TModels]:
-        """
-        Получает список всех объектов.
-
-        :return: Список объектов модели.
-        """
-        pass
-
-    @abstractmethod
-    async def delete(self, **conditions) -> bool:
-        """
-        Удаляет объект, соответствующий условиям.
-
-        :param conditions: Условия удаления (например, id=1, name='test').
-        :return: True, если хотя бы один объект был удалён.
-        """
-        pass
-
-    @abstractmethod
-    async def patch(self, filters: Dict[str, Any], **values: Any) -> Dict[str, Any]:
-        """
-        Обновляет объект(ы) по фильтрам.
-
-        :param filters: Фильтры для поиска объектов (например, {"id": 1}).
-        :param values: Значения для обновления (например, name="New Name").
-        :return: Словарь с обновлёнными данными.
-        """
-        pass
-
-
-class BaseService(AbstractService):
-    """
-    Базовый сервис, реализующий логику работы с абстрактным репозиторием.
-
-    :param repository: Экземпляр репозитория, реализующего операции над моделью.
+    :param repository: An instance of the repository handling operations on the model.
     """
 
     def __init__(
@@ -81,20 +22,21 @@ class BaseService(AbstractService):
     @handle_exception
     async def create(self, obj_data: dict) -> TModels:
         """
-        Создаёт новый объект в базе данных.
+        Creates a new object in the database.
 
-        :param obj_data: Данные для создания объекта.
-        :return: Созданный объект модели.
+        :param obj_data: Data for creating the object.
+        :return: The created model object.
         """
         return await self.repository.create(obj_data)
 
     @handle_exception
     async def get_by_id(self, obj_id: int) -> Optional[TModels]:
         """
-        Возвращает объект по идентификатору.
+        Retrieves an object by its identifier.
 
-        :param obj_id: Идентификатор объекта.
-        :return: Объект модели или None, если не найден.
+        :param obj_id: The unique identifier of the object.
+        :return: The model object or None if not found.
+        :raises HTTPException: If the object is not found.
         """
         obj = await self.repository.get_by_id(obj_id)
 
@@ -108,21 +50,21 @@ class BaseService(AbstractService):
     @handle_exception
     async def get_all(self) -> List[TModels]:
         """
-        Возвращает список всех объектов.
+        Retrieves a list of all objects.
 
-        :return: Список объектов модели.
+        :return: A list of model objects.
         """
         return await self.repository.get_all()
 
     @handle_exception
-    async def delete(self,filters: dict[str, Any]) -> bool:
+    async def delete(self, filters: dict[str, Any]) -> bool:
         """
-        Удаляет объект, соответствующий условиям.
+        Deletes an object that matches the specified conditions.
 
-        :param filters: Фильтры поиска объектов
-        (например, {"queue_id": 1,"user_id":2}).
-        :return: True, если объект успешно удалён.
-        :raises HTTPException: Если объект не найден.
+        :param filters: Search filters for the object(s)
+        (e.g., {"queue_id": 1, "user_id": 2}).
+        :return: True if the object was successfully deleted.
+        :raises HTTPException: If the object is not found.
         """
         deleted_obj = await self.repository.delete(**filters)
         if deleted_obj:
@@ -140,12 +82,12 @@ class BaseService(AbstractService):
         **values: Any,
     ) -> dict[str, Any] | None:
         """
-        Обновляет объект(ы) по заданным фильтрам и возвращает обновлённые данные.
+        Updates object(s) matching the specified filters and returns the updated data.
 
-        :param filters: Фильтры поиска объектов (например, {"id": 1}).
-        :param values: Значения для обновления (например, name="New Name").
-        :return: Словарь обновлённых данных.
-        :raises HTTPException: Если объект не найден.
+        :param filters: Search filters for the object(s) (e.g., {"id": 1}).
+        :param values: Values to update (e.g., name="New Name").
+        :return: A dictionary of the updated data.
+        :raises HTTPException: If the object is not found.
         """
         patched_obj = await self.repository.patch(filters, **values)
         if patched_obj:
@@ -159,6 +101,5 @@ class BaseService(AbstractService):
 
 TService = TypeVar(
     "TService",
-    bound=AbstractService,
-
+    bound=BaseService,
 )

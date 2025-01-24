@@ -15,8 +15,30 @@ logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 
-def handle_exception(func):
 
+#нужен ли async
+def handle_exception(func):
+    """
+      A decorator to handle exceptions during the execution of asynchronous functions.
+
+      This decorator wraps the provided function and ensures that any exceptions raised
+      during its execution are caught and passed to the `find_error_type` handler.
+
+      :param func: The asynchronous function to be wrapped.
+      :type func: Callable
+      :return: A wrapped version of the provided function with exception handling.
+      :rtype: Callable
+
+      Example:
+          >>> @handle_exception
+          >>> async def my_function():
+          >>>     # Your async logic here
+          >>>     raise ValueError("An error occurred")
+
+          When `my_function` is called, the raised exception will be handled by
+          `find_error_type`.
+
+      """
     async def wrapper(*args, **kwargs):
         try:
             return await func(*args, **kwargs)
@@ -40,7 +62,7 @@ def find_error_type(exception):
 
     return handle_unexpected_error(exception)
 
-# обработчики частных ошибок
+
 def handle_validation_error(e: ValidationError):
     logger.error(f"ошибка валидации данных:{ e.args }")
     raise HTTPException(
@@ -69,19 +91,12 @@ def handle_attr_error(e: AttributeError):
 
 def handle_unexpected_error(e: Exception):
     """
-    Обрабатывает непредвиденные ошибки, такие как отключение базы данных,
-    и записывает их в MongoDB. Логируется информация об ошибке и время её возникновения.
+        Handles unexpected exceptions by logging, storing, and raising an HTTP 500 error.
 
-    Параметры:
-    e (Exception): Исключение, содержащее информацию об ошибке.
-
-    Действия:
-    1. Преобразует информацию об ошибке в строку.
-    2. Записывает сообщение об ошибке в лог. (для удобства разработки)
-    3. Создает экземпляр шаблона журнала ошибок с описанием ошибки и текущей временной меткой.
-    4. Вставляет журнал ошибки в коллекцию MongoDB.
-    5. Выбрасывает HTTP-исключение с кодом 500 и сообщением об неизвестной ошибке.
+        This function processes unhandled exceptions, logs the details, saves the error
+        information to a database, and raises an HTTPException with a 500 status code.
     """
+
     error_info = str(e)
     logger.info(f"Неизвестная ошибка: {error_info}")
 
