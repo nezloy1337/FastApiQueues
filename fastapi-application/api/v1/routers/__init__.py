@@ -1,12 +1,12 @@
 from fastapi import APIRouter
 
-from api.v1.routers.auth import router as auth_router
-from api.v1.routers.auth_manager import router as custom_router
-from api.v1.routers.queues_entries import router as queues_entries_views_router
-from api.v1.routers.tags import router as tags_router
 from core.config import settings
+from .auth import router as auth_router
+from .auth_manager import router as custom_router
 from .queue_tag import router as queue_tag_router
 from .queues import router as queues_views_router
+from .queues_entries import router as queues_entries_views_router
+from .tags import router as tags_router
 
 router = APIRouter(
     prefix=settings.api_v1.prefix
