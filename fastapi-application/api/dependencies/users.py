@@ -10,8 +10,23 @@ fastapi_users = FastAPIUsers[User, UUID](
     [auth_backend],
 )
 
+
 current_user = fastapi_users.current_user(active=True)
 current_super_user = fastapi_users.current_user(active=True, superuser=True)
+"""
+Dependencies for retrieving authenticated users.
+Retrieves the currently authenticated active user or superuser.
 
+:returns: The currently authenticated active user or superuser.
+:raises:
+    - HTTPException (401): If the user is not authenticated or their account is inactive.
 
+:usage:
+    Use this dependency in routes where any active user can access::
+
+        @app.get("/profile/")
+        def get_profile(user=Depends(current_user)):
+            return {"username": user.username, "email": user.email}
+
+"""
 

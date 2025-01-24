@@ -14,8 +14,7 @@ from core.registry import MODEL_REGISTRY
 
 def get_repository_by_model(model_cls: Type[TModels]):
     """
-    Принимает модель, внутри смотрит в реестр, находит соответствующий класс репозитория.
-    Возвращает функцию (для Depends), которая создаст экземпляр репозитория.
+    Returns a dependency factory for creating a repository instance for the given model.
     """
     _, repo_cls = MODEL_REGISTRY[model_cls]
 
@@ -25,6 +24,13 @@ def get_repository_by_model(model_cls: Type[TModels]):
             get_condition_builder_factory
         ),
     ):
+        """
+           Internal function to create a repository instance.
+
+           This function is intended to be used internally by `get_repository_by_model`.
+           It initializes the repository with a session and a condition builder specific
+           to the given model.
+           """
         condition_builder = builder_factory.create_for_model(model_cls)
         return repo_cls(session, condition_builder)
 
