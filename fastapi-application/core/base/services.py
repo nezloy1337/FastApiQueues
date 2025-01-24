@@ -3,8 +3,7 @@ from typing import Dict, Any, List, Optional, TypeVar
 
 from fastapi import HTTPException, status
 
-from core.base import TModels
-from core.base.repository import AbstractRepository
+from core.base import TModels, TRepositories
 from utils.exception_handlers import handle_exception
 
 
@@ -75,7 +74,7 @@ class BaseService(AbstractService):
 
     def __init__(
         self,
-        repository: "AbstractRepository[TModels]",
+        repository: TRepositories,
     ):
         self.repository = repository
 
@@ -120,7 +119,8 @@ class BaseService(AbstractService):
         """
         Удаляет объект, соответствующий условиям.
 
-        :param filters: Фильтры поиска объектов (например, {"id": 1}).
+        :param filters: Фильтры поиска объектов
+        (например, {"queue_id": 1,"user_id":2}).
         :return: True, если объект успешно удалён.
         :raises HTTPException: Если объект не найден.
         """
@@ -160,4 +160,5 @@ class BaseService(AbstractService):
 TService = TypeVar(
     "TService",
     bound=AbstractService,
+
 )

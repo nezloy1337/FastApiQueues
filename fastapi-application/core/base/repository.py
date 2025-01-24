@@ -6,7 +6,7 @@ from typing import (
     List,
     Optional,
     Type,
-    TypeVar,
+    TypeVar, Union,
 )
 
 from sqlalchemy import update, delete, and_
@@ -185,5 +185,5 @@ class BaseRepository(AbstractRepository[TModels]):
 
 TRepositories = TypeVar(
     "TRepositories",
-    bound=AbstractRepository,
+    bound=Union["QueueRepository"],
 )
