@@ -1,1 +1,1 @@
-from api.v1.routers import router
+from .v1 import router
