@@ -35,6 +35,17 @@ class DatabaseHelper:
         await self.engine.dispose()
 
     async def session_getter(self):
+        """
+        Async generator for managing the database session lifecycle.
+
+        :yields: A database session instance.
+        :rtype: AsyncSession
+
+        :description:
+            Opens a new session using `self.session_factory()` and ensures the session
+            is properly closed after its usage.
+
+        """
         async with self.session_factory() as session:
             yield session
 

@@ -9,15 +9,29 @@ from ..base import TModels, TService
 
 def get_service_by_model(model_cls: Type[TModels]):
     """
-    Принимает модель, находит в реестре (RepoClass, ServiceClass).
-    Возвращает функцию (для Depends), которая создаст экземпляр сервиса.
+     Accepts a model and retrieves (RepoClass, ServiceClass) from the registry.
+    Returns a function (for FastAPI Depends) that creates a service instance.
+
+    :param model_cls: The model class for which the service needs to be created.
+    :type model_cls: Type[TModels]
+    :return: A function that creates a service instance using FastAPI Depends.
+    :rtype: Callable
     """
     service_cls, repo_cls = MODEL_REGISTRY[model_cls]
 
     def _create_service(
-        # Берём репозиторий через Depends, используя фабрику выше
         repository=Depends(get_repository_by_model(model_cls)),
     ) -> TService:
+        """
+         Internal function to create a service instance.
+
+         :param repository: The repository instance retrieved via Depends.
+         :type repository: Repository
+         :return: An instance of the service class.
+         :rtype: TService
+
+         :note: This function is intended for use as the return value of `get_service_by_model`.
+         """
         return service_cls(repository)
 
     return _create_service
