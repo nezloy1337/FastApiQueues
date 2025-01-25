@@ -1,2 +1,2 @@
-from .repository import get_repository_by_model,get_condition_builder_factory
+
 from .service import get_service_by_model,get_repository_by_model
