@@ -16,6 +16,5 @@ class GetQueueEntryAndUser(BaseModel):
 
 
 class CreateQueueEntry(BaseModel):
-
     position: int
     queue_id: int
