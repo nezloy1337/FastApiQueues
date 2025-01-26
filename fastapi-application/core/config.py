@@ -16,13 +16,6 @@ class GunicornConfig(BaseModel):
     timeout: int = 900
 
 
-class ErrorDescription(BaseModel):
-    conflict_description: str
-    no_entry_description: str
-    unknown_error_description: str
-    validation_error_description: str
-
-
 class ApiV1Prefix(BaseModel):
     prefix: str = "/api_v1"
 
@@ -78,7 +71,6 @@ class Settings(BaseSettings):
 #в env должны быть эти названия
     db: DatabaseConfig
     user_manager: UserManager
-    errors_description: ErrorDescription
     mongo: MongoConfig
     redis: Redis = Redis()
     cors: CORSConfig = CORSConfig()
