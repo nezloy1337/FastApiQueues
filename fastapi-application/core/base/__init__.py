@@ -1,3 +1,3 @@
-from .model import Base, TModels
-from .repository import BaseRepository, TRepositories
-from .services import  BaseService, TService
+from .model import Base
+from .repository import BaseRepository
+from .services import  BaseService

@@ -2,14 +2,13 @@ from typing import (
     Any,
     Generic,
     Type,
-    TypeVar, Union,
 )
 
 from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from core.base import TModels
+from core.types import TModels
 from utils.condition_builder import ConditionBuilder
 
 
@@ -115,7 +114,4 @@ class BaseRepository(Generic[TModels]):
         return updated_obj
 
 
-TRepositories = TypeVar(
-    "TRepositories",
-    bound=Union["QueueRepository "],
-)
+

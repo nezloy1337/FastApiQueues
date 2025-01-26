@@ -1,8 +1,8 @@
-from typing import Any, List, Optional, TypeVar
+from typing import Any, List, Optional
 
 from fastapi import HTTPException, status
 
-from core.base import TModels, TRepositories
+from core.types import TRepositories, TModels
 from utils.exception_handlers import handle_exception
 
 
@@ -99,7 +99,4 @@ class BaseService:
         )
 
 
-TService = TypeVar(
-    "TService",
-    bound=BaseService,
-)
+

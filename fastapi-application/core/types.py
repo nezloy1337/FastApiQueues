@@ -16,4 +16,8 @@ TService = TypeVar(
     bound="BaseService"
 )
 
+TModels = TypeVar(
+    "TModels",
+    bound="Base",
+)
 

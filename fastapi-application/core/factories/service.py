@@ -4,7 +4,7 @@ from fastapi import Depends
 
 from core.registry import MODEL_REGISTRY
 from .repository import get_repository_by_model
-from ..base import TModels, TService
+from ..types import TService, TModels
 
 
 def get_service_by_model(model_cls: Type[TModels]):
@@ -13,7 +13,6 @@ def get_service_by_model(model_cls: Type[TModels]):
     Returns a function (for FastAPI Depends) that creates a service instance.
 
     :param model_cls: The model class for which the service needs to be created.
-    :type model_cls: Type[TModels]
     :return: A function that creates a service instance using FastAPI Depends.
     :rtype: Callable
     """

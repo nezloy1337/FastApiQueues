@@ -3,8 +3,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from core.base import TModels
 from core.base.repository import BaseRepository
+from core.types import TModels
 from domains.queues import Queue, QueueEntries, QueueTags
 from utils.condition_builder import ConditionBuilder
 from utils.exception_handlers import handle_exception
