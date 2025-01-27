@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any
 
 from fastapi import HTTPException, status
 
@@ -30,7 +30,7 @@ class BaseService:
         return await self.repository.create(obj_data)
 
     @handle_exception
-    async def get_by_id(self, obj_id: int) -> Optional[TModels]:
+    async def get_by_id(self, obj_id: int) -> TModels | None:
         """
         Retrieves an object by its identifier.
 
@@ -48,7 +48,7 @@ class BaseService:
         return obj
 
     @handle_exception
-    async def get_all(self) -> List[TModels]:
+    async def get_all(self) -> list[TModels]:
         """
         Retrieves a list of all objects.
 

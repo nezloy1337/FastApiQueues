@@ -1,5 +1,3 @@
-from typing import Type
-
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from core.config import settings
@@ -15,7 +13,7 @@ error_collection = mongodb["errors"]
 
 CONNECTION_REGISTRY: dict[
     str,
-    Type[mongodb],
+    mongodb,
 ] = {
     "queues": queue_logs_collection,
     "queue_entries": queue_entries_logs_collection,
