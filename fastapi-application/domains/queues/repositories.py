@@ -79,6 +79,7 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
             user_id=obj_data.get("user_id"),
             queue_id=obj_data.get("queue_id"),
         )
+
         queue_entry = await self.session.execute(select(self.model).filter(*filters))
         if not queue_entry.scalar_one_or_none():
             obj = self.model(**obj_data)

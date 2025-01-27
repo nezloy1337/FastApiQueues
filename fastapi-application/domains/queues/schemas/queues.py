@@ -11,11 +11,11 @@ class QueueBase(BaseModel):
     start_time: datetime
     max_slots: int | None = 30
 
+
 class PutQueue(BaseModel):
     name: str | None = None
     start_time: datetime | None = None
     max_slots: int | None = None
-
 
 
 class GetQueue(QueueBase):
@@ -25,12 +25,10 @@ class GetQueue(QueueBase):
 
 class GetQueueWithEntries(QueueBase):
     entries: list[GetQueueEntryAndUser] = []
-    tags: list[TagBase] = Field(default_factory=list, alias="queue_tags") #разобратся как работает alias
+    tags: list[TagBase] = Field(
+        default_factory=list, alias="queue_tags"
+    )  # разобратся как работает alias
 
 
 class CreateQueue(QueueBase):
     pass
-
-
-
-
