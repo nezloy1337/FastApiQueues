@@ -1,12 +1,12 @@
 import logging
 from datetime import datetime
+from typing import Callable
 
 from fastapi import HTTPException
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 from starlette import status
 
-from core.config import settings
 from core.mongodb import error_collection
 from core.mongodb.schemas import ExceptionLogTemplate
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 #нужен ли async
-def handle_exception(func):
+def handle_exception(func) -> Callable:
     """
       A decorator to handle exceptions during the execution of asynchronous functions.
 
@@ -44,11 +44,11 @@ def handle_exception(func):
             return await func(*args, **kwargs)
         except Exception as exception:
 
-            find_error_type(exception)
+            await find_error_type(exception)
 
     return wrapper
 
-def find_error_type(exception):
+async def find_error_type(exception):
     match exception:
 
         case IntegrityError():
@@ -89,7 +89,7 @@ def handle_attr_error(e: AttributeError):
 
 
 
-def handle_unexpected_error(e: Exception):
+async def handle_unexpected_error(e: Exception):
     """
         Handles unexpected exceptions by logging, storing, and raising an HTTP 500 error.
 
@@ -105,11 +105,11 @@ def handle_unexpected_error(e: Exception):
         timestamp=datetime.now()
     )
 
-    error_collection.insert_one(error_log.model_dump(exclude_none=True))
+    await error_collection.insert_one(error_log.model_dump(exclude_none=True))
 
     raise HTTPException(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail=settings.errors_description.unknown_error_description,
+        detail="unknown error occurred ",
     )
 
 

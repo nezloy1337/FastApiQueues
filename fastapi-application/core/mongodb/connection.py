@@ -1,4 +1,4 @@
-from typing import Type, Dict
+from typing import Type
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -13,7 +13,7 @@ users_logs_collection = mongodb["users"]
 error_collection = mongodb["errors"]
 
 
-CONNECTION_REGISTRY: Dict[
+CONNECTION_REGISTRY: dict[
     str,
     Type[mongodb],
 ] = {
