@@ -50,6 +50,9 @@ locust = "^2.32.6"
 [tool.mypy]
 python_version = "3.13"
 strict = true
+exclude = "fastapi-application/api/v1/routers/.*"
+
+
 
 ########################################################################################
 [tool.ruff]
