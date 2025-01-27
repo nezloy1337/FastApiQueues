@@ -24,7 +24,7 @@ class QueueEntryLog(ObjectIdTimeActionMixin,BaseModel):
     user_uuid: str
     queue_id: int
     position: int
-    details: dict | None = None
+    details: dict[str,Any] | None = None
 
 
 class ExceptionLogTemplate(BaseModel):

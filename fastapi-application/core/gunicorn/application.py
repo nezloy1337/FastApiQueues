@@ -12,7 +12,7 @@ class Application(BaseApplication):
         self.application = app
         super().__init__()
 
-    def load(self):
+    def load(self) -> FastAPI:
         return self.application
 
 
@@ -24,6 +24,6 @@ class Application(BaseApplication):
             if k in self.cfg.settings
         }
 
-    def load_config(self):
+    def load_config(self) -> None:
         for key,value in self.config_options.items():
             self.cfg.set(key.lower(),value)

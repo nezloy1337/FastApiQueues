@@ -48,7 +48,7 @@ def handle_exception(func) -> Callable:
 
     return wrapper
 
-async def find_error_type(exception):
+async def find_error_type(exception) -> None:
     match exception:
 
         case IntegrityError():
@@ -60,10 +60,10 @@ async def find_error_type(exception):
         case AttributeError():
             raise
 
-    return handle_unexpected_error(exception)
+    return await handle_unexpected_error(exception)
 
 
-def handle_validation_error(e: ValidationError):
+def handle_validation_error(e: ValidationError) -> None:
     logger.error(f"ошибка валидации данных:{ e.args }")
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
@@ -71,7 +71,7 @@ def handle_validation_error(e: ValidationError):
     )
 
 
-def handle_integrity_error(e: IntegrityError):
+def handle_integrity_error(e: IntegrityError)-> None:
     logger.error(f"Ошибка целостности данных: { str(e) }")
 
     raise HTTPException(
@@ -79,7 +79,7 @@ def handle_integrity_error(e: IntegrityError):
         detail="ошибка целостности данных",
     )
 
-def handle_attr_error(e: AttributeError):
+def handle_attr_error(e: AttributeError)-> None:
     logger.error(f"ошибка получения атрибута: {str(e)}")
 
     raise HTTPException(
@@ -89,7 +89,7 @@ def handle_attr_error(e: AttributeError):
 
 
 
-async def handle_unexpected_error(e: Exception):
+async def handle_unexpected_error(e: Exception) -> None:
     """
         Handles unexpected exceptions by logging, storing, and raising an HTTP 500 error.
 

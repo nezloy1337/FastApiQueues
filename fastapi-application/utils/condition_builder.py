@@ -3,7 +3,7 @@ from typing import Type, List, Any, TYPE_CHECKING
 from sqlalchemy.orm import selectinload
 
 if TYPE_CHECKING:
-    from core.base import TModels
+    from core.types import TModels
 
 
 class ConditionBuilder:

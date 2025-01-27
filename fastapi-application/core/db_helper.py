@@ -1,3 +1,5 @@
+from typing import AsyncGenerator
+
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     AsyncEngine,
@@ -34,7 +36,7 @@ class DatabaseHelper:
     async def dispose(self) -> None:
         await self.engine.dispose()
 
-    async def session_getter(self) -> AsyncSession:
+    async def session_getter(self) -> AsyncGenerator[AsyncSession, None]:
         """
         Async generator for managing the database session lifecycle.
 
