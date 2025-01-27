@@ -19,16 +19,20 @@ motor = "^3.6.0"
 gunicorn = "^23.0.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.10.0"
 flake8 = "^7.1.1"
 import-linter = "^2.1"
 pydeps = "^3.0.0"
-pre-commit = "^4.1.0"
 mypy = "^1.14.1"
 
 
+[tool.poetry.group.lint.dependencies]
+pre-commit = "^4.0.1"
+ruff = "^0.9.1"
+black = "^24.10.0"
+
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.4"
+pytest-asyncio = "^0.25.2"
 
 
 [tool.poetry.group.load_testing.dependencies]
@@ -37,3 +41,62 @@ locust = "^2.32.6"
 [tool.mypy]
 python_version = "3.10"
 strict = true
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    ".*_factory.py",
+]
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+
+select = [
+    "F", # Pyflakes
+    "E", # Error
+    "E4", # Error
+    "E9", # Error
+    "I", # isort
+    "BLE", # flake8-blind-except
+    "YTT", # flake8-2020
+    "ASYNC", # flake8-async
+]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
