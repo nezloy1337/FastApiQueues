@@ -11,6 +11,11 @@ __all__ = [
 
 from .models import User
 from .repositories import UserRepository
-from .schemas import UserUpdate, UserRead, UserCreate, UserForEntry, ManageUserPermissions
+from .schemas import (
+    ManageUserPermissions,
+    UserCreate,
+    UserForEntry,
+    UserRead,
+    UserUpdate,
+)
 from .services import UserService
-

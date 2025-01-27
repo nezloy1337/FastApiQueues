@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 from bson import ObjectId
 from pydantic import BaseModel, Field
@@ -14,20 +14,18 @@ class ObjectIdTimeActionMixin(BaseModel):
         json_encoders = {ObjectId: str}
 
 
-class ActionLog(ObjectIdTimeActionMixin,BaseModel):
+class ActionLog(ObjectIdTimeActionMixin, BaseModel):
     status: str
     parameters: Dict[str, Any]
 
 
-
-class QueueEntryLog(ObjectIdTimeActionMixin,BaseModel):
+class QueueEntryLog(ObjectIdTimeActionMixin, BaseModel):
     user_uuid: str
     queue_id: int
     position: int
-    details: dict[str,Any] | None = None
+    details: dict[str, Any] | None = None
 
 
 class ExceptionLogTemplate(BaseModel):
     description: Optional[str] = None
     timestamp: Optional[datetime] = None
-

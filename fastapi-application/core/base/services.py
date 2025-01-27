@@ -1,9 +1,9 @@
 from typing import Any
 
 from fastapi import HTTPException, status
-
-from core.types import TRepositories, TModels
 from utils.exception_handlers import handle_exception
+
+from core.types import TModels, TRepositories
 
 
 class BaseService:
@@ -97,6 +97,3 @@ class BaseService:
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Not Found",
         )
-
-
-

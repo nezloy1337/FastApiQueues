@@ -3,4 +3,3 @@ __all__ = [
 ]
 
 from .v1 import router
-

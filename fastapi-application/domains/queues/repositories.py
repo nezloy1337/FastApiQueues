@@ -1,13 +1,13 @@
-from sqlalchemy import select, delete, and_
+from core.base.repository import BaseRepository
+from core.types import TModels
+from sqlalchemy import and_, delete, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-
-from core.base.repository import BaseRepository
-from core.types import TModels
-from domains.queues import Queue, QueueEntries, QueueTags
 from utils.condition_builder import ConditionBuilder
 from utils.exception_handlers import handle_exception
+
+from domains.queues import Queue, QueueEntries, QueueTags
 
 """
 отдельный файл для каждого репозитория для дальнейшего маштабирования и развития проекта

@@ -4,12 +4,12 @@ from typing import (
     Type,
 )
 
-from sqlalchemy import update, delete, and_
+from sqlalchemy import and_, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from utils.condition_builder import ConditionBuilder
 
 from core.types import TModels
-from utils.condition_builder import ConditionBuilder
 
 
 class BaseRepository(Generic[TModels]):
@@ -18,15 +18,16 @@ class BaseRepository(Generic[TModels]):
 
     :param model: The SQLAlchemy model class managed by the repository.
     :param session: The asynchronous SQLAlchemy session.
-    :param condition_builder: An object that generates filter (WHERE) conditions from dictionaries.
+    :param condition_builder: An object that generates
+     filter (WHERE) conditions from dictionaries.
     """
 
     def __init__(
         self,
         model: Type[TModels],
         session: AsyncSession,
-        condition_builder: "ConditionBuilder",  # Кавычки для аннотации, если класс объявлен позже
-    ):
+        condition_builder: "ConditionBuilder",  # Кавычки для аннотации,
+    ):  # если класс объявлен позже
         self.model = model
         self.session = session
         self.condition_builder = condition_builder
@@ -63,7 +64,8 @@ class BaseRepository(Generic[TModels]):
 
     async def delete(self, **conditions: dict) -> TModels | None:
         """
-        Deletes an object matching the specified conditions and returns the deleted object.
+        Deletes an object matching the specified
+        conditions and returns the deleted object.
         Returns None if no matching object is found.
 
         :param conditions: Arbitrary conditions for filtering objects.
@@ -112,6 +114,3 @@ class BaseRepository(Generic[TModels]):
         if updated_obj:
             await self.session.commit()
         return updated_obj
-
-
-

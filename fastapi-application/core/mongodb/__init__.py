@@ -5,7 +5,7 @@ __all__ = [
 ]
 
 from .connection import (
-    queue_logs_collection,
-    queue_entries_logs_collection,
     error_collection,
+    queue_entries_logs_collection,
+    queue_logs_collection,
 )

@@ -1,19 +1,21 @@
 from datetime import date
-from typing import List
-
-from sqlalchemy import (
-    String,
-    Integer,
-    Date,
-    ForeignKey,
-    CheckConstraint,
-    UniqueConstraint,
-)
-from sqlalchemy.orm import mapped_column, Mapped, relationship
+from typing import TYPE_CHECKING, List
 
 from core.base import Base
 from core.base.mixins import IntIdPkMixin
-from domains.tags import Tags
+from sqlalchemy import (
+    CheckConstraint,
+    Date,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+)
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+if TYPE_CHECKING:
+    from domains.tags import Tags
+    from domains.users import User
 
 
 class Queue(IntIdPkMixin, Base):

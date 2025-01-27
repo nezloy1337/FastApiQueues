@@ -8,11 +8,10 @@ __all__ = [
     "GetQueueWithEntries",
 ]
 
-from .queue_entries import CreateQueueEntry, QueueEntry, GetQueueEntryAndUser
+from .queue_entries import CreateQueueEntry, GetQueueEntryAndUser, QueueEntry
 from .queues import (
-    GetQueue,
-    PutQueue,
     CreateQueue,
+    GetQueue,
     GetQueueWithEntries,
-    GetQueueEntryAndUser,
+    PutQueue,
 )

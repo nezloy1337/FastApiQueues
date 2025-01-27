@@ -1,10 +1,10 @@
 from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import (
-    create_async_engine,
     AsyncEngine,
-    async_sessionmaker,
     AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
 )
 
 from core.config import settings
@@ -59,5 +59,3 @@ db_helper = DatabaseHelper(
     pool_size=settings.db.pool_size,
     max_overflow=settings.db.max_overflow,
 )
-
-

@@ -1,11 +1,11 @@
 from typing import Annotated
 
+from domains.tags import CreateTagQueue, TagsService
+from domains.users import User
 from fastapi import APIRouter, Depends
 from starlette import status
 
-from api.dependencies import get_queue_tags_service, current_user, current_super_user
-from domains.tags import TagsService, CreateTagQueue
-from domains.users import User
+from api.dependencies import current_super_user, current_user, get_queue_tags_service
 
 router = APIRouter(
     tags=["queue_tag"],
@@ -19,7 +19,7 @@ router = APIRouter(
 )
 async def get_tag_queue(
     user: Annotated[User, Depends(current_user)],
-    service: Annotated[TagsService, Depends(get_queue_tags_service)]
+    service: Annotated[TagsService, Depends(get_queue_tags_service)],
 ):
     return await service.get_all()
 

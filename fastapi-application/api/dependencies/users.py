@@ -1,9 +1,8 @@
 from uuid import UUID
 
-from fastapi_users import FastAPIUsers
-
 from core.auth import auth_backend, get_user_manager
 from domains.users import User
+from fastapi_users import FastAPIUsers
 
 fastapi_users = FastAPIUsers[User, UUID](
     get_user_manager,
@@ -19,7 +18,7 @@ Retrieves the currently authenticated active user or superuser.
 
 :returns: The currently authenticated active user or superuser.
 :raises:
-    - HTTPException (401): If the user is not authenticated or their account is inactive.
+    - HTTPException (401): If the user is not authenticated.
 
 :usage:
     Use this dependency in routes where any active user can access::
@@ -29,4 +28,3 @@ Retrieves the currently authenticated active user or superuser.
             return {"username": user.username, "email": user.email}
 
 """
-

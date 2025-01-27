@@ -1,13 +1,13 @@
-from typing import Type, Annotated
+from typing import Annotated, Type
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from utils import get_condition_builder
+from utils.condition_builder import ConditionBuilder
 
 from core.db_helper import db_helper
 from core.registry import MODEL_REGISTRY
 from core.types import TModels
-from utils import get_condition_builder
-from utils.condition_builder import ConditionBuilder
 
 
 def get_repository_by_model(model_cls: Type[TModels]):
@@ -18,15 +18,18 @@ def get_repository_by_model(model_cls: Type[TModels]):
 
     def _create_repository(
         session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-        condition_builder: Annotated[ConditionBuilder,Depends(get_condition_builder(model_cls)),]
+        condition_builder: Annotated[
+            ConditionBuilder,
+            Depends(get_condition_builder(model_cls)),
+        ],
     ):
         """
-           Internal function to create a repository instance.
+        Internal function to create a repository instance.
 
-           This function is intended to be used internally by `get_repository_by_model`.
-           It initializes the repository with a session and a condition builder specific
-           to the given model.
-           """
+        This function is intended to be used internally by `get_repository_by_model`.
+        It initializes the repository with a session and a condition builder specific
+        to the given model.
+        """
 
         return repo_cls(session, condition_builder)
 

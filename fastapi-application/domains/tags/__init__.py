@@ -11,6 +11,5 @@ __all__ = [
 
 from .models import Tags
 from .repositories import TagsRepository
-from .schemas import CreateTag, CreateTagQueue, PatchTag, GetTag, DeleteTag
+from .schemas import CreateTag, CreateTagQueue, DeleteTag, GetTag, PatchTag
 from .services import TagsService
-

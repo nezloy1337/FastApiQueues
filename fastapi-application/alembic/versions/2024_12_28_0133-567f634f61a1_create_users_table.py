@@ -9,9 +9,8 @@ Create Date: 2024-12-28 01:33:13.474367
 from typing import Sequence, Union
 
 import fastapi_users_db_sqlalchemy
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "567f634f61a1"
@@ -23,9 +22,7 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         "user",
-        sa.Column(
-            "id", fastapi_users_db_sqlalchemy.generics.GUID(), nullable=False
-        ),
+        sa.Column("id", fastapi_users_db_sqlalchemy.generics.GUID(), nullable=False),
         sa.Column("email", sa.String(length=320), nullable=False),
         sa.Column("hashed_password", sa.String(length=1024), nullable=False),
         sa.Column("is_active", sa.Boolean(), nullable=False),

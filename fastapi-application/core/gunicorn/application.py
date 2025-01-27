@@ -6,7 +6,7 @@ class Application(BaseApplication):
     def __init__(
         self,
         app: FastAPI,
-        options:dict,
+        options: dict,
     ):
         self.options = options or {}
         self.application = app
@@ -15,15 +15,10 @@ class Application(BaseApplication):
     def load(self) -> FastAPI:
         return self.application
 
-
     @property
     def config_options(self):
-        return {
-            k:v
-            for k,v in self.options.items()
-            if k in self.cfg.settings
-        }
+        return {k: v for k, v in self.options.items() if k in self.cfg.settings}
 
     def load_config(self) -> None:
-        for key,value in self.config_options.items():
-            self.cfg.set(key.lower(),value)
+        for key, value in self.config_options.items():
+            self.cfg.set(key.lower(), value)

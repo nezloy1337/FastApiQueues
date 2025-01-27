@@ -1,10 +1,13 @@
 from core.factories import get_service_by_model
-from domains.queues import QueueEntries, QueueTags, Queue
+from domains.queues import Queue, QueueEntries, QueueTags
 from domains.tags import Tags
 from domains.users import User
+
 """
-This module defines dependency factories for creating service instances for specific models.
-These factories are designed for integration with FastAPI's dependency injection system.
+This module defines dependency factories for creating
+service instances for specific models.
+These factories are designed for integration with FastAPI's
+dependency injection system.
 
 Usage in FastAPI:
 -----------------

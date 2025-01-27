@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class TagIdMixin(BaseModel):
     id: int
 
@@ -18,7 +19,6 @@ class DeleteTag(TagBase, TagIdMixin):
 
 class PatchTag(TagBase):
     pass
-
 
 
 class GetTag(TagBase, TagIdMixin):

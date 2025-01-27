@@ -1,8 +1,9 @@
-from core.gunicorn import Application,get_app_options
-from main import main_app
 from core.config import settings
+from core.gunicorn import Application, get_app_options
+from main import main_app
 
-def main():
+
+def main() -> None:
     app = Application(
         app=main_app,
         options=get_app_options(
@@ -14,5 +15,6 @@ def main():
     )
     app.run()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

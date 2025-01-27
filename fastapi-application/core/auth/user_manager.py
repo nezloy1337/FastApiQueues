@@ -1,17 +1,14 @@
 import logging
 import uuid
 
-from fastapi import Depends
+from domains.users import User
+from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, UUIDIDMixin
 
 from core.auth.get_db import get_user_db
 from core.config import settings
-from domains.users import User
 
 log = logging.getLogger(__name__)
-
-
-
 
 
 class UserManager(
@@ -24,7 +21,7 @@ class UserManager(
     async def on_after_register(
         self,
         user: User,
-        request: "Request | None" = None,
+        request: Request | None = None,
     ):
         log.warning(
             "User %r has registered.",

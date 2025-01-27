@@ -3,8 +3,9 @@ from typing import Type
 from fastapi import Depends
 
 from core.registry import MODEL_REGISTRY
+
+from ..types import TModels, TService
 from .repository import get_repository_by_model
-from ..types import TService, TModels
 
 
 def get_service_by_model(model_cls: Type[TModels]):
@@ -22,15 +23,16 @@ def get_service_by_model(model_cls: Type[TModels]):
         repository=Depends(get_repository_by_model(model_cls)),
     ) -> TService:
         """
-         Internal function to create a service instance.
+        Internal function to create a service instance.
 
-         :param repository: The repository instance retrieved via Depends.
-         :type repository: Repository
-         :return: An instance of the service class.
-         :rtype: TService
+        :param repository: The repository instance retrieved via Depends.
+        :type repository: Repository
+        :return: An instance of the service class.
+        :rtype: TService
 
-         :note: This function is intended for use as the return value of `get_service_by_model`.
-         """
+        :note: This function is intended for use as the return
+         value of `get_service_by_model`.
+        """
         return service_cls(repository)
 
     return _create_service

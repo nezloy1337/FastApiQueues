@@ -1,12 +1,14 @@
-from typing import List
-
-from sqlalchemy import (
-    String,
-)
-from sqlalchemy.orm import mapped_column, Mapped, relationship
+from typing import TYPE_CHECKING, List
 
 from core.base.mixins import IntIdPkMixin
 from core.base.model import Base
+from sqlalchemy import (
+    String,
+)
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+if TYPE_CHECKING:
+    from domains.queues import Queue
 
 
 class Tags(IntIdPkMixin, Base):
@@ -23,5 +25,3 @@ class Tags(IntIdPkMixin, Base):
         secondary="queue_tags",
         back_populates="queue_tags",
     )
-
-

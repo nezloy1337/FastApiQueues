@@ -9,8 +9,6 @@ Create Date: 2025-01-11 05:07:46.254631
 from typing import Sequence, Union
 
 from alembic import op
-import sqlalchemy as sa
-
 
 # revision identifiers, used by Alembic.
 revision: str = "01445204797c"
@@ -48,9 +46,7 @@ def upgrade() -> None:
     op.create_unique_constraint(
         "uq_username_email", "queue_tags", ["queue_id", "tag_id"]
     )
-    op.drop_constraint(
-        "fk_queue_tags_tag_id_tags", "queue_tags", type_="foreignkey"
-    )
+    op.drop_constraint("fk_queue_tags_tag_id_tags", "queue_tags", type_="foreignkey")
     op.drop_constraint(
         "fk_queue_tags_queue_id_queues", "queue_tags", type_="foreignkey"
     )
@@ -73,7 +69,6 @@ def upgrade() -> None:
         ondelete="CASCADE",
     )
     op.create_unique_constraint(op.f("uq_tags_name"), "tags", ["name"])
-
 
 
 def downgrade() -> None:
@@ -119,4 +114,3 @@ def downgrade() -> None:
         ["queue_id"],
         ["id"],
     )
-
