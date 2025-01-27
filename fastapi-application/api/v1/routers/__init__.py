@@ -20,3 +20,4 @@ router.include_router(queues_entries_views_router)
 router.include_router(tags_router)
 router.include_router(queue_tag_router)
 
+__all__ = ["router"]

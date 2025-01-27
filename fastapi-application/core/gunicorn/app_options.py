@@ -3,7 +3,7 @@ def get_app_options(
         port:int,
         workers:int,
         timeout:int,
-):
+) -> dict:
     return {
         "bind": f"{host}:{port}",
         "timeout": timeout,
