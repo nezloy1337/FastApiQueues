@@ -50,7 +50,7 @@ def handle_exception(func) -> Callable:
             raise exception
         except AttributeError as exception:
             handle_attr_error(exception)
-        except Exception as exception:  # noqa: BLE001
+        except Exception as exception:
             # Ловим все остальные исключения для логирования и обработки
             await handle_unexpected_error(exception)
 
