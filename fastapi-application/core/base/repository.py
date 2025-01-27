@@ -4,9 +4,8 @@ from typing import (
     Type,
 )
 
-from sqlalchemy import and_, delete, update
+from sqlalchemy import and_, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 from utils.condition_builder import ConditionBuilder
 
 from core.types import TModels

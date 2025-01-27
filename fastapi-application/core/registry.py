@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Type
+from typing import Type
 
 from domains.queues import (
     Queue,
@@ -16,9 +16,9 @@ from domains.users import User, UserRepository, UserService
 
 from core.types import TModels, TRepositories, TService
 
-MODEL_REGISTRY: Dict[
+MODEL_REGISTRY: dict[
     Type[TModels],
-    Tuple[Type[TService], Type[TRepositories]],  # Значение: ( ServiceClass,RepoClass,)
+    tuple[Type[TService], Type[TRepositories]],  # Значение: ( ServiceClass,RepoClass,)
 ] = {
     Queue: (
         QueueService,
