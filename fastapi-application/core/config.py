@@ -61,6 +61,7 @@ class MongoConfig(BaseModel):
 
 
 class Settings(BaseSettings):
+
     model_config = SettingsConfigDict(
         env_file=(".env.templates", ".env"),  # следующий переопределяет предыдущий
         case_sensitive=False,
