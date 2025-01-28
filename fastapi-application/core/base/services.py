@@ -1,9 +1,9 @@
 from typing import Any
 
 from fastapi import HTTPException, status
-from utils.exception_handlers import handle_exception
 
 from core.types import TModels, TRepositories
+from utils.exception_handlers import handle_exception
 
 
 class BaseService:
@@ -20,7 +20,7 @@ class BaseService:
         self.repository = repository
 
     @handle_exception
-    async def create(self, obj_data: dict) -> TModels:
+    async def create(self, obj_data: dict[str, Any]) -> TModels:
         """
         Creates a new object in the database.
 

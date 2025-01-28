@@ -6,9 +6,9 @@ from typing import (
 
 from sqlalchemy import and_, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from utils.condition_builder import ConditionBuilder
 
 from core.types import TModels
+from utils.condition_builder import ConditionBuilder
 
 
 class BaseRepository(Generic[TModels]):

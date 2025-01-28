@@ -1,5 +1,6 @@
-from core.config import settings
 from fastapi import APIRouter
+
+from core.config import settings
 
 from .auth import router as auth_router
 from .queue_tag import router as queue_tag_router

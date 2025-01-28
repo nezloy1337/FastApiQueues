@@ -1,8 +1,7 @@
 from typing import Type
 
-from utils.condition_builder import ConditionBuilder
-
 from core.base import TModels
+from utils.condition_builder import ConditionBuilder
 
 
 class ConditionBuilderFactory:

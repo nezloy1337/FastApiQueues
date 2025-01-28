@@ -1,8 +1,8 @@
-from core.base.repository import BaseRepository
 from sqlalchemy.ext.asyncio import AsyncSession
-from utils.condition_builder import ConditionBuilder
 
+from core.base.repository import BaseRepository
 from domains.tags import Tags
+from utils.condition_builder import ConditionBuilder
 
 
 class TagsRepository(BaseRepository[Tags]):

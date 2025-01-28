@@ -1,8 +1,6 @@
 from datetime import date
 from typing import TYPE_CHECKING, List
 
-from core.base import Base
-from core.base.mixins import IntIdPkMixin
 from sqlalchemy import (
     CheckConstraint,
     Date,
@@ -12,6 +10,9 @@ from sqlalchemy import (
     UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from core.base import Base
+from core.base.mixins import IntIdPkMixin
 
 if TYPE_CHECKING:
     from domains.tags import Tags

@@ -1,10 +1,10 @@
 from typing import Annotated
 
-from domains.users import ManageUserPermissions, UserService
 from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.dependencies import get_user_service
+from domains.users import ManageUserPermissions, UserService
 
 router = APIRouter(
     prefix="/manage",

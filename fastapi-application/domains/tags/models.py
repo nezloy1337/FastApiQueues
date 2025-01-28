@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING, List
 
-from core.base.mixins import IntIdPkMixin
-from core.base.model import Base
 from sqlalchemy import (
     String,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from core.base.mixins import IntIdPkMixin
+from core.base.model import Base
 
 if TYPE_CHECKING:
     from domains.queues import Queue

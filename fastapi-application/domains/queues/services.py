@@ -1,11 +1,11 @@
 from typing import Any
 
-from core.base.services import BaseService
 from fastapi import HTTPException
 from starlette import status
-from utils.exception_handlers import handle_exception
 
+from core.base.services import BaseService
 from domains.queues import QueueRepository
+from utils.exception_handlers import handle_exception
 
 
 class QueueEntryService(BaseService):

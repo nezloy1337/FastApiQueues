@@ -2,12 +2,13 @@ import logging
 from datetime import datetime
 from typing import Callable
 
-from core.mongodb import error_collection
-from core.mongodb.schemas import ExceptionLogTemplate
 from fastapi import HTTPException
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 from starlette import status
+
+from core.mongodb import error_collection
+from core.mongodb.schemas import ExceptionLogTemplate
 
 # Настройка логирования
 logging.basicConfig(level=logging.ERROR)

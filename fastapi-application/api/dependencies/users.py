@@ -1,8 +1,9 @@
 from uuid import UUID
 
+from fastapi_users import FastAPIUsers
+
 from core.auth import auth_backend, get_user_manager
 from domains.users import User
-from fastapi_users import FastAPIUsers
 
 fastapi_users = FastAPIUsers[User, UUID](
     get_user_manager,

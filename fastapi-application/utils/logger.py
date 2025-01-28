@@ -3,10 +3,11 @@ from datetime import datetime, timezone
 from functools import lru_cache, wraps
 from typing import Callable, Optional
 
+from pydantic import BaseModel
+
 from core.base import Base
 from core.mongodb.connection import CONNECTION_REGISTRY
 from core.mongodb.schemas import ActionLog
-from pydantic import BaseModel
 
 
 @lru_cache

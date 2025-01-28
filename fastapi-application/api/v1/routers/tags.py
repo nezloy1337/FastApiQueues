@@ -1,10 +1,10 @@
 from typing import Annotated, List
 
-from domains.tags import CreateTag, GetTag, PatchTag, TagsService
-from domains.users import User
 from fastapi import APIRouter, Depends, status
 
 from api.dependencies import current_super_user, current_user, get_tags_service
+from domains.tags import CreateTag, GetTag, PatchTag, TagsService
+from domains.users import User
 
 router = APIRouter(
     tags=["tags"],

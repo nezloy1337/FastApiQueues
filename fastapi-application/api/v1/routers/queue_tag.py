@@ -1,11 +1,11 @@
 from typing import Annotated
 
-from domains.tags import CreateTagQueue, TagsService
-from domains.users import User
 from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.dependencies import current_super_user, current_user, get_queue_tags_service
+from domains.tags import CreateTagQueue, TagsService
+from domains.users import User
 
 router = APIRouter(
     tags=["queue_tag"],
