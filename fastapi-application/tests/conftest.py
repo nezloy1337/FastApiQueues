@@ -1,33 +1,43 @@
-import pytest
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from unittest.mock import MagicMock
 
-from core import settings
+import pytest_asyncio
+from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, create_async_engine
+
 from core.base import Base
 
 
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 async def test_engine():
-    engine = create_async_engine(settings.TEST_DATABASE_URL)
+    """Создает движок для тестов."""
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=False)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield engine
     await engine.dispose()
 
 
-@pytest.fixture
-async def db_session(test_engine):
-    async with AsyncSession(test_engine) as session:
-        transaction = await session.begin()
+@pytest_asyncio.fixture(scope="session")
+async def test_session(test_engine: AsyncEngine):
+    """Создает сессию для тестов."""
+    session_factory = async_sessionmaker(bind=test_engine, expire_on_commit=False)
+    async with session_factory() as session:
         yield session
-        await transaction.rollback()
 
 
-@pytest.fixture
-def test_client(db_session):
-    from app.core.database import get_db
-    from app.main import app
+@pytest_asyncio.fixture(scope="session")
+def mock_condition_builder():
+    """Мок ConditionBuilder."""
+    builder = MagicMock()
+    builder.create_conditions.return_value = []
+    return builder
 
-    app.dependency_overrides[get_db] = lambda: db_session
-    from fastapi.testclient import TestClient
 
-    return TestClient(app)
+# @pytest.fixture
+# def client(mock_service):
+#     from main import main_app
+#
+#
+#     main_app.dependency_overrides[] = override_get_db
+#
+#     with TestClient(main_app) as c:
+#         yield c
