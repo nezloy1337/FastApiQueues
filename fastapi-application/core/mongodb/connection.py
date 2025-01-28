@@ -1,4 +1,6 @@
-from motor.motor_asyncio import AsyncIOMotorClient
+from typing import Any, Mapping
+
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 
 from core.config import settings
 
@@ -11,10 +13,7 @@ users_logs_collection = mongodb["users"]
 error_collection = mongodb["errors"]
 
 
-CONNECTION_REGISTRY: dict[
-    str,
-    mongodb,
-] = {
+CONNECTION_REGISTRY: dict[str, AsyncIOMotorCollection[Mapping[str, Any]]] = {
     "queues": queue_logs_collection,
     "queue_entries": queue_entries_logs_collection,
     "users": users_logs_collection,

@@ -1,3 +1,4 @@
+# type: ignore
 import redis.asyncio
 from fastapi_users.authentication import RedisStrategy
 

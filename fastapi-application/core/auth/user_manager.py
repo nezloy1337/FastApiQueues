@@ -1,5 +1,6 @@
 import logging
 import uuid
+from typing import AsyncGenerator
 
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, UUIDIDMixin
@@ -22,7 +23,7 @@ class UserManager(
         self,
         user: User,
         request: Request | None = None,
-    ):
+    ) -> None:
         log.warning(
             "User %r has registered.",
             user.id,
@@ -33,7 +34,7 @@ class UserManager(
         user: User,
         token: str,
         request: "Request | None" = None,
-    ):
+    ) -> None:
         log.warning(
             "User %r has forgot their password. Reset token: %r",
             user.id,
@@ -45,7 +46,7 @@ class UserManager(
         user: User,
         token: str,
         request: "Request | None" = None,
-    ):
+    ) -> None:
         log.warning(
             "Verification requested for user %r. Verification token: %r",
             user.id,
@@ -53,5 +54,7 @@ class UserManager(
         )
 
 
-async def get_user_manager(user_db=Depends(get_user_db)):
+async def get_user_manager(
+    user_db=Depends(get_user_db),
+) -> AsyncGenerator[UserManager, None]:
     yield UserManager(user_db)

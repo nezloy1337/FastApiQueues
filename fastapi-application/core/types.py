@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from domains.tags import TagsRepository  # noqa: F401
     from domains.users import UserRepository  # noqa: F401
 
-TRepositories = TypeVar(
+TRepositories = TypeVar(  # ошибка unbound
     "TRepositories",
     bound=Union[
         "QueueRepository",

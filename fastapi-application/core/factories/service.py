@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Callable, Type
 
 from fastapi import Depends
 
@@ -8,7 +8,9 @@ from ..types import TModels, TService
 from .repository import get_repository_by_model
 
 
-def get_service_by_model(model_cls: Type[TModels]):
+def get_service_by_model(
+    model_cls: Type[TModels],
+) -> Callable[..., TService]:  # сделать точную аннотацию
     """
      Accepts a model and retrieves (RepoClass, ServiceClass) from the registry.
     Returns a function (for FastAPI Depends) that creates a service instance.

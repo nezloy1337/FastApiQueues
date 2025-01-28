@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Generic
 
 from fastapi import HTTPException, status
 
@@ -6,7 +6,7 @@ from core.types import TModels, TRepositories
 from utils.exception_handlers import handle_exception
 
 
-class BaseService:
+class BaseService(Generic[TModels]):
     """
     Base service implementing business logic using an abstract repository.
 

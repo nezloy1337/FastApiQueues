@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import Callable
+from typing import Any, Callable
 
 from fastapi import HTTPException
 from pydantic import ValidationError
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 # нужен ли async
-def handle_exception(func) -> Callable:
+def handle_exception(func: Callable[..., Any]) -> Callable:
     """
     A decorator to handle exceptions during the execution of asynchronous functions.
 

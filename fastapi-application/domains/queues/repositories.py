@@ -90,7 +90,7 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
             raise IntegrityError(None, params=None, orig=BaseException())
 
 
-class QueueTagsRepository(BaseRepository):
+class QueueTagsRepository(BaseRepository[QueueTags]):
     def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
         super().__init__(
             QueueTags,
