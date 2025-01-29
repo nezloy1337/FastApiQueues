@@ -6,7 +6,7 @@ from core.types import TModels, TRepositories
 from utils.exception_handlers import handle_exception
 
 
-class BaseService(Generic[TModels]):
+class BaseService(Generic[TModels, TRepositories]):
     """
     Base service implementing business logic using an abstract repository.
 

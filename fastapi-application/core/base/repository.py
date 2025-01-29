@@ -31,7 +31,7 @@ class BaseRepository(Generic[TModels]):
         self.session = session
         self.condition_builder = condition_builder
 
-    async def create(self, obj_data: dict) -> TModels:
+    async def create(self, obj_data: dict[str, Any]) -> TModels:
         """
         Creates a new object based on the provided data and saves it to the database.
 
@@ -61,7 +61,7 @@ class BaseRepository(Generic[TModels]):
         result = await self.session.execute(select(self.model))
         return list(result.scalars().all())
 
-    async def delete(self, **conditions: dict) -> TModels | None:
+    async def delete(self, **conditions: dict[str, Any]) -> TModels | None:
         """
         Deletes an object matching the specified
         conditions and returns the deleted object.
