@@ -4,7 +4,14 @@ from fastapi import HTTPException
 from starlette import status
 
 from core.base.services import BaseService
-from domains.queues import Queue, QueueEntries, QueueEntriesRepository, QueueTags
+from domains.queues import (
+    Queue,
+    QueueEntries,
+    QueueEntriesRepository,
+    QueueRepository,
+    QueueTags,
+    QueueTagsRepository,
+)
 from utils.exception_handlers import handle_exception
 
 
@@ -35,9 +42,9 @@ class QueueEntryService(BaseService[QueueEntries, QueueEntriesRepository]):
         )
 
 
-class QueueTagService(BaseService[QueueTags]):
+class QueueTagService(BaseService[QueueTags, QueueTagsRepository]):
     pass
 
 
-class QueueService(BaseService[Queue]):
+class QueueService(BaseService[Queue, QueueRepository]):
     pass
