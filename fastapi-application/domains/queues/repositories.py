@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from core.base.repository import BaseRepository
-from core.types import TModels
 from domains.queues import Queue, QueueEntries, QueueTags
 from utils.condition_builder import ConditionBuilder
 from utils.exception_handlers import handle_exception
@@ -22,7 +21,7 @@ class QueueRepository(BaseRepository[Queue]):
             condition_builder,
         )
 
-    async def get_by_id(self, queue_id: int) -> Queue:
+    async def get_by_id(self, queue_id: int) -> Queue | None:
         query = (
             select(Queue)
             .where(Queue.id == queue_id)
@@ -49,7 +48,7 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
         super().__init__(QueueEntries, session, condition_builder)
 
     @handle_exception
-    async def delete_all(self, filters: dict) -> TModels | None:
+    async def delete_all(self, filters: dict) -> QueueEntries | None:
         """
         Удаляет объекты, соответствующие указанным условиям, возвращает все
         удалённые объекты.
@@ -68,7 +67,7 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
             await self.session.commit()
         return deleted_obj
 
-    async def create(self, obj_data: dict) -> TModels:
+    async def create(self, obj_data: dict) -> QueueEntries:
         """
         Создаёт новый объект на основе переданных данных и сохраняет его в базе данных.
 

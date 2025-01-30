@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, List
 
 import bson
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
@@ -20,7 +20,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
         "QueueEntries", back_populates="user"
     )
 
-    def model_dump(self):
+    def model_dump(self) -> dict[str, Any]:
         return {
             "id": bson.Binary.from_uuid(self.id),
             "first_name": self.first_name,

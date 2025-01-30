@@ -1,6 +1,6 @@
 from typing import Type
 
-from core.base import TModels
+from core.types import TModels
 from utils.condition_builder import ConditionBuilder
 
 

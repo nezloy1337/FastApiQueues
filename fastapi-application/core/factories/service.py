@@ -4,6 +4,7 @@ from fastapi import Depends
 
 from core.registry import MODEL_REGISTRY
 
+from ..base import BaseService
 from ..types import TModels, TService
 from .repository import get_repository_by_model
 
@@ -23,7 +24,7 @@ def get_service_by_model(
 
     def _create_service(
         repository=Depends(get_repository_by_model(model_cls)),
-    ) -> TService:
+    ) -> BaseService[TModels, TService]:
         """
         Internal function to create a service instance.
 
