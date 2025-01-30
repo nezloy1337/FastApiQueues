@@ -1,34 +1,41 @@
-import datetime
+from unittest.mock import AsyncMock
 
 import pytest
 
 from core.base import BaseRepository
-from domains.queues import Queue
+from domains.queues import QueueTags
+from domains.tags import Tags
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "input_data, expected_name",
+    "model_class, obj_data",
     [
-        (
+        (  # Тест для Tag
+            Tags,
             {
-                "name": "string",
-                "start_time": datetime.date(2025, 1, 1),
-                "max_slots": 30,
+                "name": "Test Tag",
             },
-            "string",
+        ),
+        (  # Тест для QueueTags
+            QueueTags,
+            {
+                "queue_id": 2,
+                "tag_id": 2,
+            },
         ),
     ],
 )
-async def test_create(test_session, mock_condition_builder, input_data, expected_name):
-    repo = BaseRepository(Queue, test_session, mock_condition_builder)
+async def test_create(mock_session, mock_condition_builder, model_class, obj_data):
+    """Проверяем, что create() вызывает session.add() и commit()."""
+    repo = BaseRepository(model_class, mock_session, mock_condition_builder)
 
-    obj = await repo.create(input_data)
+    mock_session.commit = AsyncMock()
 
-    assert obj.name == expected_name
-    assert obj.id is not None
+    obj = await repo.create(obj_data)
 
-    # Проверяем в базе
-    result = await test_session.get(Queue, obj.id)
-    assert result is not None
-    assert result.name == expected_name
+    for key, value in obj_data.items():
+        assert getattr(obj, key) == value
+
+    mock_session.add.assert_called_once_with(obj)  # Проверяем вызов add()
+    mock_session.commit.assert_called_once()  # Проверяем вызов commit()
