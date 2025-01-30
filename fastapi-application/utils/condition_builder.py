@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, List, Type
+from typing import TYPE_CHECKING, Any, Callable, List, Type
 
 from sqlalchemy.orm import selectinload
 
@@ -54,11 +54,13 @@ class ConditionBuilder:
         return self.options
 
 
-def get_condition_builder(repository_type):
+def get_condition_builder(
+    model_type: Type["TModels"],
+) -> Callable[..., ConditionBuilder]:
     """
     Creates a factory function for initializing a `ConditionBuilder`
     for a specific model.
-    :param repository_type: The SQLAlchemy model associated with the repository.
+    :param model_type: The SQLAlchemy model associated with the repository.
     :return: A callable that creates an instance of `ConditionBuilder`.
     """
 
@@ -68,6 +70,6 @@ def get_condition_builder(repository_type):
 
         :return: An instance of `ConditionBuilder` tied to the given model.
         """
-        return ConditionBuilder(repository_type)
+        return ConditionBuilder(model_type)
 
     return create_condition_builder

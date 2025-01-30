@@ -1,16 +1,16 @@
-from typing import Annotated, Type
+from typing import Annotated, Callable, Type
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db_helper import db_helper
 from core.registry import MODEL_REGISTRY
-from core.types import TModels
+from core.types import TModels, TRepositories
 from utils import get_condition_builder
 from utils.condition_builder import ConditionBuilder
 
 
-def get_repository_by_model(model_cls: Type[TModels]):
+def get_repository_by_model(model_cls: Type[TModels]) -> Callable[..., TRepositories]:
     """
     Returns a dependency factory for creating a repository instance for the given model.
     """
@@ -22,7 +22,7 @@ def get_repository_by_model(model_cls: Type[TModels]):
             ConditionBuilder,
             Depends(get_condition_builder(model_cls)),
         ],
-    ):
+    ) -> TRepositories:
         """
         Internal function to create a repository instance.
 

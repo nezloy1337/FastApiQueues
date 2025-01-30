@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar  # noqa: F401
 
 if TYPE_CHECKING:
     from core.base import Base, BaseRepository, BaseService  # noqa: F401
@@ -16,12 +16,12 @@ if TYPE_CHECKING:
 
 TRepositories = TypeVar(  # ошибка unbound
     "TRepositories",
-    bound="BaseRepository",
+    bound="BaseRepository[Any]",
 )
 
 TService = TypeVar(
     "TService",
-    bound="BaseService",
+    bound="BaseService[Any,Any]",
 )
 
 TModels = TypeVar(

@@ -1,3 +1,5 @@
+from typing import Any
+
 from sqlalchemy import and_, delete, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,13 +36,14 @@ class QueueRepository(BaseRepository[Queue]):
         result = await self.session.execute(query)
         return result.scalars().first()
 
-    async def get_all(self):
+    async def get_all(self) -> list[Queue]:
         query = select(Queue).options(
             selectinload(Queue.queue_tags),
         )
 
         result = await self.session.execute(query)
-        return result.scalars().all()
+
+        return list(result.scalars().all())
 
 
 class QueueEntriesRepository(BaseRepository[QueueEntries]):
@@ -48,7 +51,7 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
         super().__init__(QueueEntries, session, condition_builder)
 
     @handle_exception
-    async def delete_all(self, filters: dict) -> QueueEntries | None:
+    async def delete_all(self, filters: dict[str, Any]) -> QueueEntries | None:
         """
         Удаляет объекты, соответствующие указанным условиям, возвращает все
         удалённые объекты.
@@ -67,7 +70,7 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
             await self.session.commit()
         return deleted_obj
 
-    async def create(self, obj_data: dict) -> QueueEntries:
+    async def create(self, obj_data: dict[str, Any]) -> QueueEntries:
         """
         Создаёт новый объект на основе переданных данных и сохраняет его в базе данных.
 
