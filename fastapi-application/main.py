@@ -8,6 +8,7 @@ from fastapi.responses import ORJSONResponse
 from api import router as api_router
 from core.config import settings
 from core.db_helper import db_helper
+from utils.handle_exceptions import register_exception_handlers
 
 
 @asynccontextmanager
@@ -22,6 +23,7 @@ main_app = FastAPI(
     default_response_class=ORJSONResponse,
     lifespan=lifespan,
 )
+register_exception_handlers(main_app)
 
 main_app.add_middleware(
     CORSMiddleware,
