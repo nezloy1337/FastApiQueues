@@ -1,7 +1,7 @@
 import inspect
 from datetime import datetime, timezone
 from functools import lru_cache, wraps
-from typing import Callable, Optional
+from typing import Callable
 
 from pydantic import BaseModel
 
@@ -46,7 +46,7 @@ def get_log_params(func, log_params, *args, **kwargs):
 def log_action(
     action: str,
     collection_name: str,
-    log_params: Optional[list[str]] = None,
+    log_params: list[str] | None = None,
 ) -> Callable:
     """
      A decorator for logging actions to MongoDB.
@@ -76,6 +76,7 @@ def log_action(
         @wraps(func)
         async def wrapper(*args, **kwargs):
             status = "success"
+            logged_args = get_log_params(func, log_params, *args, **kwargs)
             try:
                 return await func(*args, **kwargs)
 
@@ -85,7 +86,6 @@ def log_action(
 
             finally:
                 timestamp = datetime.now(timezone.utc)
-                logged_args = get_log_params(func, log_params, *args, **kwargs)
                 log_entry = ActionLog(
                     action=action,
                     parameters=logged_args,  # Только отфильтрованные параметры

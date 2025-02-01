@@ -9,6 +9,7 @@ from api.dependencies import (
 )
 from domains.queues import CreateQueueEntry, QueueEntryService
 from domains.users import User
+from utils.logger import log_action
 
 router = APIRouter(
     prefix="/queue",
@@ -20,6 +21,11 @@ router = APIRouter(
     "/{queue_id}",
     response_model=CreateQueueEntry,
     status_code=status.HTTP_201_CREATED,
+)
+@log_action(
+    action="POST",
+    collection_name="queue_entries",
+    log_params=["queue_entry_to_create", "user"],
 )
 async def create_queue_entry(
     queue_entry_to_create: CreateQueueEntry,
@@ -38,6 +44,11 @@ async def create_queue_entry(
     "/{queue_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
+@log_action(
+    action="DELETE",
+    collection_name="queue_entries",
+    log_params=["queue_id", "user"],
+)
 async def delete_queue_entry(
     service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],
     user: Annotated[User, Depends(current_user)],
@@ -49,6 +60,11 @@ async def delete_queue_entry(
 @router.delete(
     "/{queue_id}/all",
     status_code=status.HTTP_204_NO_CONTENT,
+)
+@log_action(
+    action="DELETE (all)",
+    collection_name="queue_entries",
+    log_params=["queue_id", "user"],
 )
 async def clear_queue_entry(
     service: Annotated[QueueEntryService, Depends(get_queue_entries_service)],

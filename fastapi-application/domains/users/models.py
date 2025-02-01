@@ -21,6 +21,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     )
 
     def model_dump(self) -> dict[str, Any]:
+
         return {
             "id": bson.Binary.from_uuid(self.id),
             "first_name": self.first_name,
