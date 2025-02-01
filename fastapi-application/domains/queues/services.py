@@ -12,7 +12,6 @@ from domains.queues import (
     QueueTags,
     QueueTagsRepository,
 )
-from utils.exception_handlers import handle_exception
 
 
 class QueueEntryService(BaseService[QueueEntries, QueueEntriesRepository]):
@@ -22,7 +21,6 @@ class QueueEntryService(BaseService[QueueEntries, QueueEntriesRepository]):
     ):
         super().__init__(repository)
 
-    @handle_exception
     async def delete_all(self, filters: dict[str, Any]) -> bool:
         """
         Удаляет объекты, соответствующий условиям.
