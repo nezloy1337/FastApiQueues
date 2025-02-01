@@ -3,7 +3,6 @@ from typing import Any, Generic
 from fastapi import HTTPException, status
 
 from core.types import TModels, TRepositories
-from utils.exception_handlers import handle_exception
 
 
 class BaseService(Generic[TModels, TRepositories]):
@@ -19,7 +18,6 @@ class BaseService(Generic[TModels, TRepositories]):
     ):
         self.repository = repository
 
-    @handle_exception
     async def create(self, obj_data: dict[str, Any]) -> TModels:
         """
         Creates a new object in the database.
@@ -29,7 +27,6 @@ class BaseService(Generic[TModels, TRepositories]):
         """
         return await self.repository.create(obj_data)
 
-    @handle_exception
     async def get_by_id(self, obj_id: int) -> TModels | None:
         """
         Retrieves an object by its identifier.
@@ -47,7 +44,6 @@ class BaseService(Generic[TModels, TRepositories]):
             )
         return obj
 
-    @handle_exception
     async def get_all(self) -> list[TModels]:
         """
         Retrieves a list of all objects.
@@ -56,7 +52,6 @@ class BaseService(Generic[TModels, TRepositories]):
         """
         return await self.repository.get_all()
 
-    @handle_exception
     async def delete(self, filters: dict[str, Any]) -> bool:
         """
         Deletes an object that matches the specified conditions.
@@ -75,7 +70,6 @@ class BaseService(Generic[TModels, TRepositories]):
             detail="Not Found",
         )
 
-    @handle_exception
     async def patch(
         self,
         filters: dict[str, Any],

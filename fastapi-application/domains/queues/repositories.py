@@ -8,7 +8,6 @@ from sqlalchemy.orm import selectinload
 from core.base.repository import BaseRepository
 from domains.queues import Queue, QueueEntries, QueueTags
 from utils.condition_builder import ConditionBuilder
-from utils.exception_handlers import handle_exception
 
 """
 отдельный файл для каждого репозитория для дальнейшего маштабирования и развития проекта
@@ -50,7 +49,6 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
     def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
         super().__init__(QueueEntries, session, condition_builder)
 
-    @handle_exception
     async def delete_all(self, filters: dict[str, Any]) -> QueueEntries | None:
         """
         Удаляет объекты, соответствующие указанным условиям, возвращает все
