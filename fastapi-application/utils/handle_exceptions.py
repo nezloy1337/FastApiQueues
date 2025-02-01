@@ -40,7 +40,7 @@ def register_exception_handlers(app: FastAPI):
             status_code=409,  # Код 409 (Conflict) — конфликт данных в БД
             content={
                 "error": "IntegrityError",
-                "message": "ошибка целости данных в бд",
+                "message": "У вас уже есть место в очереди",
             },
         )
 
