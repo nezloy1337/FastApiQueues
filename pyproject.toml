@@ -62,11 +62,6 @@ exclude = "fastapi-application/api/v1/routers/.*"
 
 ########################################################################################
 
-[tool.ruff.lint.isort]
-known-first-party = ["api", "domains","utils","core"]
-
-########################################################################################
-
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [
@@ -98,7 +93,9 @@ exclude = [
     "venv",
     ".*_factory.py",
 ]
-########################################################################################
+
+[tool.ruff.lint.isort]
+known-first-party = ["api", "domains","utils","core"]
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
@@ -117,7 +114,6 @@ select = [
 ]
 ignore = ["BLE001"]
 
-########################################################################################
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
@@ -125,6 +121,7 @@ quote-style = "double"
 
 # Like Black, indent with spaces, rather than tabs.
 indent-style = "space"
+
 ########################################################################################
 
 [build-system]
