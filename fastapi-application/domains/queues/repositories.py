@@ -1,13 +1,13 @@
 from typing import Any
 
 from sqlalchemy import and_, delete, select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from core.base.repository import BaseRepository
 from domains.queues import Queue, QueueEntries, QueueTags
 from utils.condition_builder import ConditionBuilder
+from utils.exceptions import DuplicateEntryError
 
 """
 отдельный файл для каждого репозитория для дальнейшего маштабирования и развития проекта
@@ -81,13 +81,14 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
         )
 
         queue_entry = await self.session.execute(select(self.model).filter(*filters))
-        if not queue_entry.scalar_one_or_none():
-            obj = self.model(**obj_data)
-            self.session.add(obj)
-            await self.session.commit()
-            return obj
-        else:
-            raise IntegrityError(None, params=None, orig=BaseException())
+        if queue_entry.scalar_one_or_none():
+            raise DuplicateEntryError
+
+        obj = self.model(**obj_data)
+        self.session.add(obj)
+        await self.session.commit()
+
+        return obj
 
 
 class QueueTagsRepository(BaseRepository[QueueTags]):
