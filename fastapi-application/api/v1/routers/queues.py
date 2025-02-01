@@ -11,6 +11,7 @@ from domains.queues.schemas.queues import (
     PutQueue,
 )
 from domains.users import User
+from utils.logger import log_action
 
 router = APIRouter(
     prefix="/queues",
@@ -34,6 +35,11 @@ async def get_queues(
     "",
     response_model=CreateQueue,
     status_code=status.HTTP_201_CREATED,
+)
+@log_action(
+    action="POST",
+    collection_name="queues",
+    log_params=["queue_to_create", "user"],
 )
 async def create_queue(
     queue_to_create: CreateQueue,
@@ -60,6 +66,11 @@ async def get_queue_with_entries(
     "/{queue_id}",
     response_model=PutQueue,
 )
+@log_action(
+    action="PUT",
+    collection_name="queues",
+    log_params=["queue_to_patch", "user", "queue_id"],
+)
 async def put_queue(
     queue_to_patch: PutQueue,
     queue_id: int,
@@ -75,6 +86,11 @@ async def put_queue(
 @router.delete(
     "/{queue_id}",
     response_model=bool,
+)
+@log_action(
+    action="DELETE",
+    collection_name="queues",
+    log_params=["queue_id", "user"],
 )
 async def delete_queue(
     queue_id: int,
