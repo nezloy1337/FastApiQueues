@@ -8,7 +8,7 @@ from domains.users import ManageUserPermissions, UserService
 
 router = APIRouter(
     prefix="/manage",
-    tags=["custom"],
+    tags=["manage_users"],
 )
 
 
