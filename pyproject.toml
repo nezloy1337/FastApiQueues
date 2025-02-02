@@ -21,6 +21,7 @@ motor = "^3.6.0"
 gunicorn = "^23.0.0"
 
 ########################################################################################
+httpx = "^0.28.1"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.1.1"
@@ -29,6 +30,7 @@ pydeps = "^3.0.0"
 mypy = "^1.14.1"
 
 ########################################################################################
+aiosqlite = "^0.20.0"
 
 [tool.poetry.group.lint.dependencies]
 pre-commit = "^4.0.1"
@@ -41,6 +43,11 @@ black = "^24.10.0"
 pytest = "^8.3.4"
 pytest-asyncio = "^0.25.2"
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+filterwarnings = ["ignore::DeprecationWarning:pydantic"]
+
+
 ########################################################################################
 
 [tool.poetry.group.load_testing.dependencies]
@@ -52,11 +59,6 @@ locust = "^2.32.6"
 python_version = "3.13"
 strict = true
 exclude = "fastapi-application/api/v1/routers/.*"
-
-########################################################################################
-
-[tool.ruff.lint.isort]
-known-first-party = ["api", "domains","utils","core"]
 
 ########################################################################################
 
@@ -91,7 +93,9 @@ exclude = [
     "venv",
     ".*_factory.py",
 ]
-########################################################################################
+
+[tool.ruff.lint.isort]
+known-first-party = ["api", "domains","utils","core"]
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
@@ -110,7 +114,6 @@ select = [
 ]
 ignore = ["BLE001"]
 
-########################################################################################
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
@@ -118,6 +121,7 @@ quote-style = "double"
 
 # Like Black, indent with spaces, rather than tabs.
 indent-style = "space"
+
 ########################################################################################
 
 [build-system]

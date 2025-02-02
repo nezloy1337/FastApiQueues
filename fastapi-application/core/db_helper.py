@@ -48,8 +48,11 @@ class DatabaseHelper:
             is properly closed after its usage.
 
         """
-        async with self.session_factory() as session:
-            yield session
+        try:
+            async with self.session_factory() as session:
+                yield session
+        except Exception as e:
+            raise e
 
 
 db_helper = DatabaseHelper(
