@@ -3,7 +3,7 @@ from datetime import datetime
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import DBAPIError, IntegrityError
 
 from core.mongodb import error_collection
 from core.mongodb.schemas import ExceptionLogTemplate
@@ -18,10 +18,19 @@ def register_exception_handlers(app: FastAPI):
 
     @app.exception_handler(ValueError)
     async def value_error_handler(request: Request, exc: ValueError):
-
         return JSONResponse(
             status_code=400,
             content={"error": "ValueError", "message": str(exc)},
+        )
+
+    @app.exception_handler(AttributeError)
+    async def handle_attr_error(request: Request, exc: AttributeError) -> JSONResponse:
+        return JSONResponse(
+            status_code=400,  # Код 400 (Bad Request) — Ошибка получения атрибута
+            content={
+                "error": "AttributeError",
+                "message": str(exc),
+            },
         )
 
     @app.exception_handler(IntegrityError)
@@ -44,16 +53,6 @@ def register_exception_handlers(app: FastAPI):
             },
         )
 
-    @app.exception_handler(AttributeError)
-    async def handle_attr_error(request: Request, exc: AttributeError) -> JSONResponse:
-        return JSONResponse(
-            status_code=400,  # Код 400 (Bad Request) — Ошибка получения атрибута
-            content={
-                "error": "AttributeError",
-                "message": str(exc),
-            },
-        )
-
     @app.exception_handler(HTTPException)
     async def custom_http_exception_handler(request: Request, exc: HTTPException):
         return JSONResponse(
@@ -61,18 +60,21 @@ def register_exception_handlers(app: FastAPI):
             content={"error": str(exc)},
         )
 
-    @app.exception_handler(OSError)
-    async def ose_error_handler(request: Request, exc: OSError):
-        error_info = str(exc)
-        error_log = ExceptionLogTemplate(
-            description=error_info,
-            timestamp=datetime.now(),
+    @app.exception_handler(DBAPIError)
+    async def dbapi_error_handler(request: Request, exc: DBAPIError):
+        return JSONResponse(
+            status_code=400,  # Код 400 (Bad Request) — Ошибка получения атрибута
+            content={
+                "error": "ошибка базы данных, вероятно нарушение ограничений таблиц",
+                "message": str(exc),
+            },
         )
 
-        await error_collection.insert_one(error_log.model_dump(exclude_none=True))
+    @app.exception_handler(OSError)
+    async def ose_error_handler(request: Request, exc: OSError):
         return JSONResponse(
             status_code=500,
-            content={"error": error_info},
+            content={"error": str(exc)},
         )
 
     @app.exception_handler(Exception)
