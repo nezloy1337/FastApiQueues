@@ -9,7 +9,6 @@ from core.mongodb import error_collection
 from core.mongodb.schemas import ExceptionLogTemplate
 from utils.exceptions import DuplicateEntryError
 
-# Настройка логирования
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
@@ -58,7 +57,7 @@ def register_exception_handlers(app: FastAPI):
     @app.exception_handler(HTTPException)
     async def custom_http_exception_handler(request: Request, exc: HTTPException):
         return JSONResponse(
-            status_code=exc.status_code,
+            status_code=exc.status_code,  # повторяем код HTTPException
             content={"error": str(exc)},
         )
 
@@ -71,7 +70,10 @@ def register_exception_handlers(app: FastAPI):
         )
 
         await error_collection.insert_one(error_log.model_dump(exclude_none=True))
-        return JSONResponse(status_code=500, content={"error": error_info})
+        return JSONResponse(
+            status_code=500,
+            content={"error": error_info},
+        )
 
     @app.exception_handler(Exception)
     async def unknown_error_handler(request: Request, exc: Exception):
@@ -82,4 +84,7 @@ def register_exception_handlers(app: FastAPI):
         )
 
         await error_collection.insert_one(error_log.model_dump(exclude_none=True))
-        return JSONResponse(status_code=500, content={"error": error_info})
+        return JSONResponse(
+            status_code=500,
+            content={"error": error_info},
+        )
