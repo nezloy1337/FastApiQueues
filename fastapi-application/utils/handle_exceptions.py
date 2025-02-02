@@ -19,6 +19,7 @@ def register_exception_handlers(app: FastAPI):
 
     @app.exception_handler(ValueError)
     async def value_error_handler(request: Request, exc: ValueError):
+
         return JSONResponse(
             status_code=400,
             content={"error": "ValueError", "message": str(exc)},
@@ -30,7 +31,7 @@ def register_exception_handlers(app: FastAPI):
             status_code=409,  # Код 409 (Conflict) — конфликт данных в БД
             content={
                 "error": "IntegrityError",
-                "message": "ошибка целости данных в бд",
+                "message": str(exc),
             },
         )
 
@@ -48,22 +49,37 @@ def register_exception_handlers(app: FastAPI):
     async def handle_attr_error(request: Request, exc: AttributeError) -> JSONResponse:
         return JSONResponse(
             status_code=400,  # Код 400 (Bad Request) — Ошибка получения атрибута
-            content={"error": "AttributeError", "message": "Ошибка получения атрибута"},
+            content={
+                "error": "AttributeError",
+                "message": str(exc),
+            },
         )
 
     @app.exception_handler(HTTPException)
     async def custom_http_exception_handler(request: Request, exc: HTTPException):
         return JSONResponse(
-            status_code=exc.status_code, content={"error": f"{exc.detail}"}
+            status_code=exc.status_code,
+            content={"error": str(exc)},
         )
 
-    @app.exception_handler(Exception)
-    async def unknown_error_handler(request: Request, exc: HTTPException):
+    @app.exception_handler(OSError)
+    async def ose_error_handler(request: Request, exc: OSError):
         error_info = str(exc)
         error_log = ExceptionLogTemplate(
-            description=error_info, timestamp=datetime.now()
+            description=error_info,
+            timestamp=datetime.now(),
         )
 
         await error_collection.insert_one(error_log.model_dump(exclude_none=True))
+        return JSONResponse(status_code=500, content={"error": error_info})
 
-        return JSONResponse(status_code=500, content={"error": "неизвестная ошибка"})
+    @app.exception_handler(Exception)
+    async def unknown_error_handler(request: Request, exc: Exception):
+        error_info = str(exc)
+        error_log = ExceptionLogTemplate(
+            description=error_info,
+            timestamp=datetime.now(),
+        )
+
+        await error_collection.insert_one(error_log.model_dump(exclude_none=True))
+        return JSONResponse(status_code=500, content={"error": error_info})
