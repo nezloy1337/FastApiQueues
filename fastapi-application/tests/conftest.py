@@ -86,4 +86,5 @@ def mock_session():
     session.add = Mock()
     session.commit = AsyncMock()
     session.execute = AsyncMock()
+    session.get = AsyncMock()
     return session
