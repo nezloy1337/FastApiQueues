@@ -1,6 +1,6 @@
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Path, status
 
 from api.dependencies import current_super_user, current_user, get_tags_service
 from domains.tags import CreateTag, GetTag, PatchTag, TagsService
@@ -42,7 +42,7 @@ async def get_tags(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_tag(
-    tag_id: int,
+    tag_id: Annotated[int, Path(..., title="ID тега", ge=1)],
     service: Annotated[TagsService, Depends(get_tags_service)],
     user: Annotated[User, Depends(current_super_user)],
 ):
