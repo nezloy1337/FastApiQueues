@@ -14,79 +14,103 @@ logger = logging.getLogger(__name__)
 
 
 def register_exception_handlers(app: FastAPI):
-    """Регистрация обработчиков исключений"""
+    """Registers custom exception handlers for the FastAPI application."""
 
     @app.exception_handler(ValueError)
     async def value_error_handler(request: Request, exc: ValueError):
+        """Handles validation errors for incorrect value types"""
         return JSONResponse(
             status_code=400,
-            content={"error": "ValueError", "message": str(exc)},
+            content={
+                "error": "Validation Error",
+                "message": str(exc),
+            },
         )
 
     @app.exception_handler(AttributeError)
     async def handle_attr_error(request: Request, exc: AttributeError) -> JSONResponse:
+        """Handles missing or incorrect attribute access"""
         return JSONResponse(
-            status_code=400,  # Код 400 (Bad Request) — Ошибка получения атрибута
+            status_code=400,  # 400 Bad Request
             content={
-                "error": "AttributeError",
+                "error": "Attribute Error",
                 "message": str(exc),
             },
         )
 
     @app.exception_handler(IntegrityError)
     async def integrity_error_handler(request: Request, exc: IntegrityError):
+        """Handles database integrity constraint violations"""
         return JSONResponse(
-            status_code=409,  # Код 409 (Conflict) — конфликт данных в БД
+            status_code=409,  # 409 Conflict
             content={
-                "error": "IntegrityError",
+                "error": "Database Conflict (IntegrityError)",
                 "message": str(exc),
             },
         )
 
     @app.exception_handler(DuplicateEntryError)
     async def duplicate_entry_error_handler(request: Request, exc: DuplicateEntryError):
+        """Handles duplicate entry attempts in unique constrained fields"""
         return JSONResponse(
-            status_code=409,  # Код 409 (Conflict) — конфликт данных в БД
+            status_code=409,  # 409 Conflict
             content={
-                "error": "IntegrityError",
-                "message": "У вас уже есть место в очереди",
+                "error": "Duplicate Entry (IntegrityError)",
+                "message": "Resource already exists with these parameters",
             },
         )
 
     @app.exception_handler(HTTPException)
     async def custom_http_exception_handler(request: Request, exc: HTTPException):
+        """Handles standard HTTP exceptions"""
         return JSONResponse(
-            status_code=exc.status_code,  # повторяем код HTTPException
-            content={"error": str(exc)},
+            status_code=exc.status_code,
+            content={
+                "error": "API Error",
+                "message": exc.detail,
+            },
         )
 
     @app.exception_handler(DBAPIError)
     async def dbapi_error_handler(request: Request, exc: DBAPIError):
+        """Handles low-level database API errors"""
         return JSONResponse(
-            status_code=400,  # Код 400 (Bad Request) — Ошибка получения атрибута
+            status_code=400,  # 400 Bad Request
             content={
-                "error": "ошибка базы данных, вероятно нарушение ограничений таблиц",
-                "message": str(exc),
+                "error": "Database Operation Failed",
+                "message": "Database constraint violation detected",
             },
         )
 
     @app.exception_handler(OSError)
     async def ose_error_handler(request: Request, exc: OSError):
+        """Handles operating system related errors"""
         return JSONResponse(
-            status_code=500,
-            content={"error": str(exc)},
+            status_code=500,  # 500 Internal Server Error
+            content={
+                "error": "System Error",
+                "message": "Internal server operation failed",
+            },
         )
 
     @app.exception_handler(Exception)
     async def unknown_error_handler(request: Request, exc: Exception):
+        """Fallback handler for uncaught exceptions"""
         error_info = str(exc)
         error_log = ExceptionLogTemplate(
             description=error_info,
             timestamp=datetime.now(),
         )
 
-        await error_collection.insert_one(error_log.model_dump(exclude_none=True))
+        try:
+            await error_collection.insert_one(error_log.model_dump(exclude_none=True))
+        except Exception as e:
+            raise e
+
         return JSONResponse(
             status_code=500,
-            content={"error": error_info},
+            content={
+                "error": "Internal Server Error",
+                "message": str(exc),
+            },
         )
