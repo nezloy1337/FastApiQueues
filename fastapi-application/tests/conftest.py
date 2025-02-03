@@ -1,3 +1,4 @@
+from typing import AsyncGenerator, Generator
 from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
@@ -18,7 +19,7 @@ session_factory = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
-async def setup_test_db():
+async def setup_test_db() -> AsyncGenerator[None]:
     """Fixture to create and drop database tables for each test function.
 
     Creates all tables before test execution and drops them after test completion.
@@ -32,7 +33,7 @@ async def setup_test_db():
 
 
 @pytest_asyncio.fixture
-async def test_session():
+async def test_session() -> AsyncGenerator[AsyncSession]:
     """Provides an async database session for test operations.
 
     Yields:
@@ -43,7 +44,7 @@ async def test_session():
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
-def client(test_session):
+def client(test_session: AsyncSession) -> Generator[TestClient]:
     """Test client with overridden dependencies and mock authentication.
 
     Features:
@@ -52,11 +53,11 @@ def client(test_session):
     - Automatically cleans up overrides after test execution
     """
 
-    async def override_get_db():
+    async def override_get_db() -> AsyncGenerator[AsyncSession]:
         """Dependency override for database session"""
         yield test_session
 
-    def mock_current_user():
+    def mock_current_user() -> AsyncMock:
         """Mock authentication for regular user"""
         return AsyncMock(
             return_value=User(
@@ -67,7 +68,7 @@ def client(test_session):
             )
         )
 
-    def mock_current_super_user():
+    def mock_current_super_user() -> AsyncMock:
         """Mock authentication for superuser"""
         return AsyncMock(
             return_value=User(
@@ -92,7 +93,7 @@ def client(test_session):
 
 
 @pytest_asyncio.fixture(scope="session")
-def mock_condition_builder():
+def mock_condition_builder() -> MagicMock:
     """Mocked condition builder for query filtering tests.
 
     Returns:
@@ -104,7 +105,7 @@ def mock_condition_builder():
 
 
 @pytest_asyncio.fixture(scope="function")
-def mock_session():
+def mock_session() -> AsyncMock:
     """Mocked async database session with common method implementations.
 
     Includes:
@@ -120,7 +121,7 @@ def mock_session():
 
 
 @pytest_asyncio.fixture(scope="function")
-async def test_tag(test_session):
+async def test_tag(test_session: AsyncSession) -> Tags:
     """Test tag fixture providing pre-created database entries.
 
     Creates two sample tags:

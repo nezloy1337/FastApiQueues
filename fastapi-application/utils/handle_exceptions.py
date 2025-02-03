@@ -13,11 +13,14 @@ logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 
-def register_exception_handlers(app: FastAPI):
+def register_exception_handlers(app: FastAPI) -> None:
     """Registers custom exception handlers for the FastAPI application."""
 
     @app.exception_handler(ValueError)
-    async def value_error_handler(request: Request, exc: ValueError):
+    async def value_error_handler(
+        request: Request,
+        exc: ValueError,
+    ) -> JSONResponse:
         """Handles validation errors for incorrect value types"""
         return JSONResponse(
             status_code=400,
@@ -39,7 +42,9 @@ def register_exception_handlers(app: FastAPI):
         )
 
     @app.exception_handler(IntegrityError)
-    async def integrity_error_handler(request: Request, exc: IntegrityError):
+    async def integrity_error_handler(
+        request: Request, exc: IntegrityError
+    ) -> JSONResponse:
         """Handles database integrity constraint violations"""
         return JSONResponse(
             status_code=409,  # 409 Conflict
@@ -50,7 +55,9 @@ def register_exception_handlers(app: FastAPI):
         )
 
     @app.exception_handler(DuplicateEntryError)
-    async def duplicate_entry_error_handler(request: Request, exc: DuplicateEntryError):
+    async def duplicate_entry_error_handler(
+        request: Request, exc: DuplicateEntryError
+    ) -> JSONResponse:
         """Handles duplicate entry attempts in unique constrained fields"""
         return JSONResponse(
             status_code=409,  # 409 Conflict
@@ -61,7 +68,9 @@ def register_exception_handlers(app: FastAPI):
         )
 
     @app.exception_handler(HTTPException)
-    async def custom_http_exception_handler(request: Request, exc: HTTPException):
+    async def custom_http_exception_handler(
+        request: Request, exc: HTTPException
+    ) -> JSONResponse:
         """Handles standard HTTP exceptions"""
         return JSONResponse(
             status_code=exc.status_code,
@@ -72,7 +81,7 @@ def register_exception_handlers(app: FastAPI):
         )
 
     @app.exception_handler(DBAPIError)
-    async def dbapi_error_handler(request: Request, exc: DBAPIError):
+    async def dbapi_error_handler(request: Request, exc: DBAPIError) -> JSONResponse:
         """Handles low-level database API errors"""
         return JSONResponse(
             status_code=400,  # 400 Bad Request
@@ -83,7 +92,7 @@ def register_exception_handlers(app: FastAPI):
         )
 
     @app.exception_handler(OSError)
-    async def ose_error_handler(request: Request, exc: OSError):
+    async def ose_error_handler(request: Request, exc: OSError) -> JSONResponse:
         """Handles operating system related errors"""
         return JSONResponse(
             status_code=500,  # 500 Internal Server Error
@@ -94,7 +103,7 @@ def register_exception_handlers(app: FastAPI):
         )
 
     @app.exception_handler(Exception)
-    async def unknown_error_handler(request: Request, exc: Exception):
+    async def unknown_error_handler(request: Request, exc: Exception) -> JSONResponse:
         """Fallback handler for uncaught exceptions"""
         error_info = str(exc)
         error_log = ExceptionLogTemplate(
