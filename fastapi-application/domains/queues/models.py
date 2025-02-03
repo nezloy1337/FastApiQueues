@@ -1,9 +1,9 @@
-from datetime import date
+from datetime import datetime
 from typing import TYPE_CHECKING, List
 
 from sqlalchemy import (
     CheckConstraint,
-    Date,
+    DateTime,
     ForeignKey,
     Integer,
     String,
@@ -26,8 +26,8 @@ class Queue(IntIdPkMixin, Base):
         String(10),
         nullable=False,
     )
-    start_time: Mapped[date] = mapped_column(
-        Date,
+    start_time: Mapped[datetime] = mapped_column(
+        DateTime,
         nullable=False,
     )
     max_slots: Mapped[int] = mapped_column(
@@ -45,6 +45,17 @@ class Queue(IntIdPkMixin, Base):
         "Tags",
         secondary="queue_tags",
         back_populates="queues",
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "max_slots BETWEEN 1 AND 40",
+            name="check_position_number",
+        ),
+        CheckConstraint(
+            "start_time >= CURRENT_DATE",
+            name="check_event_date",
+        ),
     )
 
 
