@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import AsyncGenerator, Generator
 from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
@@ -10,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from api.dependencies import current_super_user, current_user
 from core import db_helper
 from core.base import Base
+from domains.queues import Queue
 from domains.tags import Tags
 from domains.users import User
 
@@ -138,3 +140,17 @@ async def test_tag(test_session: AsyncSession) -> Tags:
     await test_session.commit()
     await test_session.refresh(tag)
     return tag
+
+
+@pytest_asyncio.fixture(scope="function")
+async def test_queue(test_session: AsyncSession):
+    date_str = "2025-02-03T11:30:19.650000Z"
+    date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+    queue = Queue(name="test-queue-1", start_time=date_obj, max_slots=26)
+    test_session.add(queue)
+
+    await test_session.commit()
+    await test_session.refresh(queue)
+
+    return queue
