@@ -1,6 +1,6 @@
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Path, status
 
 from api.dependencies import current_super_user, current_user, get_queue_service
 from domains.queues import QueueService
@@ -59,6 +59,7 @@ async def get_queue_with_entries(
 @router.put(
     "/{queue_id}",
     response_model=PutQueue,
+    status_code=status.HTTP_200_OK,
 )
 async def put_queue(
     queue_to_patch: PutQueue,
@@ -74,10 +75,10 @@ async def put_queue(
 
 @router.delete(
     "/{queue_id}",
-    response_model=bool,
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_queue(
-    queue_id: int,
+    queue_id: Annotated[int, Path(..., title="ID тега", ge=1)],
     service: Annotated[QueueService, Depends(get_queue_service)],
     user: Annotated[User, Depends(current_super_user)],
 ):
