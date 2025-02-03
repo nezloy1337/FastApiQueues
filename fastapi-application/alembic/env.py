@@ -1,3 +1,5 @@
+# flake8: noqa
+# pylint: skip-file
 import asyncio
 from logging.config import fileConfig
 
@@ -8,6 +10,9 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from core.base import Base
 from core.config import settings
+from domains.queues import Queue, QueueTags, QueueEntries  # type: ignore
+from domains.tags import Tags  # type: ignore
+from domains.users import User  # type: ignore
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -50,6 +55,8 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
+        compare_server_default=True,
     )
 
     with context.begin_transaction():
