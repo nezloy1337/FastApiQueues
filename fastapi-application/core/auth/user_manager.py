@@ -24,6 +24,13 @@ class UserManager(
         user: User,
         request: Request | None = None,
     ) -> None:
+        """
+        Hook executed after a user registers.
+
+        Args:
+            user (User): The registered user instance.
+            request (Request | None, optional): The HTTP request, if available.
+        """
         log.warning(
             "User %r has registered.",
             user.id,
@@ -35,6 +42,14 @@ class UserManager(
         token: str,
         request: "Request | None" = None,
     ) -> None:
+        """
+        Hook executed after a user requests password reset.
+
+        Args:
+            user (User): The user requesting password reset.
+            token (str): The reset token.
+            request (Request | None, optional): The HTTP request, if available.
+        """
         log.warning(
             "User %r has forgot their password. Reset token: %r",
             user.id,
@@ -47,6 +62,14 @@ class UserManager(
         token: str,
         request: "Request | None" = None,
     ) -> None:
+        """
+        Hook executed when a user requests verification.
+
+        Args:
+            user (User): The user requesting verification.
+            token (str): The verification token.
+            request (Request | None, optional): The HTTP request, if available.
+        """
         log.warning(
             "Verification requested for user %r. Verification token: %r",
             user.id,
@@ -57,4 +80,13 @@ class UserManager(
 async def get_user_manager(
     user_db=Depends(get_user_db),
 ) -> AsyncGenerator[UserManager, None]:
+    """
+    Dependency function to get an instance of the UserManager.
+
+    Args:
+        user_db (SQLAlchemyUserDatabase): Injected via Depends.
+
+    Yields:
+        UserManager: The user manager instance.
+    """
     yield UserManager(user_db)

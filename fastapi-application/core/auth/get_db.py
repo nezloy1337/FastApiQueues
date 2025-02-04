@@ -16,4 +16,13 @@ async def get_user_db(
         Depends(db_helper.session_getter),
     ],
 ):
+    """
+    Dependency function to provide a SQLAlchemy user database instance.
+
+    Args:
+        session (AsyncSession): Injected SQLAlchemy async session.
+
+    Yields:
+        SQLAlchemyUserDatabase: The user database instance.
+    """
     yield SQLAlchemyUserDatabase(session, User)
