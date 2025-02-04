@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import AsyncGenerator, Generator
 from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
@@ -15,18 +14,24 @@ from domains.tags import Tags
 from domains.users import User
 from main import main_app
 
+# Generate unique user IDs for testing
+user_id = uuid4()
+super_user_id = uuid4()
+
+# Create an in-memory SQLite database for testing
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 engine = create_async_engine(TEST_DATABASE_URL, future=True)
 session_factory = async_sessionmaker(bind=engine, expire_on_commit=False)
 
-user_id = uuid4()
-super_user_id = uuid4()
-
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
-async def setup_test_db() -> AsyncGenerator[None]:
+async def setup_test_db() -> None:
     """
-    Fixture to create and drop database tables for each test function.
+    Fixture to set up and tear down the test database.
+
+    This fixture:
+    - Creates all database tables before each test function.
+    - Drops all database tables after each test function to ensure a clean state.
     """
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -36,11 +41,12 @@ async def setup_test_db() -> AsyncGenerator[None]:
 
 
 @pytest_asyncio.fixture
-async def test_session() -> AsyncGenerator[AsyncSession]:
-    """Provides an async database session for test operations.
+async def test_session() -> AsyncSession:
+    """
+    Provides an async database session for test operations.
 
     Yields:
-        AsyncSession: SQLAlchemy async session instance
+        AsyncSession: SQLAlchemy async session instance.
     """
     async with session_factory() as session:
         yield session
@@ -49,27 +55,36 @@ async def test_session() -> AsyncGenerator[AsyncSession]:
 @pytest_asyncio.fixture(scope="function", autouse=True)
 def client(
     test_session: AsyncSession, test_user: User, test_super_user: User
-) -> Generator[TestClient]:
-    """Test client with overridden dependencies and mock authentication.
+) -> TestClient:
+    """
+    Creates a FastAPI TestClient with dependency overrides for testing.
 
     Features:
-    - Overrides database session getter with test session
-    - Provides mock regular and super user authentication
-    - Automatically cleans up overrides after test execution
+    - Overrides the database session dependency.
+    - Provides mock authentication for regular users and superusers.
+    - Cleans up overrides after each test.
+
+    Args:
+        test_session (AsyncSession): The test database session.
+        test_user (User): A test regular user.
+        test_super_user (User): A test superuser.
+
+    Yields:
+        TestClient: The test client instance.
     """
 
-    async def override_get_db() -> AsyncGenerator[AsyncSession]:
-        """Dependency override for database session"""
+    async def override_get_db() -> AsyncSession:
+        """Overrides the database session dependency."""
         yield test_session
 
     def mock_current_user() -> AsyncMock:
-        """Mock authentication for regular user"""
+        """Mocks the authentication for a regular user."""
         user = MagicMock(return_value=test_user)
         user.id = user_id
         return user
 
     def mock_current_super_user() -> AsyncMock:
-        """Mock authentication for superuser"""
+        """Mocks the authentication for a superuser."""
         user = MagicMock(return_value=test_user)
         user.id = super_user_id
         return user
@@ -79,15 +94,22 @@ def client(
     main_app.dependency_overrides[current_user] = mock_current_user
     main_app.dependency_overrides[current_super_user] = mock_current_super_user
 
-    # Yield test client with cleanups
+    # Yield a test client instance
     with TestClient(main_app) as client:
         yield client
-    # Reset overrides after test completion
+
+    # Reset dependency overrides after the test completes
     main_app.dependency_overrides.clear()
 
 
 @pytest_asyncio.fixture(scope="function")
 async def test_user(test_session: AsyncSession) -> User:
+    """
+    Creates a test regular user.
+
+    Yields:
+        User: A test user instance.
+    """
     return User(
         id=uuid4(),
         first_name="Test",
@@ -98,6 +120,12 @@ async def test_user(test_session: AsyncSession) -> User:
 
 @pytest_asyncio.fixture(scope="function")
 async def test_super_user(test_session: AsyncSession) -> User:
+    """
+    Creates a test superuser.
+
+    Yields:
+        User: A test superuser instance.
+    """
     return User(
         id=uuid4(),
         first_name="Test",
@@ -108,10 +136,11 @@ async def test_super_user(test_session: AsyncSession) -> User:
 
 @pytest_asyncio.fixture(scope="session")
 def mock_condition_builder() -> MagicMock:
-    """Mocked condition builder for query filtering tests.
+    """
+    Mocks a condition builder for query filtering tests.
 
     Returns:
-        MagicMock: Mock object with predefined return value for create_conditions
+        MagicMock: A mock object with predefined return values for `create_conditions`.
     """
     builder = MagicMock()
     builder.create_conditions.return_value = []
@@ -120,11 +149,15 @@ def mock_condition_builder() -> MagicMock:
 
 @pytest_asyncio.fixture(scope="function")
 def mock_session() -> AsyncMock:
-    """Mocked async database session with common method implementations.
+    """
+    Mocks an async database session with standard method implementations.
 
     Includes:
-    - AsyncMock for async methods (commit, execute, get)
-    - Regular Mock for sync methods (add)
+    - AsyncMock for async methods (commit, execute, get).
+    - Regular Mock for sync methods (add).
+
+    Returns:
+        AsyncMock: A mock instance of `AsyncSession`.
     """
     session = AsyncMock(spec=AsyncSession)
     session.add = Mock()
@@ -136,14 +169,11 @@ def mock_session() -> AsyncMock:
 
 @pytest_asyncio.fixture(scope="function")
 async def test_tag(test_session: AsyncSession) -> Tags:
-    """Test tag fixture providing pre-created database entries.
+    """
+    Creates test tags.
 
-    Creates two sample tags:
-    - Primary test tag (name="test-tag")
-    - Secondary test tag (name="test-tag-2")
-
-    Returns:
-        Tags: Primary test tag object
+    Yields:
+        Tags: A test tag instance.
     """
     tag = Tags(name="test-tag")
     tag2 = Tags(name="test-tag-2")
@@ -155,25 +185,36 @@ async def test_tag(test_session: AsyncSession) -> Tags:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def test_queue(test_session: AsyncSession):
+async def test_queue(test_session: AsyncSession) -> Queue:
+    """
+    Creates a test queue.
+
+    - The queue starts one year from the current date.
+
+    Yields:
+        Queue: A test queue instance.
+    """
     dt = datetime.now()
     date_obj = dt.replace(year=dt.year + 1)
     queue = Queue(id=1, name="test-queue-1", start_time=date_obj, max_slots=26)
     test_session.add(queue)
-
     await test_session.commit()
     await test_session.refresh(queue)
-
     return queue
 
 
 @pytest_asyncio.fixture(scope="function")
-async def test_queue_entry(test_session: AsyncSession, test_queue: Queue):
+async def test_queue_entry(
+    test_session: AsyncSession, test_queue: Queue
+) -> QueueEntries:
+    """
+    Creates a test queue entry.
 
+    Yields:
+        QueueEntries: A test queue entry instance.
+    """
     queue_entry = QueueEntries(position=1, queue_id=1, user_id=str(user_id))
     test_session.add(queue_entry)
-
     await test_session.commit()
     await test_session.refresh(queue_entry)
-
     return queue_entry
