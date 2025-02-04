@@ -14,14 +14,30 @@ logger = logging.getLogger(__name__)
 
 
 def register_exception_handlers(app: FastAPI) -> None:
-    """Registers custom exception handlers for the FastAPI application."""
+    """
+    Registers custom exception handlers for the FastAPI application.
+
+    This function defines exception handlers for common errors, including:
+    - Validation errors
+    - Database integrity errors
+    - Duplicate entry errors
+    - HTTP exceptions
+    - General system and database errors
+
+    Args:
+        app (FastAPI): The FastAPI application
+        instance where handlers will be registered.
+    """
 
     @app.exception_handler(ValueError)
     async def value_error_handler(
         request: Request,
         exc: ValueError,
     ) -> JSONResponse:
-        """Handles validation errors for incorrect value types"""
+        """
+        Handles validation errors for incorrect value types
+        """
+
         return JSONResponse(
             status_code=400,
             content={
@@ -32,7 +48,9 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(AttributeError)
     async def handle_attr_error(request: Request, exc: AttributeError) -> JSONResponse:
-        """Handles missing or incorrect attribute access"""
+        """
+        Handles missing or incorrect attribute access
+        """
         return JSONResponse(
             status_code=400,  # 400 Bad Request
             content={
@@ -45,7 +63,9 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def integrity_error_handler(
         request: Request, exc: IntegrityError
     ) -> JSONResponse:
-        """Handles database integrity constraint violations"""
+        """
+        Handles database integrity constraint violations
+        """
         return JSONResponse(
             status_code=409,  # 409 Conflict
             content={
@@ -58,7 +78,9 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def duplicate_entry_error_handler(
         request: Request, exc: DuplicateEntryError
     ) -> JSONResponse:
-        """Handles duplicate entry attempts in unique constrained fields"""
+        """
+        Handles duplicate entry attempts in unique constrained fields
+        """
         return JSONResponse(
             status_code=409,  # 409 Conflict
             content={
@@ -71,7 +93,10 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def custom_http_exception_handler(
         request: Request, exc: HTTPException
     ) -> JSONResponse:
-        """Handles standard HTTP exceptions"""
+        """
+        Handles standard HTTP exceptions
+        """
+
         return JSONResponse(
             status_code=exc.status_code,
             content={
@@ -82,7 +107,10 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(DBAPIError)
     async def dbapi_error_handler(request: Request, exc: DBAPIError) -> JSONResponse:
-        """Handles low-level database API errors"""
+        """
+        Handles low-level database API errors
+        """
+
         return JSONResponse(
             status_code=400,  # 400 Bad Request
             content={
@@ -93,7 +121,10 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(OSError)
     async def ose_error_handler(request: Request, exc: OSError) -> JSONResponse:
-        """Handles operating system related errors"""
+        """
+        Handles operating system related errors
+        """
+
         return JSONResponse(
             status_code=500,  # 500 Internal Server Error
             content={
@@ -104,7 +135,10 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(Exception)
     async def unknown_error_handler(request: Request, exc: Exception) -> JSONResponse:
-        """Fallback handler for uncaught exceptions"""
+        """
+        Fallback handler for uncaught exceptions
+        """
+
         error_info = str(exc)
         error_log = ExceptionLogTemplate(
             description=error_info,

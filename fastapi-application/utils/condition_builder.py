@@ -8,24 +8,42 @@ if TYPE_CHECKING:
 
 class ConditionBuilder:
     """
-    A class for constructing query conditions and options.
+    A utility class for dynamically generating filtering and loading conditions
+    for SQLAlchemy queries.
+
+    Attributes:
+        model (Type[TModels]): The SQLAlchemy model associated with condition builder.
+        filters (List[Any]): List of filter conditions for the query.
+        options (List[Any]): List of loading options for relationships.
     """
 
     def __init__(self, model: Type["TModels"]):
+        """
+        Initializes the condition builder with a model.
+
+        Args:
+            model (Type[TModels]):
+             The SQLAlchemy model for which conditions will be built.
+        """
         self.model = model
         self.filters: List[Any] = []
         self.options: List[Any] = []
 
     def create_conditions(self, **conditions: Any) -> List[Any]:
         """
-        Creates filter instances for sqlalchemy .filter()
-         func based on the provided conditions.
+        Generates filtering conditions based on the provided keyword arguments.
 
-        :param conditions: Key-value pairs where keys are model attributes
-         and values are filter criteria.
-        :return: A list of SQLAlchemy filter conditions.
-        :raises AttributeError: If a specified key does not exist in the model.
+        Args:
+            **conditions (Any): Key-value pairs where the key is the model's field name
+            and the value is the filtering value.
+
+        Returns:
+            List[Any]: A list of SQLAlchemy filter conditions.
+
+        Raises:
+            AttributeError: If the model does not contain the specified attribute.
         """
+
         for key, value in conditions.items():
             column = getattr(self.model, key, None)
             if column is None:
@@ -37,12 +55,16 @@ class ConditionBuilder:
 
     def create_options(self, *relation_names: str) -> List[Any]:
         """
-        Creates options  instances for sqlalchemy .selectinload()
-        or other func for preloading related data.
+        Generates loading options for SQLAlchemy relationships.
 
-        :param relation_names: Names of related attributes to preload.
-        :return: A list of SQLAlchemy `selectinload` options.
-        :raises AttributeError: If a specified relation name does not exist.
+        Args:
+            *relation_names (str): Names of related fields to be eagerly loaded.
+
+        Returns:
+            List[Any]: A list of SQLAlchemy options for relationship loading.
+
+        Raises:
+            AttributeError: If the model does not contain the specified relationship.
         """
         for name in relation_names:
             relation = getattr(self.model, name, None)
@@ -58,17 +80,23 @@ def get_condition_builder(
     model_type: Type["TModels"],
 ) -> Callable[..., ConditionBuilder]:
     """
-    Creates a factory function for initializing a `ConditionBuilder`
-    for a specific model.
-    :param model_type: The SQLAlchemy model associated with the repository.
-    :return: A callable that creates an instance of `ConditionBuilder`.
+    Provides a factory function to create a `ConditionBuilder` instance for a model.
+
+    Args:
+        model_type (Type[TModels]):
+         The SQLAlchemy model for which the condition builder is created.
+
+    Returns:
+        Callable[..., ConditionBuilder]:
+         A function that, when called, returns a `ConditionBuilder` instance.
     """
 
     def create_condition_builder() -> ConditionBuilder:
         """
-        Initializes a `ConditionBuilder` for the specified repository type.
+        Creates and returns a `ConditionBuilder` instance for the specified model.
 
-        :return: An instance of `ConditionBuilder` tied to the given model.
+        Returns:
+            ConditionBuilder: A new instance of `ConditionBuilder` for the given model.
         """
         return ConditionBuilder(model_type)
 
