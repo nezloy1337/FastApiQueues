@@ -11,30 +11,35 @@ from .repository import get_repository_by_model
 
 def get_service_by_model(
     model_cls: Type[TModels],
-) -> Callable[..., TService]:  # сделать точную аннотацию
+) -> Callable[..., TService]:
     """
-     Accepts a model and retrieves (RepoClass, ServiceClass) from the registry.
-    Returns a function (for FastAPI Depends) that creates a service instance.
+    Retrieves the service class associated with the given model and
+    returns a factory function that creates instances of the service.
 
-    :param model_cls: The model class for which the service needs to be created.
-    :return: A function that creates a service instance using FastAPI Depends.
-    :rtype: Callable
+    Args:
+        model_cls (Type[TModels]): The model class used
+        to look up the corresponding service.
+
+    Returns:
+        Callable[..., TService]: A function that, when called,
+        returns an instance of the associated service.
     """
+
+    # Retrieve the service and repository classes from the registry
     service_cls, repo_cls = MODEL_REGISTRY[model_cls]
 
     def _create_service(
         repository=Depends(get_repository_by_model(model_cls)),
     ) -> BaseService[TModels, TService]:
         """
-        Internal function to create a service instance.
+        Creates and returns an instance of the service class
+        using the injected repository.
 
-        :param repository: The repository instance retrieved via Depends.
-        :type repository: Repository
-        :return: An instance of the service class.
-        :rtype: TService
+        Args:
+            repository: The repository instance, injected via FastAPI Depends.
 
-        :note: This function is intended for use as the return
-         value of `get_service_by_model`.
+        Returns:
+            TService: An instance of the associated service class.
         """
         return service_cls(repository)
 

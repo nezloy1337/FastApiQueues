@@ -12,8 +12,19 @@ from utils.condition_builder import ConditionBuilder
 
 def get_repository_by_model(model_cls: Type[TModels]) -> Callable[..., TRepositories]:
     """
-    Returns a dependency factory for creating a repository instance for the given model.
+    Retrieves the repository class associated with the given model and returns
+    a factory function that creates instances of the repository.
+
+    Args:
+        model_cls (Type[TModels]): The model class used
+        to look up the corresponding repository.
+
+    Returns:
+        Callable[..., TRepositories]: A function that, when called,
+        returns an instance of the associated repository.
     """
+
+    # Retrieve the repository class from the registry
     _, repo_cls = MODEL_REGISTRY[model_cls]
 
     def _create_repository(
@@ -24,13 +35,17 @@ def get_repository_by_model(model_cls: Type[TModels]) -> Callable[..., TReposito
         ],
     ) -> TRepositories:
         """
-        Internal function to create a repository instance.
+        Creates and returns an instance of the repository
+        class using injected dependencies.
 
-        This function is intended to be used internally by `get_repository_by_model`.
-        It initializes the repository with a session and a condition builder specific
-        to the given model.
+        Args:
+            session (AsyncSession): The database session, injected via FastAPI Depends.
+            condition_builder (ConditionBuilder): The condition builder
+            for query filtering, injected via Depends.
+
+        Returns:
+            TRepositories: An instance of the associated repository class.
         """
-
         return repo_cls(session, condition_builder)
 
     return _create_repository
