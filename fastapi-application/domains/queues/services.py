@@ -15,6 +15,14 @@ from domains.queues import (
 
 
 class QueueEntryService(BaseService[QueueEntries, QueueEntriesRepository]):
+    """
+    Service layer for handling business logic related to queue entries.
+
+    Attributes:
+        repository (QueueEntriesRepository):
+            The repository handling queue entry operations.
+    """
+
     def __init__(
         self,
         repository: QueueEntriesRepository,
@@ -23,13 +31,18 @@ class QueueEntryService(BaseService[QueueEntries, QueueEntriesRepository]):
 
     async def delete_all(self, filters: dict[str, Any]) -> bool:
         """
-        Удаляет объекты, соответствующий условиям.
+        Deletes all queue entries matching the given filters.
 
-        :param filters: Фильтры поиска объектов
-        (например, {"queue_id": 1,"user_id":2}).
-        :return: True, если объект успешно удалён.
-        :raises HTTPException: Если объект не найден.
+        Args:
+            filters (Dict[str, Any]): Filtering criteria for deletion.
+
+        Returns:
+            bool: True if at least one entry was deleted.
+
+        Raises:
+            HTTPException: If no entries were found matching the criteria.
         """
+
         deleted_obj = await self.repository.delete_all(filters)
         if deleted_obj:
             return True
@@ -41,8 +54,22 @@ class QueueEntryService(BaseService[QueueEntries, QueueEntriesRepository]):
 
 
 class QueueTagService(BaseService[QueueTags, QueueTagsRepository]):
+    """
+    Service layer for handling business logic related to queue tags.
+
+    Attributes:
+        repository (QueueTagsRepository): The repository handling queue tag operations.
+    """
+
     pass
 
 
 class QueueService(BaseService[Queue, QueueRepository]):
+    """
+    Service layer for handling business logic related to queues.
+
+    Attributes:
+        repository (QueueRepository): The repository handling queue operations.
+    """
+
     pass
