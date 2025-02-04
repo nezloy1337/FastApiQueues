@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from api.dependencies import current_super_user, current_user
 from core import db_helper
 from core.base import Base
-from domains.queues import Queue
+from domains.queues import Queue, QueueEntries
 from domains.tags import Tags
 from domains.users import User
 from main import main_app
@@ -19,13 +19,14 @@ TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 engine = create_async_engine(TEST_DATABASE_URL, future=True)
 session_factory = async_sessionmaker(bind=engine, expire_on_commit=False)
 
+user_id = uuid4()
+super_user_id = uuid4()
+
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
 async def setup_test_db() -> AsyncGenerator[None]:
-    """Fixture to create and drop database tables for each test function.
-
-    Creates all tables before test execution and drops them after test completion.
-    Ensures clean database state for each test.
+    """
+    Fixture to create and drop database tables for each test function.
     """
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -46,7 +47,9 @@ async def test_session() -> AsyncGenerator[AsyncSession]:
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
-def client(test_session: AsyncSession) -> Generator[TestClient]:
+def client(
+    test_session: AsyncSession, test_user: User, test_super_user: User
+) -> Generator[TestClient]:
     """Test client with overridden dependencies and mock authentication.
 
     Features:
@@ -61,26 +64,15 @@ def client(test_session: AsyncSession) -> Generator[TestClient]:
 
     def mock_current_user() -> AsyncMock:
         """Mock authentication for regular user"""
-        return AsyncMock(
-            return_value=User(
-                id=uuid4(),
-                first_name="Test",
-                last_name="User",
-                email="user@example.com",
-            )
-        )
+        user = MagicMock(return_value=test_user)
+        user.id = user_id
+        return user
 
     def mock_current_super_user() -> AsyncMock:
         """Mock authentication for superuser"""
-        return AsyncMock(
-            return_value=User(
-                id=uuid4(),
-                first_name="Admin",
-                last_name="User",
-                email="admin@example.com",
-                is_superuser=True,
-            )
-        )
+        user = MagicMock(return_value=test_user)
+        user.id = super_user_id
+        return user
 
     # Apply dependency overrides
     main_app.dependency_overrides[db_helper.session_getter] = override_get_db
@@ -92,6 +84,26 @@ def client(test_session: AsyncSession) -> Generator[TestClient]:
         yield client
     # Reset overrides after test completion
     main_app.dependency_overrides.clear()
+
+
+@pytest_asyncio.fixture(scope="function")
+async def test_user(test_session: AsyncSession) -> User:
+    return User(
+        id=uuid4(),
+        first_name="Test",
+        last_name="User",
+        email="user@example.com",
+    )
+
+
+@pytest_asyncio.fixture(scope="function")
+async def test_super_user(test_session: AsyncSession) -> User:
+    return User(
+        id=uuid4(),
+        first_name="Test",
+        last_name="User",
+        email="user@example.com",
+    )
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -146,10 +158,22 @@ async def test_tag(test_session: AsyncSession) -> Tags:
 async def test_queue(test_session: AsyncSession):
     dt = datetime.now()
     date_obj = dt.replace(year=dt.year + 1)
-    queue = Queue(name="test-queue-1", start_time=date_obj, max_slots=26)
+    queue = Queue(id=1, name="test-queue-1", start_time=date_obj, max_slots=26)
     test_session.add(queue)
 
     await test_session.commit()
     await test_session.refresh(queue)
 
     return queue
+
+
+@pytest_asyncio.fixture(scope="function")
+async def test_queue_entry(test_session: AsyncSession, test_queue: Queue):
+
+    queue_entry = QueueEntries(position=1, queue_id=1, user_id=str(user_id))
+    test_session.add(queue_entry)
+
+    await test_session.commit()
+    await test_session.refresh(queue_entry)
+
+    return queue_entry
