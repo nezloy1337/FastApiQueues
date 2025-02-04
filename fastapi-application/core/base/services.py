@@ -7,34 +7,54 @@ from core.types import TModels, TRepositories
 
 class BaseService(Generic[TModels, TRepositories]):
     """
-    Base service implementing business logic using an abstract repository.
+    A base service layer that provides business logic
+    abstraction over repository operations.
 
-    :param repository: An instance of the repository handling operations on the model.
+    This service acts as an intermediary between API routes and repositories, ensuring
+    that business rules are enforced consistently.
+
+    Attributes:
+        repository (TRepositories):
+        The repository instance managing the model's database operations.
     """
 
-    def __init__(
-        self,
-        repository: TRepositories,
-    ):
+    def __init__(self, repository: TRepositories):
+        """
+        Initializes the service with a repository instance.
+
+        Args:
+            repository (TRepositories):
+            The repository instance that provides database access.
+        """
         self.repository = repository
 
     async def create(self, obj_data: dict[str, Any]) -> TModels:
         """
-        Creates a new object in the database.
+        Creates a new object and persists it in the database.
 
-        :param obj_data: Data for creating the object.
-        :return: The created model object.
+        Args:
+            obj_data (dict[str, Any]):
+            A dictionary containing field values for the new object.
+
+        Returns:
+            TModels: The created model instance.
         """
         return await self.repository.create(obj_data)
 
-    async def get_by_id(self, obj_id: int) -> TModels | None:
+    async def get_by_id(self, obj_id: int) -> TModels:
         """
-        Retrieves an object by its identifier.
+        Retrieves an object by its unique identifier.
 
-        :param obj_id: The unique identifier of the object.
-        :return: The model object or None if not found.
-        :raises HTTPException: If the object is not found.
+        Args:
+            obj_id (int): The unique identifier of the object.
+
+        Returns:
+            TModels: The retrieved model object.
+
+        Raises:
+            HTTPException: If the object is not found.
         """
+
         obj = await self.repository.get_by_id(obj_id)
 
         if not obj:
@@ -42,25 +62,34 @@ class BaseService(Generic[TModels, TRepositories]):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Object not found",
             )
+
         return obj
 
     async def get_all(self) -> list[TModels]:
         """
-        Retrieves a list of all objects.
+        Retrieves all objects managed by the repository.
 
-        :return: A list of model objects.
+        Returns:
+            list[TModels]: A list of model instances.
         """
+
         return await self.repository.get_all()
 
     async def delete(self, filters: dict[str, Any]) -> bool:
         """
-        Deletes an object that matches the specified conditions.
+        Deletes an object matching the specified filters.
 
-        :param filters: Search filters for the object(s)
-        (e.g., {"queue_id": 1, "user_id": 2}).
-        :return: True if the object was successfully deleted.
-        :raises HTTPException: If the object is not found.
+        Args:
+            filters (dict[str, Any]): A dictionary specifying the criteria for deletion
+            (e.g., {"queue_id": 1, "user_id": 2}).
+
+        Returns:
+            bool: True if the object was successfully deleted.
+
+        Raises:
+            HTTPException: If the object is not found.
         """
+
         deleted_obj = await self.repository.delete(**filters)
         if deleted_obj:
             return True
@@ -74,15 +103,23 @@ class BaseService(Generic[TModels, TRepositories]):
         self,
         filters: dict[str, Any],
         **values: Any,
-    ) -> dict[str, Any] | None:
+    ) -> dict[str, Any]:
         """
-        Updates object(s) matching the specified filters and returns the updated data.
+        Updates an object based on specified filters and returns the updated data.
 
-        :param filters: Search filters for the object(s) (e.g., {"id": 1}).
-        :param values: Values to update (e.g., name="New Name").
-        :return: A dictionary of the updated data.
-        :raises HTTPException: If the object is not found.
+        Args:
+            filters (dict[str, Any]): Criteria for identifying the object(s) to update
+            (e.g., {"id": 1}).
+            **values (Any): Key-value pairs specifying fields to update
+            (e.g., name="New Name").
+
+        Returns:
+            dict[str, Any]: The updated object data.
+
+        Raises:
+            HTTPException: If the object is not found.
         """
+
         patched_obj = await self.repository.patch(filters, **values)
         if patched_obj:
             return patched_obj

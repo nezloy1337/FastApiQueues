@@ -1,11 +1,8 @@
-from typing import (
-    Any,
-    Generic,
-    Type,
-)
+from typing import Any, Generic, Type
 
-from sqlalchemy import and_, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy.sql.expression import and_, delete, update
 
 from core.types import TModels
 from utils.condition_builder import ConditionBuilder
@@ -13,31 +10,51 @@ from utils.condition_builder import ConditionBuilder
 
 class BaseRepository(Generic[TModels]):
     """
-    Base repository implementing common CRUD operations for SQLAlchemy models.
+    A base repository that provides common CRUD operations for SQLAlchemy models.
 
-    :param model: The SQLAlchemy model class managed by the repository.
-    :param session: The asynchronous SQLAlchemy session.
-    :param condition_builder: An object that generates
-     filter (WHERE) conditions from dictionaries.
+    This repository handles asynchronous database operations using SQLAlchemy and
+    provides a standardized way to interact with models.
+
+    Attributes:
+        model (Type[TModels]): The SQLAlchemy model managed by this repository.
+        session (AsyncSession): The asynchronous SQLAlchemy session.
+        condition_builder (ConditionBuilder):
+        A utility for generating filtering conditions.
     """
 
     def __init__(
         self,
         model: Type[TModels],
         session: AsyncSession,
-        condition_builder: "ConditionBuilder",  # Кавычки для аннотации,
-    ):  # если класс объявлен позже
+        condition_builder: "ConditionBuilder",  # Quotes for forward declaration
+    ):
+        """
+        Initializes the repository with a model,
+        database session, and condition builder.
+
+        Args:
+            model (Type[TModels]): The SQLAlchemy model associated with this repository.
+            session (AsyncSession): The asynchronous database session.
+            condition_builder (ConditionBuilder):
+            A condition builder for dynamic filtering.
+        """
+
         self.model = model
         self.session = session
         self.condition_builder = condition_builder
 
     async def create(self, obj_data: dict[str, Any]) -> TModels:
         """
-        Creates a new object based on the provided data and saves it to the database.
+        Creates and persists a new record in the database.
 
-        :param obj_data: A dictionary containing the data for the new record.
-        :return: The created model instance.
+        Args:
+            obj_data (dict[str, Any]):
+            A dictionary containing field values for the new object.
+
+        Returns:
+            TModels: The created model instance.
         """
+
         obj = self.model(**obj_data)
         self.session.add(obj)
         await self.session.commit()
@@ -45,39 +62,49 @@ class BaseRepository(Generic[TModels]):
 
     async def get_by_id(self, obj_id: int) -> TModels | None:
         """
-        Retrieves an object by its unique identifier (ID).
+        Retrieves a record by its unique identifier (ID).
 
-        :param obj_id: The unique identifier of the record.
-        :return: The model instance or None if not found.
+        Args:
+            obj_id (int): The unique identifier of the record.
+
+        Returns:
+            TModels | None: The retrieved model instance or None if not found.
         """
+
         return await self.session.get(self.model, obj_id)
 
     async def get_all(self) -> list[TModels]:
         """
-        Retrieves all objects of the model from the database.
+        Retrieves all records of the specified model from the database.
 
-        :return: A list of model instances.
+        Returns:
+            list[TModels]: A list of model instances.
         """
+
         result = await self.session.execute(select(self.model))
         return list(result.scalars().all())
 
     async def delete(self, **conditions: dict[str, Any]) -> TModels | None:
         """
-        Deletes an object matching the specified
-        conditions and returns the deleted object.
-        Returns None if no matching object is found.
+        Deletes a record that matches the given conditions.
 
-        :param conditions: Arbitrary conditions for filtering objects.
-        :return: The deleted object or None if no matching object is found.
+        Args:
+            **conditions (dict[str, Any]):
+            A dictionary of filter conditions for deletion.
+
+        Returns:
+            TModels | None: The deleted object if found, otherwise None.
         """
-        query_conditions = self.condition_builder.create_conditions(**conditions)
 
+        query_conditions = self.condition_builder.create_conditions(**conditions)
         stmt = delete(self.model).filter(and_(*query_conditions)).returning(self.model)
 
         result = await self.session.execute(stmt)
         deleted_obj = result.scalar_one_or_none()
+
         if deleted_obj:
             await self.session.commit()
+
         return deleted_obj
 
     async def patch(
@@ -86,16 +113,17 @@ class BaseRepository(Generic[TModels]):
         **values: Any,
     ) -> TModels | None:
         """
-        Updates an object based on the specified filters and returns the updated object.
-        Returns None if no object is found.
+        Updates an existing record based on the specified filters.
 
-        :param filters: A dictionary of filters for identifying the record
-        (e.g., {"id": 1} or {"email": "EMAIL"}).
-        :param values: Arbitrary key-value pairs for updating the record fields
-        (e.g., name="New Name").
-        :return: The updated object or None if no matching record is found.
+        Args:
+            filters (dict[str, Any]): A dictionary specifying the record to update.
+            **values (Any): The field-value pairs to be updated.
+
+        Returns:
+            TModels | None: The updated object if found, otherwise None.
         """
-        # Формируем условия для фильтрации
+
+        # Generate filter conditions
         conditions = self.condition_builder.create_conditions(**filters)
         if not conditions:
             return None
@@ -112,4 +140,5 @@ class BaseRepository(Generic[TModels]):
 
         if updated_obj:
             await self.session.commit()
+
         return updated_obj
