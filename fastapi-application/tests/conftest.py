@@ -5,7 +5,6 @@ from uuid import uuid4
 
 import pytest_asyncio
 from fastapi.testclient import TestClient
-from main import main_app
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from api.dependencies import current_super_user, current_user
@@ -14,6 +13,7 @@ from core.base import Base
 from domains.queues import Queue
 from domains.tags import Tags
 from domains.users import User
+from main import main_app
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 engine = create_async_engine(TEST_DATABASE_URL, future=True)
@@ -144,9 +144,8 @@ async def test_tag(test_session: AsyncSession) -> Tags:
 
 @pytest_asyncio.fixture(scope="function")
 async def test_queue(test_session: AsyncSession):
-    date_str = "2025-02-03T11:30:19.650000Z"
-    date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-
+    dt = datetime.now()
+    date_obj = dt.replace(year=dt.year + 1)
     queue = Queue(name="test-queue-1", start_time=date_obj, max_slots=26)
     test_session.add(queue)
 

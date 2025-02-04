@@ -13,7 +13,7 @@ from domains.queues import Queue
         (
             {
                 "name": "new-name",
-                "start_time": "2025-02-03T11:30:19.650000Z",
+                "start_time": "3030-02-03T11:30:19.650000Z",
                 "max_slots": 25,
             },
             201,
