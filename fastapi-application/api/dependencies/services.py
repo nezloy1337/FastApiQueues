@@ -4,10 +4,10 @@ from domains.tags import Tags
 from domains.users import User
 
 """
-This module defines dependency factories for creating
-service instances for specific models.
-These factories are designed for integration with FastAPI's
-dependency injection system.
+Dependency factories for service instances.
+
+These factories create service instances for specific models and are 
+designed for integration with FastAPI's dependency injection system.
 
 Usage in FastAPI:
 -----------------
@@ -17,14 +17,29 @@ These dependencies can be used in FastAPI routes as follows::
     def get_users(service=Depends(get_user_service)):
         return service.get_all()
 
+    @app.post("/tags/")
+    def create_tag(service=Depends(get_tags_service), tag_data: TagSchema):
+        return service.create(tag_data)
+
+Factories:
+    get_user_service: Creates a service instance for User.
+    get_queue_entries_service: Creates a service instance for QueueEntries.
+    get_tags_service: Creates a service instance for Tags.
+    get_queue_tags_service: Creates a service instance for QueueTags.
+    get_queue_service: Creates a service instance for Queue.
 """
 
 get_user_service = get_service_by_model(User)
+"""Creates a service instance for User."""
 
 get_queue_entries_service = get_service_by_model(QueueEntries)
+"""Creates a service instance for QueueEntries."""
 
 get_tags_service = get_service_by_model(Tags)
+"""Creates a service instance for Tags."""
 
 get_queue_tags_service = get_service_by_model(QueueTags)
+"""Creates a service instance for QueueTags."""
 
 get_queue_service = get_service_by_model(Queue)
+"""Creates a service instance for Queue."""
