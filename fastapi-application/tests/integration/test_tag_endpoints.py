@@ -17,7 +17,7 @@ from domains.tags import Tags
 async def test_create_tag(
     client,
     test_session,
-    test_tag,  # Fixture creates base test-tag entry for conflict testing
+    test_tag,  # Fixture creates two test-tag entries for conflict testing
     tag_data: dict[str, str],
     result_code: int,
 ):
