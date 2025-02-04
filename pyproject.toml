@@ -95,7 +95,7 @@ exclude = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["api", "domains","utils","core"]
+known-first-party = ["api", "domains","utils","core","main"]
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
