@@ -6,6 +6,13 @@ from utils.condition_builder import ConditionBuilder
 
 
 class TagsRepository(BaseRepository[Tags]):
+    """
+    Repository for managing Tags-related database operations.
+
+    Attributes:
+        session (AsyncSession): The database session.
+        condition_builder (ConditionBuilder): Utility for building query conditions.
+    """
 
     def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
         super().__init__(
