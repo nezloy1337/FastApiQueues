@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import AsyncGenerator, Generator
 from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
@@ -25,7 +26,7 @@ session_factory = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
-async def setup_test_db() -> None:
+async def setup_test_db() -> AsyncGenerator[None]:
     """
     Fixture to set up and tear down the test database.
 
@@ -41,7 +42,7 @@ async def setup_test_db() -> None:
 
 
 @pytest_asyncio.fixture
-async def test_session() -> AsyncSession:
+async def test_session() -> AsyncGenerator[AsyncSession]:
     """
     Provides an async database session for test operations.
 
@@ -55,7 +56,7 @@ async def test_session() -> AsyncSession:
 @pytest_asyncio.fixture(scope="function", autouse=True)
 def client(
     test_session: AsyncSession, test_user: User, test_super_user: User
-) -> TestClient:
+) -> Generator[TestClient]:
     """
     Creates a FastAPI TestClient with dependency overrides for testing.
 
@@ -73,20 +74,19 @@ def client(
         TestClient: The test client instance.
     """
 
-    async def override_get_db() -> AsyncSession:
+    async def override_get_db() -> AsyncGenerator[AsyncSession]:
         """Overrides the database session dependency."""
         yield test_session
 
-    def mock_current_user() -> AsyncMock:
+    def mock_current_user() -> User:
         """Mocks the authentication for a regular user."""
-        user = MagicMock(return_value=test_user)
+        user = User(id=user_id, first_name="Test", last_name="super_user")
         user.id = user_id
         return user
 
-    def mock_current_super_user() -> AsyncMock:
+    def mock_current_super_user() -> User:
         """Mocks the authentication for a superuser."""
-        user = MagicMock(return_value=test_user)
-        user.id = super_user_id
+        user = User(id=super_user_id, first_name="Test", last_name="super_user")
         return user
 
     # Apply dependency overrides
