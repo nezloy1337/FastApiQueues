@@ -1,7 +1,9 @@
 from datetime import date
 
 import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from domains.queues import Queue
 
@@ -49,12 +51,12 @@ from domains.queues import Queue
     ],
 )
 async def test_create_queue(
-    client,
-    test_session,
-    test_queue,
+    client: TestClient,
+    test_session: AsyncSession,
+    test_queue: Queue,
     queue_data: dict[str, str | date | int],
     result_code: int,
-):
+) -> None:
     """
     Test the queue creation API endpoint.
 
@@ -131,12 +133,12 @@ async def test_create_queue(
     ],
 )
 async def test_update_queue(
-    client,
-    test_session,
+    client: TestClient,
+    test_session: AsyncSession,
     test_queue: Queue,
     queue_data: dict[str, str | date | int],
     expected_status: int,
-):
+) -> None:
     """
     Test the queue update API endpoint.
 
@@ -192,12 +194,12 @@ async def test_update_queue(
     ],
 )
 async def test_delete_queue(
-    client,
-    test_session,
+    client: TestClient,
+    test_session: AsyncSession,
     test_queue: Queue,
     queue_id: int,
     expected_status: int,
-):
+) -> None:
     """
     Test the queue deletion API endpoint.
 
