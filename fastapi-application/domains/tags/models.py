@@ -13,6 +13,14 @@ if TYPE_CHECKING:
 
 
 class Tags(IntIdPkMixin, Base):
+    """
+    Represents a tag associated with queues.
+
+    Attributes:
+        name (str): The unique name of the tag (max length: 15).
+        queues (List["Queue"]): The queues linked to this tag.
+    """
+
     __tablename__ = "tags"
 
     name: Mapped[str] = mapped_column(

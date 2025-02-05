@@ -20,6 +20,17 @@ if TYPE_CHECKING:
 
 
 class Queue(IntIdPkMixin, Base):
+    """
+    Represents a queue with a name, start time, and limited slots.
+
+    Attributes:
+        name (str): The name of the queue (max length: 10).
+        start_time (datetime): The scheduled start time of the queue.
+        max_slots (int): The maximum number of slots (default: 30).
+        entries (List["QueueEntries"]): Related queue entries.
+        queue_tags (List["Tags"]): Tags associated with the queue.
+    """
+
     __tablename__ = "queues"
 
     name: Mapped[str] = mapped_column(
@@ -60,6 +71,17 @@ class Queue(IntIdPkMixin, Base):
 
 
 class QueueEntries(IntIdPkMixin, Base):
+    """
+    Represents an entry in a queue, linking users to queue positions.
+
+    Attributes:
+        queue_id (int): Foreign key referencing the queue.
+        user_id (str): Foreign key referencing the user.
+        position (int): Position of the user in the queue.
+        queue (Queue): Relationship to the queue.
+        user (User): Relationship to the user.
+    """
+
     __tablename__ = "queue_entries"
 
     queue_id: Mapped[int] = mapped_column(
@@ -111,6 +133,14 @@ class QueueEntries(IntIdPkMixin, Base):
 
 
 class QueueTags(IntIdPkMixin, Base):
+    """
+    Represents a link between a queue and a tag.
+
+    Attributes:
+        queue_id (int): Foreign key referencing the queue.
+        tag_id (int): Foreign key referencing the tag.
+    """
+
     __tablename__ = "queue_tags"
 
     queue_id: Mapped[int] = mapped_column(

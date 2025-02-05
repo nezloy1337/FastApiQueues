@@ -12,6 +12,14 @@ if TYPE_CHECKING:
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
+    """
+    Represents a user in the system.
+
+    Attributes:
+        first_name (str): The user's first name.
+        last_name (str): The user's last name.
+        queue_entries (List[QueueEntries]): The user's queue entries.
+    """
 
     first_name: Mapped[str] = mapped_column(String, nullable=False)
     last_name: Mapped[str] = mapped_column(String, nullable=False)
@@ -21,6 +29,12 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     )
 
     def model_dump(self) -> dict[str, Any]:
+        """
+        Serializes the user object to a dictionary format.
+
+        Returns:
+            dict[str, Any]: A dictionary representation of the user.
+        """
 
         return {
             "id": bson.Binary.from_uuid(self.id),

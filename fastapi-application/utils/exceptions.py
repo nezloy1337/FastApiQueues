@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class ServiceError(Exception):
     """ "
     Base exception for errors occurring in the service layer.
@@ -11,7 +14,7 @@ class ServiceError(Exception):
     message = "Ошибка сервиса"
     status_code = 500
 
-    def __init__(self, detail: str = None):
+    def __init__(self, detail: Optional[str]):
         self.detail = detail or self.message
         super().__init__(self.detail)
 
