@@ -3,12 +3,12 @@ from locust import HttpUser, TaskSet, task, between
 class UserBehavior(TaskSet):
     def on_start(self):
         # Токен авторизации
-        self.token = "Bearer copy_one_here"
+        self.token = "Bearer "
         self.headers = {
             "Authorization": self.token,
             "Content-Type": "application/json"
         }
-        self.queue_id = 1  # Идентификатор очереди для GET запросов
+        self.queue_id = 5  # Идентификатор очереди для GET запросов
 
     @task
     def get_request(self):
