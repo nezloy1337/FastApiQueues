@@ -79,7 +79,7 @@ class UserManager(
 
 async def get_user_manager(
     user_db=Depends(get_user_db),
-) -> AsyncGenerator[UserManager, None]:
+) -> AsyncGenerator[UserManager]:
     """
     Dependency function to get an instance of the UserManager.
 

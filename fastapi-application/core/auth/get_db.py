@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Annotated
+from typing import TYPE_CHECKING, Annotated, AsyncGenerator
 
 from fastapi import Depends
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
@@ -15,7 +15,7 @@ async def get_user_db(
         "AsyncSession",
         Depends(db_helper.session_getter),
     ],
-):
+) -> AsyncGenerator[SQLAlchemyUserDatabase]:
     """
     Dependency function to provide a SQLAlchemy user database instance.
 
