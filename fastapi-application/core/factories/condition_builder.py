@@ -25,7 +25,7 @@ class ConditionBuilderFactory:
         return ConditionBuilder(model)
 
 
-def get_condition_builder_factory():
+def get_condition_builder_factory() -> Type[ConditionBuilderFactory]:
     """
     Provides access to the `ConditionBuilderFactory` class.
 
