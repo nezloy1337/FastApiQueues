@@ -17,6 +17,7 @@ class ObjectIdTimeActionMixin(BaseModel):
 class ActionLog(ObjectIdTimeActionMixin, BaseModel):
     status: str
     parameters: Dict[str, Any]
+    error: str | None = None
 
 
 class QueueEntryLog(ObjectIdTimeActionMixin, BaseModel):
