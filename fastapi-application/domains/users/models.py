@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Any, List
 
-import bson
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -37,7 +36,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
         """
 
         return {
-            "id": bson.Binary.from_uuid(self.id),
+            "id": self.id,
             "first_name": self.first_name,
             "last_name": self.last_name,
         }

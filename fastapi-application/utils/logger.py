@@ -1,32 +1,20 @@
-import inspect
 from datetime import datetime, timezone
-from functools import lru_cache, wraps
-from typing import Callable
+from functools import wraps
+from typing import Any, Callable
 
-from pydantic import BaseModel
+from tasks import process_log
 
-from core.base import Base
 from core.mongodb.connection import CONNECTION_REGISTRY
 from core.mongodb.schemas import ActionLog
 
 
-@lru_cache
-def get_signature(function):
-    """
-    Retrieves and caches the signature of the given function.
-    """
-    return inspect.signature(function)
-
-
-def get_log_params(func, log_params, *args, **kwargs):
+def get_log_params(log_params, **kwargs) -> dict[str, Any]:
     """
     Extracts parameters for logging based on the function's signature
     and specified log parameters.
 
     Args:
-        func (Callable[..., Any]): The function whose parameters are being extracted.
         log_params (List[str] | None): A list of parameter names to include in the log.
-        args (Any): Positional arguments.
         kwargs (Any): Keyword arguments.
 
     Returns:
@@ -34,29 +22,25 @@ def get_log_params(func, log_params, *args, **kwargs):
     """
 
     log_params = log_params or []
-    sig = get_signature(func)
-    bound = sig.bind(*args, **kwargs)
 
     if not log_params:
-        # Если log_params пуст, логируем все параметры
         return {
-            name: value.model_dump() if isinstance(value, BaseModel | Base) else value
-            for name, value in bound.arguments.items()
+            name: value.model_dump() if hasattr(value, "model_dump") else value
+            for name, value in kwargs.items()
         }
 
-    # Если log_params задан, фильтруем параметры
+    # Если `log_params` задан, фильтруем параметры
     return {
-        name: value.model_dump() if isinstance(value, BaseModel | Base) else value
-        for name, value in bound.arguments.items()
+        name: value.model_dump() if hasattr(value, "model_dump") else value
+        for name, value in kwargs.items()
         if name in log_params
     }
 
 
-# сделать async?
 def log_action(
     action: str,
     collection_name: str,
-    log_params: list[str] | None = None,
+    log_params: tuple[str, ...] | None = None,
 ) -> Callable:
     """
     A decorator for logging actions to MongoDB.
@@ -90,12 +74,12 @@ def log_action(
             )
 
         @wraps(func)
-        async def wrapper(*args, **kwargs):
+        async def wrapper(**kwargs):
+            # fastapi всегда передает по имени
             """
             Wrapper function that executes the decorated function and logs the action.
 
             Args:
-                *args (Any): Positional arguments.
                 **kwargs (Any): Keyword arguments.
 
             Returns:
@@ -106,14 +90,13 @@ def log_action(
             """
 
             status = "success"
-            logged_args = get_log_params(func, log_params, *args, **kwargs)
-            try:
-                return await func(*args, **kwargs)
+            logged_args = get_log_params(log_params, **kwargs)
 
+            try:
+                return await func(**kwargs)
             except Exception as e:
                 status = "failed"
                 raise e
-
             finally:
                 timestamp = datetime.now(timezone.utc)
                 log_entry = ActionLog(
@@ -123,7 +106,8 @@ def log_action(
                     timestamp=timestamp,
                 )
 
-                await logs_collection.insert_one(log_entry.model_dump())
+                data = log_entry.model_dump()
+                process_log.apply_async(args=[data], queue="logs")
 
         return wrapper
 
