@@ -1,8 +1,10 @@
-from unittest.mock import Mock
+from typing import Any, Type
+from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
 
-from core.base import BaseRepository
+from core.base import Base, BaseRepository
+from core.types import TModels
 from domains.queues import QueueTags
 from domains.tags import Tags
 
@@ -23,7 +25,12 @@ from domains.tags import Tags
         ),
     ],
 )
-async def test_create(mock_session, mock_condition_builder, model_class, obj_data):
+async def test_create(
+    mock_session: AsyncMock,
+    mock_condition_builder: MagicMock,
+    model_class: Type[TModels],
+    obj_data: dict[str, Any],
+) -> None:
     """
     Test object creation via the repository.
 
@@ -59,7 +66,12 @@ async def test_create(mock_session, mock_condition_builder, model_class, obj_dat
         (QueueTags, 2),  # Case 2: Fetching a QueueTag by ID
     ],
 )
-async def test_get_by_id(mock_session, mock_condition_builder, model_class, obj_id):
+async def test_get_by_id(
+    mock_session: AsyncMock,
+    mock_condition_builder: MagicMock,
+    model_class: Type[TModels],
+    obj_id: int,
+) -> None:
     """
     Test fetching an object by ID.
 
@@ -92,7 +104,12 @@ async def test_get_by_id(mock_session, mock_condition_builder, model_class, obj_
         (Tags, []),
     ],
 )
-async def test_get_all(mock_session, mock_condition_builder, model_class, mock_result):
+async def test_get_all(
+    mock_session: AsyncMock,
+    mock_condition_builder: MagicMock,
+    model_class: Type[TModels],
+    mock_result: list[Tags],
+) -> None:
     """
     Test fetching all objects of a model.
 
@@ -132,8 +149,11 @@ async def test_get_all(mock_session, mock_condition_builder, model_class, mock_r
     ],
 )
 async def test_delete_commits_only_on_success(
-    mock_session, mock_condition_builder, deleted_obj, should_commit
-):
+    mock_session: AsyncMock,
+    mock_condition_builder: MagicMock,
+    deleted_obj: Base | None,
+    should_commit: bool,
+) -> None:
     """
     Test deleting an object.
 
@@ -181,8 +201,11 @@ async def test_delete_commits_only_on_success(
     ],
 )
 async def test_patch_updates_fields_and_commits(
-    mock_session, mock_condition_builder, updated_obj, should_commit
-):
+    mock_session: AsyncMock,
+    mock_condition_builder: MagicMock,
+    should_commit: bool,
+    updated_obj: dict[str, Any],
+) -> None:
     """
     Test updating fields in an object.
 
