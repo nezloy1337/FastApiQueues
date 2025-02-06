@@ -1,9 +1,27 @@
 import pytest
+import pytest_asyncio
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from domains.tags import Tags
+
+
+@pytest_asyncio.fixture(scope="function")
+async def test_tag(test_session: AsyncSession) -> Tags:
+    """
+    Creates test tags.
+
+    Yields:
+        Tags: A test tag instance.
+    """
+    tag = Tags(name="test-tag")
+    tag2 = Tags(name="test-tag-2")
+    test_session.add(tag)
+    test_session.add(tag2)
+    await test_session.commit()
+    await test_session.refresh(tag)
+    return tag
 
 
 @pytest.mark.asyncio

@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import AsyncGenerator, Generator
-from unittest.mock import AsyncMock, MagicMock, Mock
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest_asyncio
@@ -11,7 +11,6 @@ from api.dependencies import current_super_user, current_user
 from core import db_helper
 from core.base import Base
 from domains.queues import Queue, QueueEntries
-from domains.tags import Tags
 from domains.users import User
 from main import main_app
 
@@ -134,19 +133,6 @@ async def test_super_user(test_session: AsyncSession) -> User:
     )
 
 
-@pytest_asyncio.fixture(scope="session")
-def mock_condition_builder() -> MagicMock:
-    """
-    Mocks a condition builder for query filtering tests.
-
-    Returns:
-        MagicMock: A mock object with predefined return values for `create_conditions`.
-    """
-    builder = MagicMock()
-    builder.create_conditions.return_value = []
-    return builder
-
-
 @pytest_asyncio.fixture(scope="function")
 def mock_session() -> AsyncMock:
     """
@@ -165,23 +151,6 @@ def mock_session() -> AsyncMock:
     session.execute = AsyncMock()
     session.get = AsyncMock()
     return session
-
-
-@pytest_asyncio.fixture(scope="function")
-async def test_tag(test_session: AsyncSession) -> Tags:
-    """
-    Creates test tags.
-
-    Yields:
-        Tags: A test tag instance.
-    """
-    tag = Tags(name="test-tag")
-    tag2 = Tags(name="test-tag-2")
-    test_session.add(tag)
-    test_session.add(tag2)
-    await test_session.commit()
-    await test_session.refresh(tag)
-    return tag
 
 
 @pytest_asyncio.fixture(scope="function")

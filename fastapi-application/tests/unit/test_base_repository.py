@@ -2,11 +2,25 @@ from typing import Any, Type
 from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
+import pytest_asyncio
 
 from core.base import Base, BaseRepository
 from core.types import TModels
 from domains.queues import QueueTags
 from domains.tags import Tags
+
+
+@pytest_asyncio.fixture(scope="session")
+def mock_condition_builder() -> MagicMock:
+    """
+    Mocks a condition builder for query filtering tests.
+
+    Returns:
+        MagicMock: A mock object with predefined return values for `create_conditions`.
+    """
+    builder = MagicMock()
+    builder.create_conditions.return_value = []
+    return builder
 
 
 @pytest.mark.asyncio
