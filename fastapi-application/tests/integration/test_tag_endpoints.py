@@ -1,5 +1,7 @@
 import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from domains.tags import Tags
 
@@ -24,7 +26,7 @@ async def test_create_tag(
     test_tag,
     tag_data: dict[str, str],
     result_code: int,
-):
+) -> None:
     """
     Test the tag creation API endpoint.
 
@@ -73,12 +75,12 @@ async def test_create_tag(
     ],
 )
 async def test_update_tag(
-    client,
-    test_session,
+    client: TestClient,
+    test_session: AsyncSession,
     test_tag: Tags,
-    update_data: dict,
+    update_data: dict[str, str],
     expected_status: int,
-):
+) -> None:
     """
     Test the tag update API endpoint.
 
@@ -124,12 +126,12 @@ async def test_update_tag(
     ],
 )
 async def test_delete_tag(
-    client,
-    test_session,
+    client: TestClient,
+    test_session: AsyncSession,
     test_tag: Tags,
     tag_id: int | str,
     expected_status: int,
-):
+) -> None:
     """
     Test the tag deletion API endpoint.
 
