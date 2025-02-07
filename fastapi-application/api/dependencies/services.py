@@ -16,11 +16,7 @@ These dependencies can be used in FastAPI routes as follows::
     @app.get("/users/")
     def get_users(service=Depends(get_user_service)):
         return service.get_all()
-
-    @app.post("/tags/")
-    def create_tag(service=Depends(get_tags_service), tag_data: TagSchema):
-        return service.create(tag_data)
-
+        
 Factories:
     get_user_service: Creates a service instance for User.
     get_queue_entries_service: Creates a service instance for QueueEntries.
