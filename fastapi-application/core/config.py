@@ -1,9 +1,11 @@
 import os
+from pathlib import Path
 
-from pydantic import BaseModel, PostgresDsn
+from pydantic import BaseModel, Field, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+current_path = Path(__file__).resolve()
+BASE_DIR = current_path.parents[2]
 ENV_FILES = (os.path.join(BASE_DIR, ".env.templates"), os.path.join(BASE_DIR, ".env"))
 
 
@@ -135,6 +137,10 @@ class MongoConfig(BaseModel):
     db_name: str
 
 
+class CeleryConfig(BaseModel):
+    url: str
+
+
 class Settings(BaseSettings):
     """
     Application-wide settings loaded from environment variables and `.env` files.
@@ -157,10 +163,10 @@ class Settings(BaseSettings):
         env_prefix="APP_CONFIG__",
     )
 
-    # в env должны быть эти названия
-    db: DatabaseConfig
-    user_manager: UserManager
-    mongo: MongoConfig
+    db: DatabaseConfig = Field(...)
+    user_manager: UserManager = Field(...)
+    mongo: MongoConfig = Field(...)
+    celery: CeleryConfig = Field(...)
     redis: Redis = Redis()
     cors: CORSConfig = CORSConfig()
     run: RunConfig = RunConfig()
