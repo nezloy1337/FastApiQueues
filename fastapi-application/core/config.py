@@ -1,5 +1,10 @@
+import os
+
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ENV_FILES = (os.path.join(BASE_DIR, ".env.templates"), os.path.join(BASE_DIR, ".env"))
 
 
 class RunConfig(BaseModel):
@@ -146,7 +151,7 @@ class Settings(BaseSettings):
     """
 
     model_config = SettingsConfigDict(
-        env_file=(".env.templates", ".env"),  # следующий переопределяет предыдущий
+        env_file=ENV_FILES,
         case_sensitive=False,
         env_nested_delimiter="__",
         env_prefix="APP_CONFIG__",
