@@ -38,7 +38,7 @@ class Queue(IntIdPkMixin, Base):
         nullable=False,
     )
     start_time: Mapped[datetime] = mapped_column(
-        DateTime,
+        DateTime(timezone=True),
         nullable=False,
     )
     max_slots: Mapped[int] = mapped_column(
