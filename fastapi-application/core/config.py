@@ -141,6 +141,10 @@ class CeleryConfig(BaseModel):
     url: str
 
 
+class TestDBConfig(BaseModel):
+    url: str
+
+
 class Settings(BaseSettings):
     """
     Application-wide settings loaded from environment variables and `.env` files.
@@ -167,6 +171,7 @@ class Settings(BaseSettings):
     user_manager: UserManager = Field(...)
     mongo: MongoConfig = Field(...)
     celery: CeleryConfig = Field(...)
+    test_db: TestDBConfig = Field(...)
     redis: Redis = Redis()
     cors: CORSConfig = CORSConfig()
     run: RunConfig = RunConfig()
