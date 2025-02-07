@@ -83,7 +83,7 @@ def log_action(
     def decorator(func):
 
         @wraps(func)
-        async def wrapper(**kwargs):
+        async def wrapper(*args, **kwargs):
             # fastapi always uses named args in endpoints
             """
             Wrapper function that executes the decorated function and logs the action.
@@ -103,7 +103,7 @@ def log_action(
             logged_args = get_log_params(log_params, **kwargs)
 
             try:
-                return await func(**kwargs)
+                return await func(*args, **kwargs)
 
             except Exception as e:
                 status = "failed"
@@ -122,7 +122,7 @@ def log_action(
                 if error:
                     data.update({"error": error})
 
-                process_log.apply_async(args=[data], queue="logs")
+                process_log.apply_async(args=[data])
 
         return wrapper
 
