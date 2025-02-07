@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
 import pytest_asyncio
+from _pytest.monkeypatch import MonkeyPatch
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -102,7 +103,7 @@ def client(
 
 
 @pytest_asyncio.fixture(autouse=True)
-def patch_celery_apply_async(monkeypatch):
+def patch_celery_apply_async(monkeypatch: MonkeyPatch) -> tuple[MagicMock, MagicMock]:
     # Импортируем нужные объекты
     from tasks.tasks import process_error, process_log
 
