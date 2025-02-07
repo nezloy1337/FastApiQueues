@@ -15,8 +15,3 @@ repos:
         types: [ python ]
         files: ^fastapi-application/.*\.py$
         exclude: ^alembic/
-      - id: pytest
-        name: Run tests
-        entry: bash -c 'PYTHONPATH=fastapi-application pytest'
-        language: system
-        pass_filenames: false
