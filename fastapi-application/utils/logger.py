@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 from functools import wraps
 from typing import Any, Callable
@@ -5,44 +6,29 @@ from typing import Any, Callable
 from tasks import process_log
 
 
-def get_log_params(log_params, **kwargs) -> dict[str, Any]:
+def get_log_params(
+    allowed_params,
+    **kwargs,
+) -> dict[str, Any]:
     """
-    Extracts and filters parameters for logging.
+    Filter kwargs by allowed_params.
 
-    If `log_params` is provided, only the specified parameters will be logged.
-    If an object has a `model_dump` method (e.g., Pydantic models),
-    its dumped representation is used.Otherwise, the raw value is returned.
-
-    Args:
-        log_params (tuple[str, ...] | None):
-            A tuple of parameter names to include in the log.
-            If `None`, all parameters are logged.
-        kwargs (Any):
-            Keyword arguments representing function parameters.
-
-    Returns:
-        dict[str, Any]:
-            A dictionary of extracted parameters.
-
-    Example:
-        >>> params = get_log_params(("username"), username="JohnDoe", password="secret")
-        >>> print(params)
-        {"username": "JohnDoe",}
+    If allowed_params is None or empty, return all kwargs.
+    For values with a model_dump method, return its dump.
     """
 
-    log_params = log_params or []
+    allowed_params = allowed_params or []
 
-    if not log_params:
+    if allowed_params:
         return {
             name: value.model_dump() if hasattr(value, "model_dump") else value
             for name, value in kwargs.items()
+            if name in allowed_params
         }
 
-    # Если `log_params` задан, фильтруем параметры
     return {
         name: value.model_dump() if hasattr(value, "model_dump") else value
         for name, value in kwargs.items()
-        if name in log_params
     }
 
 
@@ -52,32 +38,26 @@ def log_action(
     log_params: tuple[str, ...] | None = None,
 ) -> Callable:
     """
-    A decorator for logging function executions to a MongoDB collection.
+    A decorator for logging FastApi endpoint params to a MongoDB collection.
 
-    This decorator extracts function parameters,
-    and sends logs to a task queue.
-    It ensures that failed executions
-    are also logged with the error message.
+    Logs the action, parameters of the endpoint, status, and timestamp.
+    If an error occurs, the error is logged too.
 
     Args:
         action (str):
-            A string describing the action being logged (e.g., `"create_user"`).
+            A string describing the action being logged (e.g., `"POST"`).
         collection_name (str):
             The name of the MongoDB collection where logs are stored.
         log_params (tuple[str, ...] | None, optional):
             A tuple of parameter names to include in the log.
             If `None`, all parameters are logged.
 
-    Returns:
-        Callable[[Callable[..., Any]], Callable[..., Any]]:
-            A decorator that wraps the target function and logs its execution.
-
-
     Example:
-        >>> @log_action("create_user", "user_logs", ("username", "email"))
         >>> @router.post("")
+        >>> @log_action("create_user", "user_logs", ("username", "email"))
         >>> async def create_user(username: str, email: str, password: str):
         >>>     pass
+
     """
 
     def decorator(func):
@@ -87,15 +67,6 @@ def log_action(
             # fastapi always uses named args in endpoints
             """
             Wrapper function that executes the decorated function and logs the action.
-
-            Args:
-                **kwargs (Any): Keyword arguments.
-
-            Returns:
-                Any: The result of the decorated function.
-
-            Raises:
-                Exception: If the decorated function raises an exception.
             """
 
             status = "success"
@@ -121,8 +92,12 @@ def log_action(
                 }
                 if error:
                     data.update({"error": error})
-
-                process_log.apply_async(args=[data])
+                try:
+                    process_log.apply_async(args=[data])
+                except Exception as e:
+                    # must crete a method that saves log to postgres if rabbitmq is down
+                    log = logging.getLogger("process_log")
+                    log.exception("error occurred while executing process_log %s", e)
 
         return wrapper
 
