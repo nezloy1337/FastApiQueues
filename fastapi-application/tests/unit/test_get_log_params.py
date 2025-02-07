@@ -86,15 +86,15 @@ mock_user.model_dump.return_value = {
     ],
 )
 def test_get_log_params(
-    log_params: Any,
+    log_params: str,
     kwargs: dict[str, Any],
     expected_output: dict[str, Any],
-):
+) -> None:
     """
     Test to ensure correct extraction and filtering of parameters.
 
     Args:
-        log_params (Any): A tuple or string containing parameter names to filter,
+        log_params (str): A tuple or string containing parameter names to filter,
         or None to log all parameters.
         kwargs (dict[str, Any]): A dictionary containing function arguments.
         expected_output (dict[str, Any]): The expected output.

@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -33,7 +35,7 @@ async def test_create_queue_entry(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
-    patch_celery_apply_async,
+    patch_celery_apply_async: tuple[MagicMock, MagicMock],
     queue_entry_data: dict[str, int],
     result_code: int,
 ) -> None:
@@ -94,7 +96,7 @@ async def test_delete_queue_entry(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
-    patch_celery_apply_async,
+    patch_celery_apply_async: tuple[MagicMock, MagicMock],
     result_code: int,
     test_queue_entry: QueueEntries,
     queue_id: int,

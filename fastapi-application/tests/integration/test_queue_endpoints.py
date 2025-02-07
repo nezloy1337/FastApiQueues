@@ -1,4 +1,5 @@
 from datetime import date
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -54,7 +55,7 @@ async def test_create_queue(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
-    patch_celery_apply_async,
+    patch_celery_apply_async: tuple[MagicMock, MagicMock],
     queue_data: dict[str, str | date | int],
     result_code: int,
 ) -> None:
@@ -141,7 +142,7 @@ async def test_update_queue(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
-    patch_celery_apply_async,
+    patch_celery_apply_async: tuple[MagicMock, MagicMock],
     queue_data: dict[str, str | date | int],
     expected_status: int,
 ) -> None:
@@ -207,7 +208,7 @@ async def test_delete_queue(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
-    patch_celery_apply_async,
+    patch_celery_apply_async: tuple[MagicMock, MagicMock],
     queue_id: int,
     expected_status: int,
 ) -> None:

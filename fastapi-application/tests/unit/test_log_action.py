@@ -1,13 +1,18 @@
 import logging
 from datetime import datetime
+from unittest.mock import MagicMock
 
 import pytest
+from _pytest.logging import LogCaptureFixture
+from _pytest.monkeypatch import MonkeyPatch
 
 from utils.logger import log_action
 
 
 @pytest.mark.asyncio
-async def test_log_action_success(patch_celery_apply_async):
+async def test_log_action_success(
+    patch_celery_apply_async: tuple[MagicMock, MagicMock]
+) -> None:
     """
     Test log_action when the wrapped function succeeds.
 
@@ -44,7 +49,9 @@ async def test_log_action_success(patch_celery_apply_async):
 
 
 @pytest.mark.asyncio
-async def test_log_action_failure(patch_celery_apply_async):
+async def test_log_action_failure(
+    patch_celery_apply_async: tuple[MagicMock, MagicMock]
+) -> None:
     """
     Test log_action when the wrapped function raises an exception.
 
@@ -79,7 +86,11 @@ async def test_log_action_failure(patch_celery_apply_async):
 
 
 @pytest.mark.asyncio
-async def test_apply_async_exception(patch_celery_apply_async, monkeypatch, caplog):
+async def test_apply_async_exception(
+    patch_celery_apply_async: tuple[MagicMock, MagicMock],
+    monkeypatch: MonkeyPatch,
+    caplog: LogCaptureFixture,
+) -> None:
     """
     Test log_action when process_log.apply_async raises an exception.
 
