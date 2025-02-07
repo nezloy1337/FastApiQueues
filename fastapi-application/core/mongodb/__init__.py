@@ -1,11 +1,3 @@
-__all__ = [
-    "queue_logs_collection",
-    "queue_entries_logs_collection",
-    "error_collection",
-]
+__all__ = ["get_mongo_manager"]
 
-from .connection import (
-    error_collection,
-    queue_entries_logs_collection,
-    queue_logs_collection,
-)
+from .connection import get_mongo_manager

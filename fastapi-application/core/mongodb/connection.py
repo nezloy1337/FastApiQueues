@@ -1,23 +1,36 @@
-from typing import Any, Mapping
+from datetime import datetime
+from typing import Literal, Mapping, Union
 
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 
 from core.config import settings
 
-client = AsyncIOMotorClient(settings.mongo.url)
-mongodb = client[settings.mongo.db_name]
+CollectionName = Literal["queues", "queue_entries", "users", "errors", "failed_to_get"]
 
-queue_entries_logs_collection = mongodb["queue_entries"]
-queue_logs_collection = mongodb["queues"]
-users_logs_collection = mongodb["users"]
-error_collection = mongodb["errors"]
-failed_collection = mongodb["failed_to_get"]
+# Определяем тип документа MongoDB
+JSONSerializable = Union[str, int, float, bool, list, dict, None, datetime, ObjectId]
 
 
-CONNECTION_REGISTRY: dict[str, AsyncIOMotorCollection[Mapping[str, Any]]] = {
-    "queues": queue_logs_collection,
-    "queue_entries": queue_entries_logs_collection,
-    "users": users_logs_collection,
-    "errors": error_collection,
-    "failed_to_get": failed_collection,
-}
+class MongoConnectionManager:
+    def __init__(self, url: str, db_name: str) -> None:
+        self.client = AsyncIOMotorClient(url)
+        self.db = self.client[db_name]
+        self._registry: dict[
+            CollectionName, AsyncIOMotorCollection[Mapping[str, JSONSerializable]]
+        ] = {
+            "queues": self.db["queues"],
+            "queue_entries": self.db["queue_entries"],
+            "users": self.db["users"],
+            "errors": self.db["errors"],
+            "failed_to_get": self.db["failed_to_get"],
+        }
+
+    def get_collection(
+        self, name: CollectionName
+    ) -> AsyncIOMotorCollection[Mapping[str, JSONSerializable]]:
+        return self._registry[name]
+
+
+def get_mongo_manager() -> MongoConnectionManager:
+    return MongoConnectionManager(settings.mongo.url, settings.mongo.db_name)
