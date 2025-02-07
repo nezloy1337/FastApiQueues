@@ -1,12 +1,11 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import DBAPIError, IntegrityError
+from tasks import process_error
 
-from core.mongodb import error_collection
-from core.mongodb.schemas import ExceptionLogTemplate
 from utils.exceptions import DuplicateEntryError
 
 logging.basicConfig(level=logging.ERROR)
@@ -140,15 +139,9 @@ def register_exception_handlers(app: FastAPI) -> None:
         """
 
         error_info = str(exc)
-        error_log = ExceptionLogTemplate(
-            description=error_info,
-            timestamp=datetime.now(),
-        )
+        error_data = {"error": error_info, "timestamp": datetime.now(timezone.utc)}
 
-        try:
-            await error_collection.insert_one(error_log.model_dump(exclude_none=True))
-        except Exception as e:
-            raise e
+        process_error.apply_async(args=[error_data])
 
         return JSONResponse(
             status_code=500,
