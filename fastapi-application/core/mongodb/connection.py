@@ -14,7 +14,10 @@ JSONSerializable = Union[str, int, float, bool, list, dict, None, datetime, Obje
 
 class MongoConnectionManager:
     def __init__(self, url: str, db_name: str) -> None:
-        self.client = AsyncIOMotorClient(url)
+        self.client = AsyncIOMotorClient(
+            url,
+            uuidRepresentation="standard",
+        )
         self.db = self.client[db_name]
         self._registry: dict[
             CollectionName, AsyncIOMotorCollection[Mapping[str, JSONSerializable]]
