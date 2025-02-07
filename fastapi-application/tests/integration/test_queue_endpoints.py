@@ -25,7 +25,7 @@ from domains.queues import Queue
         (
             {
                 "name": 234,  # Invalid name type
-                "start_time": "2025-02-03T11:30:19.650000Z",
+                "start_time": "3030-02-03T11:30:19.650000Z",
                 "max_slots": 25,
             },
             422,  # Expected validation error
@@ -43,7 +43,7 @@ from domains.queues import Queue
         (
             {
                 "name": "new-name",
-                "start_time": "2023-02-03T11:30:19.650000Z",
+                "start_time": "3030-02-03T11:30:19.650000Z",
                 "max_slots": -1,
             },
             409,  # Expected conflict response
@@ -98,7 +98,7 @@ async def test_create_queue(
         (
             {
                 "name": "updated-name",
-                "start_time": "2026-02-03T11:30:19.650000Z",
+                "start_time": "3030-02-03T11:30:19.650000Z",
                 "max_slots": 30,
             },
             200,  # Expected successful update
@@ -107,7 +107,7 @@ async def test_create_queue(
         (
             {
                 "name": 1234,  # Invalid name type
-                "start_time": "2025-02-03T11:30:19.650000Z",
+                "start_time": "3030-02-03T11:30:19.650000Z",
                 "max_slots": 25,
             },
             422,  # Expected validation error
@@ -125,7 +125,7 @@ async def test_create_queue(
         (
             {
                 "name": "updated-name",
-                "start_time": "2025-02-03T11:30:19.650000Z",
+                "start_time": "3030-02-03T11:30:19.650000Z",
                 "max_slots": -5,
             },
             409,  # Expected conflict response
