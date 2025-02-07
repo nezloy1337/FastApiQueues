@@ -1,7 +1,7 @@
 services:
 
   pg:
-    image: postgres:latest # Рекомендуется использовать конкретный или последний стабильный тег
+    image: postgres:latest
     container_name: postgres_db_queue_api
     environment:
       POSTGRES_DB: queue_api
@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data # Для сохранения данных после перезапуска
-    restart: always # Для автоматического перезапуска в случае сбоев
+    restart: always
     networks:
       - backend
 
@@ -39,7 +39,7 @@ services:
     ports:
       - "5050:80"
     depends_on:
-      - pg # Убедиться, что PostgreSQL запускается раньше
+      - pg
     restart: unless-stopped
     networks:
       - backend
