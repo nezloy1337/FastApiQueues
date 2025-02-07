@@ -54,6 +54,7 @@ async def test_create_queue(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
+    patch_celery_apply_async,
     queue_data: dict[str, str | date | int],
     result_code: int,
 ) -> None:
@@ -74,6 +75,8 @@ async def test_create_queue(
         result_code (int): Expected HTTP response status.
     """
 
+    mock_log_apply_async, mock_error_apply_async = patch_celery_apply_async
+
     # Send POST request to create a queue
     response = client.post("/api_v1/queues", json=queue_data)
 
@@ -81,6 +84,8 @@ async def test_create_queue(
     assert response.status_code == result_code
 
     if response.status_code == 201:
+        mock_log_apply_async.assert_called_once()
+        mock_error_apply_async.assert_not_called()
         # Ensure the response contains the correct name
         assert response.json()["name"] == queue_data.get("name")
 
@@ -136,6 +141,7 @@ async def test_update_queue(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
+    patch_celery_apply_async,
     queue_data: dict[str, str | date | int],
     expected_status: int,
 ) -> None:
@@ -156,6 +162,7 @@ async def test_update_queue(
     """
 
     queue_id = test_queue.id
+    mock_log_apply_async, mock_error_apply_async = patch_celery_apply_async
 
     # Send PUT request to update the queue
     response = client.put(f"/api_v1/queues/{queue_id}", json=queue_data)
@@ -164,6 +171,9 @@ async def test_update_queue(
     assert response.status_code == expected_status
 
     if response.status_code == 200:
+        mock_log_apply_async.assert_called_once()
+        mock_error_apply_async.assert_not_called()
+
         # Ensure the response contains the correct updated name
         assert response.json()["name"] == queue_data.get("name")
 
@@ -197,6 +207,7 @@ async def test_delete_queue(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
+    patch_celery_apply_async,
     queue_id: int,
     expected_status: int,
 ) -> None:
@@ -216,6 +227,7 @@ async def test_delete_queue(
         expected_status (int): Expected HTTP response status.
     """
 
+    mock_log_apply_async, mock_error_apply_async = patch_celery_apply_async
     # Use test queue ID if None is passed
     if queue_id is None:
         queue_id = test_queue.id
@@ -227,6 +239,8 @@ async def test_delete_queue(
     assert response.status_code == expected_status
 
     if expected_status == 204:
+        mock_log_apply_async.assert_called_once()
+        mock_error_apply_async.assert_not_called()
         # Ensure the queue was actually deleted from the database
         deleted_queue = await test_session.get(Queue, queue_id)
         assert deleted_queue is None

@@ -33,6 +33,7 @@ async def test_create_queue_entry(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
+    patch_celery_apply_async,
     queue_entry_data: dict[str, int],
     result_code: int,
 ) -> None:
@@ -51,7 +52,7 @@ async def test_create_queue_entry(
         queue_entry_data (dict): Data for the queue entry request.
         result_code (int): Expected HTTP response status.
     """
-
+    mock_log_apply_async, mock_error_apply_async = patch_celery_apply_async
     # Assign queue_id dynamically if it is None
     if queue_entry_data["queue_id"] is None:
         queue_entry_data["queue_id"] = test_queue.id
@@ -63,6 +64,8 @@ async def test_create_queue_entry(
     assert response.status_code == result_code
 
     if response.status_code == 201:
+        mock_log_apply_async.assert_called_once()
+        mock_error_apply_async.assert_not_called()
         # Verify that the response contains the correct queue_id
         assert response.json()["queue_id"] == queue_entry_data.get("queue_id")
 
@@ -91,6 +94,7 @@ async def test_delete_queue_entry(
     client: TestClient,
     test_session: AsyncSession,
     test_queue: Queue,
+    patch_celery_apply_async,
     result_code: int,
     test_queue_entry: QueueEntries,
     queue_id: int,
@@ -110,7 +114,7 @@ async def test_delete_queue_entry(
         queue_id (Union[int, str]): The queue_id to be deleted.
         result_code (int): Expected HTTP response status.
     """
-
+    mock_log_apply_async, mock_error_apply_async = patch_celery_apply_async
     # Send DELETE request to remove the queue entry
     response = client.delete(f"/api_v1/queue/{queue_id}")
 
@@ -118,6 +122,8 @@ async def test_delete_queue_entry(
     assert response.status_code == result_code
 
     if response.status_code == 204:
+        mock_log_apply_async.assert_called_once()
+        mock_error_apply_async.assert_not_called()
         # Ensure the entry was actually deleted from the database
         deleted_obj = await test_session.get(QueueEntries, test_queue_entry.id)
         assert deleted_obj is None
