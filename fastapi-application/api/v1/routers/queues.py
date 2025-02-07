@@ -11,6 +11,7 @@ from domains.queues.schemas.queues import (
     PutQueue,
 )
 from domains.users import User
+from utils.logger import log_action
 
 router = APIRouter(
     prefix="/queues",
@@ -34,6 +35,11 @@ async def get_queues(
     "",
     response_model=CreateQueue,
     status_code=status.HTTP_201_CREATED,
+)
+@log_action(
+    "POST",
+    "queues",
+    ("queue_to_create", "user"),
 )
 async def create_queue(
     queue_to_create: CreateQueue,
@@ -61,6 +67,11 @@ async def get_queue_with_entries(
     response_model=PutQueue,
     status_code=status.HTTP_200_OK,
 )
+@log_action(
+    "PUT",
+    "queues",
+    ("queue_to_patch", "user", "queue_id"),
+)
 async def put_queue(
     queue_to_patch: PutQueue,
     queue_id: int,
@@ -76,6 +87,11 @@ async def put_queue(
 @router.delete(
     "/{queue_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+)
+@log_action(
+    "DELETE",
+    "queues",
+    ("queue_id", "user"),
 )
 async def delete_queue(
     queue_id: Annotated[int, Path(..., title="ID тега", ge=1)],
