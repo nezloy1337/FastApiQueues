@@ -4,7 +4,7 @@ from celery import Celery
 
 from core.config import settings
 
-CELERY_BROKER_URL = "pyamqp://guest:guest@localhost//"  # RabbitMQ
+CELERY_BROKER_URL = settings.celery.url
 CELERY_BACKEND = settings.mongo.url
 
 log = logging.getLogger(__name__)
