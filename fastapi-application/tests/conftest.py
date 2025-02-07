@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from api.dependencies import current_super_user, current_user
-from core import db_helper
+from core import db_helper, settings
 from core.base import Base
 from domains.queues import Queue, QueueEntries
 from domains.users import User
@@ -20,7 +20,7 @@ user_id = uuid4()
 super_user_id = uuid4()
 
 # Create an in-memory SQLite database for testing
-TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+TEST_DATABASE_URL = settings.test_db.url
 engine = create_async_engine(TEST_DATABASE_URL, future=True)
 session_factory = async_sessionmaker(bind=engine, expire_on_commit=False)
 
