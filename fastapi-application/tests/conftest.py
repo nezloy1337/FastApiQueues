@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import AsyncGenerator, Generator
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
 import pytest_asyncio
@@ -99,6 +99,22 @@ def client(
 
     # Reset dependency overrides after the test completes
     main_app.dependency_overrides.clear()
+
+
+@pytest_asyncio.fixture(autouse=True)
+def patch_celery_apply_async(monkeypatch):
+    # Импортируем нужные объекты
+    from tasks.tasks import process_error, process_log
+
+    # Создаём отдельные моки для каждого метода
+    mock_log_apply_async = MagicMock()
+    mock_error_apply_async = MagicMock()
+
+    # Подменяем методы apply_async в Celery задачах
+    monkeypatch.setattr(process_log, "apply_async", mock_log_apply_async)
+    monkeypatch.setattr(process_error, "apply_async", mock_error_apply_async)
+
+    return mock_log_apply_async, mock_error_apply_async
 
 
 @pytest_asyncio.fixture(scope="function")
