@@ -32,12 +32,7 @@ def process_log(
     log_data: dict[str, SupportsBytes],
 ) -> None:
     try:
-        loop = asyncio.get_event_loop()
-        if loop.is_closed():  # Проверяем, закрыт ли event loop
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        loop.run_until_complete(async_process_log(log_data))
-
+        asyncio.run(async_process_log(log_data))
     except Exception as e:
         log.error(e)
 
@@ -54,11 +49,6 @@ def process_error(
     log_data: dict[str, SupportsBytes],
 ) -> None:
     try:
-        loop = asyncio.get_event_loop()
-        if loop.is_closed():  # Проверяем, закрыт ли event loop
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        loop.run_until_complete(async_process_error_log(log_data))
-
+        asyncio.run(async_process_log(log_data))
     except Exception as e:
         log.error(str(e))
