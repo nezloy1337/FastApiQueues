@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from core.base.repository import BaseRepository
+from core.exceptions import DuplicateEntryError
 from domains.queues import Queue, QueueEntries, QueueTags
 from utils.condition_builder import ConditionBuilder
-from utils.exceptions import DuplicateEntryError
 
 
 class QueueRepository(BaseRepository[Queue]):

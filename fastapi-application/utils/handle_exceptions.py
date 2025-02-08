@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import DBAPIError, IntegrityError
 from tasks import process_error
 
-from utils.exceptions import DuplicateEntryError
+from core.exceptions import DuplicateEntryError
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
