@@ -2,12 +2,12 @@ from datetime import datetime
 from typing import Any, Dict
 
 from bson import ObjectId
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class ActionLog(BaseModel):
     action: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime
     status: str
     parameters: Dict[str, Any]
     error: str | None = None
