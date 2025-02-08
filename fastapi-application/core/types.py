@@ -1,7 +1,4 @@
-from datetime import datetime
 from typing import TYPE_CHECKING, Any, TypeAlias, TypeVar, Union  # noqa: F401
-
-from bson import ObjectId
 
 if TYPE_CHECKING:
     from core.base import Base, BaseRepository, BaseService  # noqa: F401
@@ -18,10 +15,6 @@ if TYPE_CHECKING:
     from domains.users import UserRepository, UserService  # noqa: F401
 
 
-JSONSerializable: TypeAlias = Union[
-    str, int, float, bool, list, dict, None, datetime, ObjectId
-]
-MongoDocument = dict[str, JSONSerializable]
 TRepositories = TypeVar(  # ошибка unbound
     "TRepositories",
     bound="BaseRepository[Any]",
