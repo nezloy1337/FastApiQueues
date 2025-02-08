@@ -7,8 +7,8 @@ from tasks import process_log
 
 
 def get_log_params(
-    allowed_params,
-    **kwargs,
+    allowed_params: tuple[str, ...] | None,
+    **kwargs: Any,
 ) -> dict[str, Any]:
     """
     Filter kwargs by allowed_params.
