@@ -1,3 +1,4 @@
+from typing import Any
 from unittest.mock import AsyncMock
 
 import pytest
@@ -8,7 +9,7 @@ from core.base import BaseService
 
 
 @pytest_asyncio.fixture
-def base_service(mock_repository):
+def base_service(mock_repository: AsyncMock) -> BaseService[Any, AsyncMock]:
     """
     Provides an instance of `BaseService` with a mocked repository.
     """
@@ -16,7 +17,7 @@ def base_service(mock_repository):
 
 
 @pytest_asyncio.fixture
-def mock_repository():
+def mock_repository() -> AsyncMock:
     """
     Provides a mocked repository with async methods for unit testing.
     """
@@ -30,7 +31,10 @@ def mock_repository():
 
 
 @pytest.mark.asyncio
-async def test_get_by_id_not_found(base_service, mock_repository):
+async def test_get_by_id_not_found(
+    base_service,
+    mock_repository,
+) -> None:
     """
     Tests the `get_by_id` method when the object is not found.
     It should raise an HTTP 404 exception.
@@ -46,7 +50,10 @@ async def test_get_by_id_not_found(base_service, mock_repository):
 
 
 @pytest.mark.asyncio
-async def test_delete_success(base_service, mock_repository):
+async def test_delete_success(
+    base_service,
+    mock_repository,
+) -> None:
     """
     Tests the `delete` method to ensure an object is deleted successfully.
     """
@@ -60,7 +67,10 @@ async def test_delete_success(base_service, mock_repository):
 
 
 @pytest.mark.asyncio
-async def test_delete_not_found(base_service, mock_repository):
+async def test_delete_not_found(
+    base_service,
+    mock_repository,
+):
     """
     Tests the `delete` method when the object is not found.
     It should raise an HTTP 404 exception.
@@ -76,7 +86,10 @@ async def test_delete_not_found(base_service, mock_repository):
 
 
 @pytest.mark.asyncio
-async def test_patch_not_found(base_service, mock_repository):
+async def test_patch_not_found(
+    base_service,
+    mock_repository,
+) -> None:
     """
     Tests the `patch` method when the object is not found.
     It should raise an HTTP 404 exception.
