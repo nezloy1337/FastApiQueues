@@ -1,8 +1,11 @@
+version: "3.9"
+
 services:
 
   pg:
     image: postgres:latest
     container_name: postgres_db_queue_api
+
     environment:
       POSTGRES_DB: queue_api
       POSTGRES_USER: user
@@ -10,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data # Для сохранения данных после перезапуска
+      - pg_data:/var/lib/postgresql/data # Сохранение данных после перезапуска
     restart: always
     networks:
       - backend
@@ -50,7 +53,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data # Для сохранения данных Redis
+      - redis_data:/data # Сохранение данных Redis
     restart: always
     networks:
       - backend
@@ -67,6 +70,49 @@ services:
       - mongo-data:/data/db
       - mongo-config:/data/configdb
     restart: always
+    networks:
+      - backend
+
+  # Сервис FastAPI-приложения
+  app:
+    build: .
+    container_name: fastapi_app
+    env_file:
+      - .env.docker
+    environment:
+      APP_PORT: 8000
+      DATABASE_URL: postgresql://user:password@pg:5432/queue_api
+      REDIS_URL: redis://redis:6379/0
+      # При необходимости можно добавить BROKER_URL, если используется RabbitMQ
+      # BROKER_URL: amqp://guest:guest@rabbitmq:5672/
+
+    ports:
+      - "50000:50000"
+    depends_on:
+      - pg
+      - redis
+      - rabbitmq
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # Сервис Celery worker
+  worker:
+    build: .
+    container_name: celery_worker
+    env_file:
+      - .env.docker
+    environment:
+      BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      DATABASE_URL: postgresql://user:password@pg:5432/queue_api
+      REDIS_URL: redis://redis:6379/0
+      # BROKER_URL: amqp://guest:guest@rabbitmq:5672/ (если используется)
+    command: celery -A tasks.celery_app worker --loglevel=INFO --concurrency=4 --queues logs,errors
+    depends_on:
+      - pg
+      - redis
+      - rabbitmq
+    restart: unless-stopped
     networks:
       - backend
 
