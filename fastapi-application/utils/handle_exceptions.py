@@ -88,6 +88,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             },
         )
 
+    # todo переименовать
     @app.exception_handler(HTTPException)
     async def custom_http_exception_handler(
         request: Request, exc: HTTPException
@@ -109,7 +110,7 @@ def register_exception_handlers(app: FastAPI) -> None:
         """
         Handles low-level database API errors
         """
-
+        logger.error(str(exc))
         return JSONResponse(
             status_code=400,  # 400 Bad Request
             content={
@@ -123,6 +124,7 @@ def register_exception_handlers(app: FastAPI) -> None:
         """
         Handles operating system related errors
         """
+        logger.error(str(exc))
 
         return JSONResponse(
             status_code=500,  # 500 Internal Server Error
@@ -139,6 +141,8 @@ def register_exception_handlers(app: FastAPI) -> None:
         """
 
         error_info = str(exc)
+
+        logger.error(error_info)
         error_data = {"error": error_info, "timestamp": datetime.now(timezone.utc)}
 
         process_error.apply_async(args=[error_data])
