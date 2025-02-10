@@ -175,7 +175,8 @@ async def test_queue(test_session: AsyncSession) -> Queue:
     """
     Creates a test queue.
 
-    - The queue starts one year from the current date.
+    - The queue starts one year from the current date
+      to avoid violating database constraints.
 
     Yields:
         Queue: A test queue instance.

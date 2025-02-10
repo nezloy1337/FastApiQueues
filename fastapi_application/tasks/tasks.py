@@ -45,6 +45,7 @@ def process_log(self: Task, log_data: dict[str, SupportsBytes]) -> None:
     """
     Celery task to process a log entry.
     """
+    log.info("start consuming log")
     try:
         asyncio.run(async_process_log(log_data))
     except Exception as exc:

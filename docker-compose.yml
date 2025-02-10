@@ -41,6 +41,22 @@ services:
       timeout: 5s
       retries: 5
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      pg:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - backend
+
   redis:
     image: redis:latest
     container_name: redis_queue_api
@@ -77,6 +93,22 @@ services:
       timeout: 5s
       retries: 5
 
+  migrations:
+    build: .
+    container_name: migrations_service
+    env_file:
+      - .env.docker
+    command: alembic upgrade head
+    healthcheck:
+      test: ["CMD", "exit", "0"]
+      disable: true
+    depends_on:
+      pg:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - backend
+
   app:
     build: .
     container_name: fastapi_app
@@ -91,6 +123,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      migrations:
+        condition: service_started
     restart: unless-stopped
     networks:
       - backend
@@ -125,8 +159,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-
-
 
 volumes:
   pg_data:

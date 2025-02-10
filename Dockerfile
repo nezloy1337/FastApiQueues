@@ -31,10 +31,12 @@ FROM base AS source
 WORKDIR /app
 
 # Copy application source code from the source stage
-COPY fastapi-application /app/fastapi-application
+COPY fastapi_application /app/fastapi-application
 COPY pyproject.toml /app
 COPY README.md /app
 COPY .env /app
+COPY alembic.ini /app
+
 
 
 FROM base AS final

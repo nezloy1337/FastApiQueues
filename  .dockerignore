@@ -3,6 +3,7 @@
 **/.pytest_cache
 **/.git
 **/.env
+tests/
 Dockerfile
 docker-compose.yml
 *.log
