@@ -18,7 +18,7 @@ services:
       - backend
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "user", "-d", "queue_api"]
-      interval: 10s
+      interval: 15s
       timeout: 5s
       retries: 5
 
@@ -37,7 +37,7 @@ services:
       - backend
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
-      interval: 10s
+      interval: 15s
       timeout: 5s
       retries: 5
 
@@ -69,7 +69,7 @@ services:
       - backend
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
+      interval: 15s
       timeout: 5s
       retries: 3
 
@@ -89,7 +89,7 @@ services:
       - backend
     healthcheck:
       test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
+      interval: 15s
       timeout: 5s
       retries: 5
 
@@ -130,7 +130,7 @@ services:
       - backend
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:50000/api_v1/health || exit 1"]
-      interval: 10s
+      interval: 15s
       timeout: 5s
       retries: 3
 
@@ -156,7 +156,7 @@ services:
       - backend
     healthcheck:
       test: ["CMD", "celery", "-A", "tasks.celery_app", "status"]
-      interval: 10s
+      interval: 15s
       timeout: 5s
       retries: 3
 
