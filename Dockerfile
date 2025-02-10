@@ -31,7 +31,7 @@ FROM base AS source
 WORKDIR /app
 
 # Copy application source code from the source stage
-COPY fastapi_application /app/fastapi-application
+COPY fastapi_application /app/fastapi_application
 COPY pyproject.toml /app
 COPY README.md /app
 COPY .env /app
@@ -52,7 +52,7 @@ COPY --from=source /app /app
 
 # Set environment variables for the app
 ENV PORT=8000 HOST=0.0.0.0
-ENV PYTHONPATH=/app/fastapi-application
+ENV PYTHONPATH=/app/fastapi_application
 
 # Command to run the FastAPI application
-CMD ["uvicorn", "fastapi-application.main:main_app", "--host", "0.0.0.0", "--port", "50000"]
+CMD ["uvicorn", "fastapi_application.main:main_app", "--host", "0.0.0.0", "--port", "50000"]
