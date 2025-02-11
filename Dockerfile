@@ -1,5 +1,6 @@
 FROM python:3.13-slim  AS base
 
+#stage 1
 # Update packages and install curl for downloading
 RUN apt-get update \
   && apt-get install -y --no-install-recommends curl \
@@ -7,6 +8,7 @@ RUN apt-get update \
   && apt-get clean
 
 
+#stage 2
 FROM base AS poetry-export
 
 # Set environment variables for Poetry
@@ -20,13 +22,15 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry export --no-interaction -o /requirements.txt --without-hashes --only main
 
 
+#stage 3
 FROM base AS requirements
 
 RUN apt-get update && apt-get install -y gcc python3-dev --no-install-recommends && apt-get clean
 COPY --from=poetry-export /requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
-# --- Этап 4: Копирование исходного кода ---
+
+#stage 4
 FROM base AS source
 WORKDIR /app
 
@@ -37,8 +41,7 @@ COPY README.md /app
 COPY .env /app
 COPY alembic.ini /app
 
-
-
+#stage 5
 FROM base AS final
 WORKDIR /app
 
@@ -48,7 +51,6 @@ COPY --from=requirements /usr/local/bin /usr/local/bin
 
 # Copy application source code from the source stage
 COPY --from=source /app /app
-
 
 # Set environment variables for the app
 ENV PORT=8000 HOST=0.0.0.0
