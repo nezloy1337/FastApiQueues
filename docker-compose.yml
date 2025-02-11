@@ -6,6 +6,7 @@ services:
     image: postgres:latest
     container_name: postgres_db_queue_api
     environment:
+
       POSTGRES_DB: queue_api
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -97,6 +98,7 @@ services:
     build: .
     container_name: migrations_service
     env_file:
+      - .env.docker.template
       - .env.docker
     command: alembic upgrade head
     healthcheck:
@@ -113,6 +115,7 @@ services:
     build: .
     container_name: fastapi_app
     env_file:
+      - .env.docker.template
       - .env.docker
     ports:
       - "50000:50000"
@@ -138,6 +141,7 @@ services:
     build: .
     container_name: celery_worker
     env_file:
+      - .env.docker.template
       - .env.docker
     environment:
       BROKER_URL: amqp://guest:guest@rabbitmq:5672//
