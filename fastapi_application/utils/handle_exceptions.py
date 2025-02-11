@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, timezone
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import DBAPIError, IntegrityError
 from tasks import process_error
@@ -46,7 +46,10 @@ def register_exception_handlers(app: FastAPI) -> None:
         )
 
     @app.exception_handler(AttributeError)
-    async def handle_attr_error(request: Request, exc: AttributeError) -> JSONResponse:
+    async def handle_attr_error(
+        request: Request,
+        exc: AttributeError,
+    ) -> JSONResponse:
         """
         Handles missing or incorrect attribute access
         """
@@ -60,7 +63,8 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(IntegrityError)
     async def integrity_error_handler(
-        request: Request, exc: IntegrityError
+        request: Request,
+        exc: IntegrityError,
     ) -> JSONResponse:
         """
         Handles database integrity constraint violations
@@ -69,13 +73,14 @@ def register_exception_handlers(app: FastAPI) -> None:
             status_code=409,  # 409 Conflict
             content={
                 "error": "Database Conflict (IntegrityError)",
-                "message": str(exc),
+                "message": "Violation of database constraints",
             },
         )
 
     @app.exception_handler(DuplicateEntryError)
     async def duplicate_entry_error_handler(
-        request: Request, exc: DuplicateEntryError
+        request: Request,
+        exc: DuplicateEntryError,
     ) -> JSONResponse:
         """
         Handles duplicate entry attempts in unique constrained fields
@@ -88,25 +93,11 @@ def register_exception_handlers(app: FastAPI) -> None:
             },
         )
 
-    # todo переименовать
-    @app.exception_handler(HTTPException)
-    async def custom_http_exception_handler(
-        request: Request, exc: HTTPException
-    ) -> JSONResponse:
-        """
-        Handles standard HTTP exceptions
-        """
-
-        return JSONResponse(
-            status_code=exc.status_code,
-            content={
-                "error": "API Error",
-                "message": exc.detail,
-            },
-        )
-
     @app.exception_handler(DBAPIError)
-    async def dbapi_error_handler(request: Request, exc: DBAPIError) -> JSONResponse:
+    async def dbapi_error_handler(
+        request: Request,
+        exc: DBAPIError,
+    ) -> JSONResponse:
         """
         Handles low-level database API errors
         """
@@ -120,7 +111,10 @@ def register_exception_handlers(app: FastAPI) -> None:
         )
 
     @app.exception_handler(OSError)
-    async def ose_error_handler(request: Request, exc: OSError) -> JSONResponse:
+    async def ose_error_handler(
+        request: Request,
+        exc: OSError,
+    ) -> JSONResponse:
         """
         Handles operating system related errors
         """
@@ -135,7 +129,10 @@ def register_exception_handlers(app: FastAPI) -> None:
         )
 
     @app.exception_handler(Exception)
-    async def unknown_error_handler(request: Request, exc: Exception) -> JSONResponse:
+    async def unknown_error_handler(
+        request: Request,
+        exc: Exception,
+    ) -> JSONResponse:
         """
         Fallback handler for uncaught exceptions
         """
