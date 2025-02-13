@@ -1,10 +1,9 @@
 from typing import Type
 
-from core.types import TModels
 from utils.condition_builder import ConditionBuilder
 
 
-class ConditionBuilderFactory:
+class ConditionBuilderFactory[TModels]:
     """
     A factory class for creating `ConditionBuilder` instances for specific models.y.
     """

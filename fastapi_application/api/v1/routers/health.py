@@ -13,4 +13,7 @@ router = APIRouter(
     status_code=status.HTTP_200_OK,
 )
 async def get_tag_queue():
-    return JSONResponse(content={"status": "healthy"}, status_code=200)
+    return JSONResponse(
+        content={"status": "healthy"},
+        status_code=200,
+    )

@@ -10,7 +10,7 @@ from domains.tags import Tags
 @pytest_asyncio.fixture(scope="function")
 async def test_tag(test_session: AsyncSession) -> Tags:
     """
-    Creates test tags.
+    Creates 2 test tags.
 
     Yields:
         Tags: A test tag instance.

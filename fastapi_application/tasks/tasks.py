@@ -2,22 +2,11 @@ import asyncio
 import logging
 from typing import Any, SupportsBytes
 
-from bson import ObjectId
 from celery import Task
-from pydantic import BaseModel
 
 from core.mongodb.connection import get_mongo_manager
 from core.mongodb.schemas import ActionLog
 from tasks.celery_app import celery_app
-
-
-class ErrorLog(BaseModel):
-    error: str
-
-    class Config:
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
 
 log = logging.getLogger(__name__)
 
@@ -40,8 +29,15 @@ async def async_process_log(log_data: dict[str, Any]) -> None:
     await collection.insert_one(log_entry.model_dump())
 
 
-@celery_app.task(bind=True, name="tasks.process_log", max_retries=3)
-def process_log(self: Task, log_data: dict[str, SupportsBytes]) -> None:
+@celery_app.task(
+    bind=True,
+    name="tasks.process_log",
+    max_retries=3,
+)
+def process_log(
+    self: Task,
+    log_data: dict[str, SupportsBytes],
+) -> None:
     """
     Celery task to process a log entry.
     """
@@ -53,7 +49,9 @@ def process_log(self: Task, log_data: dict[str, SupportsBytes]) -> None:
         raise self.retry(exc=exc, countdown=10)
 
 
-async def async_process_error_log(log_data: dict[str, Any]) -> None:
+async def async_process_error_log(
+    log_data: dict[str, Any],
+) -> None:
     """
     Process and save an error log in MongoDB.
     """
@@ -62,8 +60,15 @@ async def async_process_error_log(log_data: dict[str, Any]) -> None:
     await collection.insert_one(log_data)
 
 
-@celery_app.task(bind=True, name="tasks.process_error", max_retries=3)
-def process_error(self: Task, log_data: dict[str, SupportsBytes]) -> None:
+@celery_app.task(
+    bind=True,
+    name="tasks.process_error",
+    max_retries=3,
+)
+def process_error(
+    self: Task,
+    log_data: dict[str, SupportsBytes],
+) -> None:
     """
     Celery task to process an error log.
     """

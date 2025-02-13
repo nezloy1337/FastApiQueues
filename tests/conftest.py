@@ -104,14 +104,30 @@ def client(
 
 @pytest_asyncio.fixture(autouse=True)
 def patch_celery_apply_async(monkeypatch: MonkeyPatch) -> tuple[MagicMock, MagicMock]:
-    # Импортируем нужные объекты
+    @pytest_asyncio.fixture(autouse=True)
+    def patch_celery_apply_async(monkeypatch: MonkeyPatch) -> tuple[MagicMock, MagicMock]:
+        """
+        Automatically mocks the `apply_async` methods of Celery tasks `process_log` and `process_error`.
+
+        Returns:
+            tuple[MagicMock, MagicMock]: Mocks for `process_log.apply_async` and `process_error.apply_async`.
+        """
+        from tasks.tasks import process_error, process_log
+
+        mock_log_apply_async = MagicMock()
+        mock_error_apply_async = MagicMock()
+
+        monkeypatch.setattr(process_log, "apply_async", mock_log_apply_async)
+        monkeypatch.setattr(process_error, "apply_async", mock_error_apply_async)
+
+        return mock_log_apply_async, mock_error_apply_async
     from tasks.tasks import process_error, process_log
 
-    # Создаём отдельные моки для каждого метода
+    # Create separate mocks for each task's `apply_async` method
     mock_log_apply_async = MagicMock()
     mock_error_apply_async = MagicMock()
 
-    # Подменяем методы apply_async в Celery задачах
+    # Replace the `apply_async` methods with the mock objects
     monkeypatch.setattr(process_log, "apply_async", mock_log_apply_async)
     monkeypatch.setattr(process_error, "apply_async", mock_error_apply_async)
 

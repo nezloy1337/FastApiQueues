@@ -31,7 +31,6 @@ class ModelRegistry(Generic[TModels, TService, TRepositories]):
         self.MODEL_REGISTRY[model] = service_repo
 
 
-# Пример использования
 model_registry: ModelRegistry[TModels, TService, TRepositories] = ModelRegistry()
 model_registry.register(Queue, (QueueService, QueueRepository))
 model_registry.register(QueueEntries, (QueueEntryService, QueueEntriesRepository))
