@@ -20,14 +20,21 @@ class QueueRepository(BaseRepository[Queue]):
         condition_builder (ConditionBuilder): Utility for building query conditions.
     """
 
-    def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
+    def __init__(
+        self,
+        session: AsyncSession,
+        condition_builder: ConditionBuilder,
+    ):
         super().__init__(
             Queue,
             session,
             condition_builder,
         )
 
-    async def get_by_id(self, queue_id: int) -> Queue | None:
+    async def get_by_id(
+        self,
+        queue_id: int,
+    ) -> Queue | None:
         """
         Retrieves a queue by its unique identifier.
 
@@ -76,7 +83,11 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
         condition_builder (ConditionBuilder): Utility for building query conditions.
     """
 
-    def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
+    def __init__(
+        self,
+        session: AsyncSession,
+        condition_builder: ConditionBuilder,
+    ):
         super().__init__(QueueEntries, session, condition_builder)
 
     async def delete_all(self, filters: dict[str, Any]) -> QueueEntries | None:
@@ -91,7 +102,13 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
         """
         query_conditions = self.condition_builder.create_conditions(**filters)
 
-        stmt = delete(self.model).filter(and_(*query_conditions)).returning(self.model)
+        stmt = (
+            delete(self.model)
+            .filter(and_(*query_conditions))
+            .returning(
+                self.model,
+            )
+        )
 
         result = await self.session.execute(stmt)
         deleted_obj = result.scalars().first()
@@ -99,7 +116,10 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
             await self.session.commit()
         return deleted_obj
 
-    async def create(self, obj_data: dict[str, Any]) -> QueueEntries:
+    async def create(
+        self,
+        obj_data: dict[str, Any],
+    ) -> QueueEntries:
         """
         Creates a new queue entry in the database.
 
@@ -119,7 +139,9 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
             queue_id=obj_data.get("queue_id"),
         )
 
-        queue_entry = await self.session.execute(select(self.model).filter(*filters))
+        queue_entry = await self.session.execute(
+            select(self.model).filter(*filters),
+        )
         if queue_entry.scalar_one_or_none():
             raise DuplicateEntryError
 
@@ -139,7 +161,11 @@ class QueueTagsRepository(BaseRepository[QueueTags]):
         condition_builder (ConditionBuilder): Utility for building query conditions.
     """
 
-    def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
+    def __init__(
+        self,
+        session: AsyncSession,
+        condition_builder: ConditionBuilder,
+    ):
         super().__init__(
             QueueTags,
             session,
