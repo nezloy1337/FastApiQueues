@@ -35,8 +35,8 @@ docker compose up --build -d
 ### 4. Доступ к документации API
 После запуска приложения документация API доступна по следующим адресам:
 
-- Swagger UI: [http://localhost:8080/docs](http://localhost:50000/docs)
-- Redoc: [http://localhost:8080/redoc](http://localhost:50000/redoc)
+- Swagger UI: [http://localhost:50000/docs](http://localhost:50000/docs)
+- Redoc: [http://localhost:50000/redoc](http://localhost:50000/redoc)
 
 ### 5. Получение API ключа
 Для работы с защищенными эндпоинтами:
