@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db_helper import db_helper
-from core.registry import MODEL_REGISTRY
+from core.registry import model_registry
 from core.types import TModels, TRepositories
 from utils import get_condition_builder
 from utils.condition_builder import ConditionBuilder
@@ -25,7 +25,7 @@ def get_repository_by_model(model_cls: Type[TModels]) -> Callable[..., TReposito
     """
 
     # Retrieve the repository class from the registry
-    _, repo_cls = MODEL_REGISTRY[model_cls]
+    _, repo_cls = model_registry.MODEL_REGISTRY[model_cls]
 
     def _create_repository(
         session: Annotated[AsyncSession, Depends(db_helper.session_getter)],

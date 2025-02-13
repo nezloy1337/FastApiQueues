@@ -2,7 +2,7 @@ from typing import Callable, Type
 
 from fastapi import Depends
 
-from core.registry import MODEL_REGISTRY
+from core.registry import model_registry
 
 from ..base import BaseService
 from ..types import TModels, TService
@@ -26,7 +26,7 @@ def get_service_by_model(
     """
 
     # Retrieve the service and repository classes from the registry
-    service_cls, repo_cls = MODEL_REGISTRY[model_cls]
+    service_cls, repo_cls = model_registry.MODEL_REGISTRY[model_cls]
 
     def _create_service(
         repository=Depends(get_repository_by_model(model_cls)),
