@@ -29,7 +29,10 @@ class QueueEntryService(BaseService[QueueEntries, QueueEntriesRepository]):
     ):
         super().__init__(repository)
 
-    async def delete_all(self, filters: dict[str, Any]) -> bool:
+    async def delete_all(
+        self,
+        filters: dict[str, Any],
+    ) -> bool:
         """
         Deletes all queue entries matching the given filters.
 

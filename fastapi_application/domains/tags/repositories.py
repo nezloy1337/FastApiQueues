@@ -14,7 +14,11 @@ class TagsRepository(BaseRepository[Tags]):
         condition_builder (ConditionBuilder): Utility for building query conditions.
     """
 
-    def __init__(self, session: AsyncSession, condition_builder: ConditionBuilder):
+    def __init__(
+        self,
+        session: AsyncSession,
+        condition_builder: ConditionBuilder,
+    ):
         super().__init__(
             Tags,
             session,

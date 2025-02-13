@@ -88,9 +88,16 @@ class QueueEntriesRepository(BaseRepository[QueueEntries]):
         session: AsyncSession,
         condition_builder: ConditionBuilder,
     ):
-        super().__init__(QueueEntries, session, condition_builder)
+        super().__init__(
+            QueueEntries,
+            session,
+            condition_builder,
+        )
 
-    async def delete_all(self, filters: dict[str, Any]) -> QueueEntries | None:
+    async def delete_all(
+        self,
+        filters: dict[str, Any],
+    ) -> QueueEntries | None:
         """
         Deletes all queue entries matching the provided filters.
 

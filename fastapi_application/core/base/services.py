@@ -18,7 +18,10 @@ class BaseService(Generic[TModels, TRepositories]):
         The repository instance managing the model's database operations.
     """
 
-    def __init__(self, repository: TRepositories):
+    def __init__(
+        self,
+        repository: TRepositories,
+    ):
         """
         Initializes the service with a repository instance.
 
@@ -28,7 +31,10 @@ class BaseService(Generic[TModels, TRepositories]):
         """
         self.repository = repository
 
-    async def create(self, obj_data: dict[str, Any]) -> TModels:
+    async def create(
+        self,
+        obj_data: dict[str, Any],
+    ) -> TModels:
         """
         Creates a new object and persists it in the database.
 
@@ -41,7 +47,10 @@ class BaseService(Generic[TModels, TRepositories]):
         """
         return await self.repository.create(obj_data)
 
-    async def get_by_id(self, obj_id: int) -> TModels:
+    async def get_by_id(
+        self,
+        obj_id: int,
+    ) -> TModels:
         """
         Retrieves an object by its unique identifier.
 
@@ -75,7 +84,10 @@ class BaseService(Generic[TModels, TRepositories]):
 
         return await self.repository.get_all()
 
-    async def delete(self, filters: dict[str, Any]) -> bool:
+    async def delete(
+        self,
+        filters: dict[str, Any],
+    ) -> bool:
         """
         Deletes an object matching the specified filters.
 

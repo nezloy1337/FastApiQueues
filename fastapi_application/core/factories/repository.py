@@ -28,7 +28,10 @@ def get_repository_by_model(model_cls: Type[TModels]) -> Callable[..., TReposito
     _, repo_cls = model_registry.MODEL_REGISTRY[model_cls]
 
     def _create_repository(
-        session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+        session: Annotated[
+            AsyncSession,
+            Depends(db_helper.session_getter),
+        ],
         condition_builder: Annotated[
             ConditionBuilder,
             Depends(get_condition_builder(model_cls)),

@@ -43,7 +43,10 @@ class BaseRepository(Generic[TModels]):
         self.session = session
         self.condition_builder = condition_builder
 
-    async def create(self, obj_data: dict[str, Any]) -> TModels:
+    async def create(
+        self,
+        obj_data: dict[str, Any],
+    ) -> TModels:
         """
         Creates and persists a new record in the database.
 
@@ -60,7 +63,10 @@ class BaseRepository(Generic[TModels]):
         await self.session.commit()
         return obj
 
-    async def get_by_id(self, obj_id: int) -> TModels | None:
+    async def get_by_id(
+        self,
+        obj_id: int,
+    ) -> TModels | None:
         """
         Retrieves a record by its unique identifier (ID).
 
@@ -81,10 +87,15 @@ class BaseRepository(Generic[TModels]):
             list[TModels]: A list of model instances.
         """
 
-        result = await self.session.execute(select(self.model))
+        result = await self.session.execute(
+            select(self.model),
+        )
         return list(result.scalars().all())
 
-    async def delete(self, **conditions: dict[str, Any]) -> TModels | None:
+    async def delete(
+        self,
+        **conditions: dict[str, Any],
+    ) -> TModels | None:
         """
         Deletes a record that matches the given conditions.
 
@@ -97,7 +108,13 @@ class BaseRepository(Generic[TModels]):
         """
 
         query_conditions = self.condition_builder.create_conditions(**conditions)
-        stmt = delete(self.model).filter(and_(*query_conditions)).returning(self.model)
+        stmt = (
+            delete(self.model)
+            .filter(and_(*query_conditions))
+            .returning(
+                self.model,
+            )
+        )
 
         result = await self.session.execute(stmt)
         deleted_obj = result.scalar_one_or_none()
