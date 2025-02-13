@@ -17,7 +17,7 @@ def get_log_params(
     For values with a model_dump method, return its dump.
     """
 
-    allowed_params = allowed_params or []
+    allowed_params = allowed_params or ()
 
     if allowed_params:
         return {
